@@ -1,0 +1,228 @@
+/* Copyright (c) 2017, Mikhail Paulyshka
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+ 
+#include "wotclient.h"
+
+#include "common/filesystem.h"
+#include "common/string.h"
+
+#include <filesystem>
+
+using namespace std::experimental::filesystem::v1;
+
+#include "rapidxml.hpp"
+using namespace rapidxml;
+
+
+bool WotClient::IsValid()
+{
+	return isValid;
+}
+
+////////CTOR
+WotClient::WotClient()
+{
+}
+
+WotClient::WotClient(const std::wstring& wotDirectory)
+{
+	SetPath(wotDirectory);
+}
+
+
+////GET/SET
+std::wstring WotClient::GetPath()
+{
+	return path;
+}
+
+void WotClient::SetPath(const std::wstring& path)
+{
+	this->path = path;
+	updateData();
+}
+
+ClientBranch WotClient::GetClientBranch()
+{
+	return clientBranch;
+}
+
+std::wstring WotClient::GetClientExeVersion()
+{
+	return this->exeVersion;
+}
+
+std::wstring WotClient::GetClientVersion()
+{
+	return clientVersion;
+}
+
+std::wstring WotClient::GetClientLocale()
+{
+	return clientLocale;
+}
+
+ClientType WotClient::GetClientType()
+{
+	return clientType;
+}
+
+////////
+void WotClient::updateData()
+{
+	clear();
+
+	if (!exists(path + L"\\WorldOfTanks.exe"))
+	{
+		return;
+	}
+
+	exeVersion = Filesystem::GetExeVersion(path + L"\\WorldOfTanks.exe");
+
+	if (!updateData_versionxml())
+	{
+		return;
+	}
+
+	if (!updateData_apptype())
+	{
+		return;
+	}
+
+	isValid = true;
+}
+
+bool WotClient::updateData_apptype()
+{
+	std::wstring apptypexml(path + L"app_type.xml");
+	if (!exists(apptypexml))
+		return false;
+
+	std::wstring content = Filesystem::GetFileContent(apptypexml);
+	xml_document<wchar_t> apptypedoc;
+	apptypedoc.parse<0>(_wcsdup(content.c_str()));
+	try
+	{
+		xml_node<wchar_t> *node_root = apptypedoc.first_node(L"protocol");
+		if (node_root == nullptr)
+			return false;
+
+		//get version
+		xml_node<wchar_t> *node_apptype = node_root->first_node(L"app_type");
+		if (node_apptype == nullptr)
+			return false;
+
+		std::wstring apptype(node_apptype->value());
+		if (apptype == L"sd")
+		{
+			this->clientType = ClientType::WoTType_SD;
+		}
+		else if (apptype == L"hd")
+		{
+			this->clientType = ClientType::WoTType_HD;
+		}
+	}
+	catch (const std::exception&)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool WotClient::updateData_versionxml()
+{
+	std::wstring versionxml(path + L"version.xml");
+	if (!exists(versionxml))
+		return false;
+
+	std::wstring content = Filesystem::GetFileContent(versionxml);
+	xml_document<wchar_t> versiondoc;
+	versiondoc.parse<0>(_wcsdup(content.c_str()));
+	try
+	{
+		xml_node<wchar_t> *node_root = versiondoc.first_node(L"version.xml");
+		if (node_root == nullptr)
+			return false;
+
+		//get version
+		xml_node<wchar_t> *node_version = node_root->first_node(L"version");
+		if (node_version == nullptr)
+			return false;
+
+		std::wstring clientver = node_version->value();
+		clientver.replace(clientver.find(L" v."), std::wstring(L" v.").length(), L"");
+		clientVersion = clientver.substr(0, clientver.find(L' '));
+		std::wstring type = clientver.substr(clientver.find(L' ') + 1);
+		type = type.substr(0, type.find(L'#'));
+		type = String::Trim(type);
+
+		if (type.empty())
+		{
+			this->clientBranch = ClientBranch::WoT_Release;
+		}
+		else if (type == "Common Test")
+		{
+			this->clientBranch = ClientBranch::WoT_CommonTest;
+		}
+		else if (type == "ST")
+		{
+			this->clientBranch = ClientBranch::WoT_SuperTest;
+		}
+		else if (type == "SB")
+		{
+			this->clientBranch = ClientBranch::WoT_Sandbox;
+		}
+		else
+		{
+			this->clientBranch = ClientBranch::WoT_Unknown;
+		}
+
+		//get locale
+		xml_node<wchar_t> *node_meta = node_root->first_node(L"meta");
+		if (node_meta == nullptr)
+			return false;
+
+		xml_node<wchar_t> *node_localization = node_meta->first_node(L"localization");
+		if (node_localization == nullptr)
+			return false;
+
+		std::wstring locale(node_localization->value());
+		clientLocale = locale.substr(locale.find(L' ') + 1);
+	}
+	catch (const std::exception&)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void WotClient::clear()
+{
+	isValid = false;
+	clientBranch = ClientBranch::WoT_Unknown;
+	exeVersion.clear();
+	clientVersion.clear();
+}
