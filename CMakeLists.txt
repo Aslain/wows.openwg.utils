@@ -30,6 +30,7 @@ ucm_set_runtime(STATIC)
 
 set(SOURCES_COMMON
     src/dllmain.cpp
+    src/dllmain.rc
 
     src/common/api_common.cpp
     src/common/api_common.h

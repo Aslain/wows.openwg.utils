@@ -31,6 +31,6 @@ New-Item -ItemType Directory -Path ./build/ | Out-Null
 Push-Location ./build/ -ErrorAction Stop
 
 cmake -T v141_xp $root/ -DCMAKE_INSTALL_PREFIX="$root/output/"
-cmake --build . --config RelWithDebInfo --target Install 
+cmake --build . --config Release --target Install 
 
 Pop-Location

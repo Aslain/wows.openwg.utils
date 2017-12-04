@@ -1,0 +1,39 @@
+#define VER_VERSION               1,1,0,0
+#define VER_VERSION_STR          "1.1.0\0"
+#define VER_COMPANYNAME_STR      "Mikhail Paulyshka\0"
+#define VER_FILEDESCRIPTION_STR  "InnoSetup extensions library\0"
+#define VER_PRODUCTNAME_STR      "InnoSetup extensions\0"
+#define VER_INTERNALNAME_STR     "innosetupextensions\0"
+#define VER_LEGALCOPYRIGHT_STR   "Mikhail Paulyshka, 2017. MIT license\0"
+#define VER_ORIGINALFILENAME_STR "innosetupextensions.dll\0"
+#define VER_PRIVATEBUILD_STR     "0\0"
+
+#include <Windows.h>
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION VER_VERSION
+PRODUCTVERSION VER_VERSION
+FILEOS VOS__WINDOWS32
+FILETYPE VFT_DLL
+FILESUBTYPE VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "CompanyName", VER_COMPANYNAME_STR
+            VALUE "FileDescription", VER_FILEDESCRIPTION_STR
+            VALUE "FileVersion", VER_VERSION_STR
+            VALUE "InternalName", VER_INTERNALNAME_STR
+            VALUE "LegalCopyright", VER_LEGALCOPYRIGHT_STR
+            VALUE "OriginalFilename", VER_ORIGINALFILENAME_STR
+            VALUE "PrivateBuild", VER_PRIVATEBUILD_STR
+            VALUE "ProductName", VER_PRODUCTNAME_STR
+            VALUE "ProductVersion", VER_VERSION_STR
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
