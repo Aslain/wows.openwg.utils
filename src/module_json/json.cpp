@@ -29,6 +29,8 @@
 
 #include <string>
 #include <iostream>
+#include <fstream>
+#include <codecvt>
 
 using std::cout;
 
@@ -157,5 +159,71 @@ std::wstring JsonUtils::SetValue(const std::wstring& json, const std::wstring& p
 	//Json::StyledStreamWriter styledStream;
 	//styledStream.write(cout, node);
 	return wstr;
+}
+
+void c_node(const int size, int index, Json::Value &node, const std::vector<std::string>& tokens, const bool& value)
+{
+	if (index <= size)
+	{
+		Json::ValueType t = node.type();
+		for (Json::ValueConstIterator v = node.begin(); v != node.end(); v++)
+		{
+			std::string key = v.key().asString();
+		}
+		std::string token = tokens[index].c_str();
+		//Json::Value children = node[token];
+		c_node(size, ++index, node[token], tokens, value);
+
+		
+	}
+	else
+	{
+		node = value;
+	}
+}
+
+std::wstring readFile(const std::wstring& filename)
+{
+	std::wifstream wif(filename);
+	wif.seekg(3);
+	wif.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
+	std::wstringstream wss;
+	wss << wif.rdbuf();
+	return wss.str();
+}
+
+bool JsonUtils::SetValueF(const std::wstring& name, const std::wstring& path, const bool value)
+{
+	std::string data = Encoding::wstring_to_utf8(readFile(name));
+
+	Json::Value node;
+	Json::Reader reader;
+	
+	reader.parse(data, node); 
+	//for (Json::ValueConstIterator v = node.begin(); v != node.end(); v++)
+	//{
+	//	std::string key = v.key().asString();
+	//}
+
+	std::vector<std::string> tokens = String::Split(Encoding::wstring_to_utf8(path), '/');
+	try
+	{
+		int size = tokens.size() - 1;
+		int index = 0;
+		if (index > size)
+		{
+			return false;
+		}
+		c_node(size, index, node, tokens, value);
+	}
+	catch (Json::LogicError&)
+	{
+		return false;
+	}
+	Json::StyledStreamWriter styled;
+	std::fstream fs1(L"d:\\My\\Programming\\InnoSetup\\extensions\\src_tests\\conf\\battle1.xc", std::ios::out);
+	styled.write(fs1, node);
+	fs1.close();
+	return true;
 
 }

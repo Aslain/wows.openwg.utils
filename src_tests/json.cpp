@@ -73,11 +73,17 @@ bool test_3()
 //const wchar_t* test_4()
 std::wstring test_4()
 {
-	wchar_t* value = L"Jhon";
+	wchar_t* value = L"Афродита";
 	std::wstring result = JsonUtils::SetValue(json, path, value);
 	//const wchar_t* wcs = result.c_str();
 	//return wcs;
 	return result;
+}
+
+bool test_5(const wchar_t* name)
+{
+	std::wstring path_w = L"battle/mirroredVehicleIcons";
+	return JsonUtils::SetValueF(name, path_w, false);
 }
 
 int main()
@@ -93,7 +99,8 @@ int main()
 		wcout << "test_3" << endl;
 	std::wstring result = test_4();
 	wcout << result << endl;
-
+	if (test_5(L"d:\\My\\Programming\\InnoSetup\\extensions\\src_tests\\conf\\battle.xc"))
+		wcout << "test_5" << endl;
 	_getch();
 
     return 0;
