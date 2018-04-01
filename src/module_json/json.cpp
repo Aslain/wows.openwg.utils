@@ -149,13 +149,13 @@ std::wstring JsonUtils::SetValue(const std::wstring& json, const std::wstring& p
 		return json;
 	}
 	Json::StyledWriter styled;
-	//std::string str = styled.write(node);
-	std::string str = node.toStyledString();
-
+	std::string str = styled.write(node);
+	//std::string str = node.toStyledString();
+	
 	std::wstring wstr = Encoding::utf8_to_wstring(str);
 
-	Json::StyledStreamWriter styledStream;
-	styledStream.write(cout, node);
+	//Json::StyledStreamWriter styledStream;
+	//styledStream.write(cout, node);
 	return wstr;
 
 }

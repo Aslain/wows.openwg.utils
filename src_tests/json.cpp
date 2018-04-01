@@ -27,6 +27,8 @@
 #include <iostream>
 #include <conio.h>
 #include <Windows.h>
+#include <io.h>
+#include <fcntl.h>
 
 using std::wcout;
 using std::cout;
@@ -80,8 +82,9 @@ std::wstring test_4()
 
 int main()
 {
-	SetConsoleOutputCP(CP_UTF8);
-	setlocale(LC_CTYPE, "rus");
+	_setmode(_fileno(stdout), _O_U16TEXT);
+	_setmode(_fileno(stdin), _O_U16TEXT);
+	_setmode(_fileno(stderr), _O_U16TEXT);
 	if (test_1()) 
 		wcout << "test_1" << endl;
 	if (test_2())
@@ -89,8 +92,7 @@ int main()
 	if (test_3())
 		wcout << "test_3" << endl;
 	std::wstring result = test_4();
-	wcout << result.c_str() << endl;
-	
+	wcout << result << endl;
 
 	_getch();
 

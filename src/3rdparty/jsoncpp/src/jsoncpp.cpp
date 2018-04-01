@@ -4586,7 +4586,8 @@ void StyledWriter::writeValue(const Value& value) {
     char const* str;
     char const* end;
     bool ok = value.getString(&str, &end);
-    if (ok) pushValue(valueToQuotedStringN(str, static_cast<unsigned>(end-str)));
+    //if (ok) pushValue(valueToQuotedStringN(str, static_cast<unsigned>(end-str)));
+	if (ok) pushValue(value.asString());
     else pushValue("");
     break;
   }
