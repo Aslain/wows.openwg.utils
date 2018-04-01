@@ -24,6 +24,13 @@
 
 #include <cstring>
 #include "module_json/json.h"
+#include <iostream>
+#include <conio.h>
+#include <Windows.h>
+
+using std::wcout;
+using std::cout;
+using std::endl;
 
 wchar_t* json = L"{\"Group\": {\"Name\": \"Шаг 1\", \"Description\": \"Сконфигурируйте свой прицел\"}, \"Component\": {\"Name\": \"Установить прицелы\", \"Description\": \"Эти моды заменят стандартный прицел игры!\", \"ID\": \"crosshair_mods\"}, \"Preview\": {\"BMP\": \"sights.bmp\"}}";
 wchar_t* path = L"Group/Name";
@@ -61,10 +68,31 @@ bool test_3()
 
 }
 
+//const wchar_t* test_4()
+std::wstring test_4()
+{
+	wchar_t* value = L"Jhon";
+	std::wstring result = JsonUtils::SetValue(json, path, value);
+	//const wchar_t* wcs = result.c_str();
+	//return wcs;
+	return result;
+}
 
 int main()
 {
-    test_1();
-    test_2();
-    test_3();
+	SetConsoleOutputCP(CP_UTF8);
+	setlocale(LC_CTYPE, "rus");
+	if (test_1()) 
+		wcout << "test_1" << endl;
+	if (test_2())
+		wcout << "test_2" << endl;
+	if (test_3())
+		wcout << "test_3" << endl;
+	std::wstring result = test_4();
+	wcout << result.c_str() << endl;
+	
+
+	_getch();
+
+    return 0;
 }

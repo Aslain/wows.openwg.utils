@@ -28,6 +28,9 @@
 #include "common/string.h"
 
 #include <string>
+#include <iostream>
+
+using std::cout;
 
 Json::Value JsonUtils::ParseString(const std::string& json)
 {
@@ -104,4 +107,55 @@ std::wstring JsonUtils::GetValue(const std::wstring& json, const std::wstring& p
     }
 
     return Encoding::utf8_to_wstring(current_node.asString());
+}
+
+std::wstring JsonUtils::SetValue(const wchar_t* json, const wchar_t* path, const wchar_t* value)
+{
+	return SetValue(std::wstring(json), std::wstring(path), std::wstring(value));
+}
+
+
+void c_node(int index, Json::Value& node, const std::vector<std::string>& tokens, const std::wstring& value)
+{
+	if (index > 0)
+	{
+		c_node(index - 1, node[tokens[index].c_str()], tokens, value);
+	}
+	else
+	{
+		node = Encoding::wstring_to_utf8(value);
+	}
+}
+
+std::wstring JsonUtils::SetValue(const std::wstring& json, const std::wstring& path, const std::wstring& value)
+{
+	Json::Value node = ParseWString(json);
+	if (node.isNull())
+	{
+		return json;
+	}
+	std::vector<std::string> tokens = String::Split(Encoding::wstring_to_utf8(path), '/');
+	try
+	{
+		int index = tokens.size() - 1;
+		if (index < 0)
+		{
+			return json;
+		}
+		c_node(index, node, tokens, value);
+	}
+	catch (Json::LogicError&)
+	{
+		return json;
+	}
+	Json::StyledWriter styled;
+	//std::string str = styled.write(node);
+	std::string str = node.toStyledString();
+
+	std::wstring wstr = Encoding::utf8_to_wstring(str);
+
+	Json::StyledStreamWriter styledStream;
+	styledStream.write(cout, node);
+	return wstr;
+
 }
