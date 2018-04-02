@@ -173,33 +173,37 @@ void c_node(const int size, int index, Json::Value &node, const std::vector<std:
 		std::string token = tokens[index].c_str();
 		//Json::Value children = node[token];
 		c_node(size, ++index, node[token], tokens, value);
-
-		
 	}
 	else
 	{
-		node = value;
+		Json::Value new_value = value;
+		node.swapPayload(new_value);
 	}
 }
 
-std::wstring readFile(const std::wstring& filename)
+std::wstring readFileUTF8(const std::wstring& filename)
 {
 	std::wifstream wif(filename);
-	wif.seekg(3);
 	wif.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
 	std::wstringstream wss;
 	wss << wif.rdbuf();
+	wif.close();
 	return wss.str();
 }
 
 bool JsonUtils::SetValueF(const std::wstring& name, const std::wstring& path, const bool value)
 {
-	std::string data = Encoding::wstring_to_utf8(readFile(name));
+	std::string data = Encoding::wstring_to_utf8(readFileUTF8(name));
+
+	if ((data[0] == char(0xEF)) && (data[1] == char(0xBB)) && (data[2] == char(0xBF)))
+	{
+		data = data.erase(0, 3);
+	}
 
 	Json::Value node;
 	Json::Reader reader;
-	
 	reader.parse(data, node); 
+
 	//for (Json::ValueConstIterator v = node.begin(); v != node.end(); v++)
 	//{
 	//	std::string key = v.key().asString();
@@ -220,10 +224,16 @@ bool JsonUtils::SetValueF(const std::wstring& name, const std::wstring& path, co
 	{
 		return false;
 	}
+
 	Json::StyledStreamWriter styled;
-	std::fstream fs1(L"d:\\My\\Programming\\InnoSetup\\extensions\\src_tests\\conf\\battle1.xc", std::ios::out);
-	styled.write(fs1, node);
-	fs1.close();
+	std::fstream fs(L"d:\\My\\Programming\\InnoSetup\\extensions\\src_tests\\conf\\battle1.xc", std::ios::out);
+
+	const char BOM[3] = { 0xEF, 0xBB, 0xBF };
+
+	fs.write(BOM, 3);
+	styled.write(fs, node);
+	fs.close();
+
 	return true;
 
 }
