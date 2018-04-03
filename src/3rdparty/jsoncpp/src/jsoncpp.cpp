@@ -4931,6 +4931,7 @@ void StyledStreamWriter::writeIndent() {
 }
 
 void StyledStreamWriter::writeWithIndent(const JSONCPP_STRING& value) {
+  if (value == "{") indented_ = true;
   if (!indented_) writeIndent();
   *document_ << value;
   indented_ = false;

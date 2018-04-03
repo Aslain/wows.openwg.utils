@@ -197,7 +197,7 @@ bool JsonUtils::SetValueF(const std::wstring& name, const std::wstring& path, co
 
 	if ((data[0] == char(0xEF)) && (data[1] == char(0xBB)) && (data[2] == char(0xBF)))
 	{
-		data = data.erase(0, 3);
+		data.erase(data.begin(), data.begin() + 3);
 	}
 
 	Json::Value node;
