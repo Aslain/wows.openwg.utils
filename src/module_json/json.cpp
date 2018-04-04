@@ -153,7 +153,7 @@ std::wstring JsonUtils::SetValue(const std::wstring& json, const std::wstring& p
 	Json::StyledWriter styled;
 	std::string str = styled.write(node);
 	//std::string str = node.toStyledString();
-	
+
 	std::wstring wstr = Encoding::utf8_to_wstring(str);
 
 	//Json::StyledStreamWriter styledStream;
@@ -225,7 +225,7 @@ bool JsonUtils::SetValueF(const std::wstring& name, const std::wstring& path, co
 		return false;
 	}
 
-	Json::StyledStreamWriter styled;
+	Json::StyledStreamWriter styled("  ");
 	std::fstream fs(L"d:\\My\\Programming\\InnoSetup\\extensions\\src_tests\\conf\\battle1.xc", std::ios::out);
 
 	const char BOM[3] = { 0xEF, 0xBB, 0xBF };
