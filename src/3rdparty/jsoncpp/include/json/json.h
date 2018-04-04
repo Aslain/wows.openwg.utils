@@ -543,7 +543,8 @@ enum ValueType {
   stringValue,   ///< UTF-8 string value
   booleanValue,  ///< bool value
   arrayValue,    ///< array value (ordered list)
-  objectValue    ///< object value (collection of name/value pairs).
+  objectValue,    ///< object value (collection of name/value pairs).
+  refValue
 };
 
 enum CommentPlacement {
@@ -760,7 +761,7 @@ Json::Value obj_value(Json::objectValue); // {}
    * \endcode
    */
   Value(const StaticString& value);
-  Value(const JSONCPP_STRING& value); ///< Copy data() til size(). Embedded zeroes too.
+  Value(const JSONCPP_STRING& value, const bool isRef = false); ///< Copy data() til size(). Embedded zeroes too.
 #ifdef JSON_USE_CPPTL
   Value(const CppTL::ConstString& value);
 #endif
@@ -806,8 +807,8 @@ Json::Value obj_value(Json::objectValue); // {}
   /** Get raw char* of string-value.
    *  \return false if !string. (Seg-fault if str or end are NULL.)
    */
-  bool getString(
-      char const** begin, char const** end) const;
+  bool getString(char const** begin, char const** end) const;
+  bool getRef(char const** begin, char const** end) const;
 #ifdef JSON_USE_CPPTL
   CppTL::ConstString asConstString() const;
 #endif
@@ -1519,7 +1520,8 @@ private:
     tokenArraySeparator,
     tokenMemberSeparator,
     tokenComment,
-    tokenError
+    tokenError,
+	tokenRefBegin
   };
 
   class Token {
@@ -1545,12 +1547,15 @@ private:
   bool readCStyleComment();
   bool readCppStyleComment();
   bool readString();
+  bool readRef();
   void readNumber();
   bool readValue();
   bool readObject(Token& token);
   bool readArray(Token& token);
   bool decodeNumber(Token& token);
   bool decodeNumber(Token& token, Value& decoded);
+  bool decodeRef(Token& token);
+  bool decodeRef(Token& token, JSONCPP_STRING& decoded);
   bool decodeString(Token& token);
   bool decodeString(Token& token, JSONCPP_STRING& decoded);
   bool decodeDouble(Token& token);

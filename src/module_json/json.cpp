@@ -209,24 +209,24 @@ bool JsonUtils::SetValueF(const std::wstring& name, const std::wstring& path, co
 	//	std::string key = v.key().asString();
 	//}
 
-	std::vector<std::string> tokens = String::Split(Encoding::wstring_to_utf8(path), '/');
-	try
-	{
-		int size = tokens.size() - 1;
-		int index = 0;
-		if (index > size)
-		{
-			return false;
-		}
-		c_node(size, index, node, tokens, value);
-	}
-	catch (Json::LogicError&)
-	{
-		return false;
-	}
+	//std::vector<std::string> tokens = String::Split(Encoding::wstring_to_utf8(path), '/');
+	//try
+	//{
+	//	int size = tokens.size() - 1;
+	//	int index = 0;
+	//	if (index > size)
+	//	{
+	//		return false;
+	//	}
+	//	c_node(size, index, node, tokens, value);
+	//}
+	//catch (Json::LogicError&)
+	//{
+	//	return false;
+	//}
 
 	Json::StyledStreamWriter styled("  ");
-	std::fstream fs(L"d:\\My\\Programming\\InnoSetup\\extensions\\src_tests\\conf\\battle1.xc", std::ios::out);
+	std::fstream fs(name, std::ios::out);
 
 	const char BOM[3] = { 0xEF, 0xBB, 0xBF };
 
