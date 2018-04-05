@@ -57,7 +57,6 @@ bool test_2()
         return true;
 
     return false;
-
 }
 
 bool test_3()
@@ -67,23 +66,12 @@ bool test_3()
         return true;
 
     return false;
-
 }
 
-//const wchar_t* test_4()
-std::wstring test_4()
-{
-	wchar_t* value = L"Афродита";
-	std::wstring result = JsonUtils::SetValue(json, path, value);
-	//const wchar_t* wcs = result.c_str();
-	//return wcs;
-	return result;
-}
-
-bool test_5(const wchar_t* name)
+bool test_5(std::wstring name)
 {
 	std::wstring path_w = L"battle/mirroredVehicleIcons";
-	return JsonUtils::SetValueF(name, path_w, false);
+	return JsonUtils::SetValueBool(name, path_w, false);
 }
 
 int main()
@@ -97,10 +85,20 @@ int main()
 		wcout << "test_2" << endl;
 	if (test_3())
 		wcout << "test_3" << endl;
-	std::wstring result = test_4();
-	wcout << result << endl;
-	if (test_5(L"d:\\My\\Programming\\InnoSetup\\extensions\\src_tests\\conf\\battle.xc"))
-		wcout << "test_5" << endl;
+	WIN32_FIND_DATAW FindFileData;
+	HANDLE hf;
+	hf = FindFirstFileW(L"d:\\My\\Programming\\InnoSetup\\extensions\\src_tests\\conf\\*", &FindFileData);
+	if (hf != INVALID_HANDLE_VALUE)
+	{
+		do
+		{
+			std::wstring path = L"d:\\My\\Programming\\InnoSetup\\extensions\\src_tests\\conf\\";
+			std::wstring fileName = FindFileData.cFileName;
+			if (test_5(path + fileName))
+				wcout << FindFileData.cFileName << endl;
+		} while (FindNextFileW(hf, &FindFileData) != 0);
+		FindClose(hf);
+	}
 	_getch();
 
     return 0;
