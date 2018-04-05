@@ -725,6 +725,8 @@ bool Reader::readObject(Token& tokenStart) {
           "Missing ':' after object member name", colon, tokenObjectEnd);
     }
     Value& value = currentValue()[name];
+	value.Name = name;
+	value.orderNum = ++count;
     nodes_.push(&value);
     bool ok = readValue();
     nodes_.pop();
@@ -3854,6 +3856,27 @@ Value::Members Value::getMemberNames() const {
   }
   return members;
 }
+
+Value::Members Value::getMemberNamesNum() const {
+	JSON_ASSERT_MESSAGE(
+		type_ == nullValue || type_ == objectValue,
+		"in Json::Value::getMemberNames(), value must be objectValue");
+	if (type_ == nullValue)
+		return Value::Members();
+	Members members;
+	members.reserve(value_.map_->size());
+	ObjectValues::const_iterator it = value_.map_->begin();
+	ObjectValues::const_iterator itEnd = value_.map_->end();
+	std::map<int, std::string> temp;
+	for (; it != itEnd; ++it) {
+		temp[(*it).second.orderNum] = (*it).second.Name;
+	}
+	for (std::map<int, std::string>::iterator p = temp.begin(); p != temp.end(); ++p)
+	{
+		members.push_back(JSONCPP_STRING((*p).second));
+	}
+	return members;
+}
 //
 //# ifdef JSON_USE_CPPTL
 // EnumMemberNames
@@ -4460,7 +4483,7 @@ static unsigned int utf8ToCodepoint(const char*& s, const char* e) {
     s += 2;
     // surrogates aren't valid codepoints itself
     // shouldn't be UTF-8 encoded
-    if (calculated >= 0xD800 && calculated >= 0xDFFF)
+    if (calculated >= 0xD800 && calculated <= 0xDFFF)
       return REPLACEMENT_CHARACTER;
     // oversized encoded characters are invalid
     return calculated < 0x800 ? REPLACEMENT_CHARACTER : calculated;
@@ -4745,8 +4768,8 @@ void StyledWriter::writeValue(const Value& value) {
 	  char const* str;
 	  char const* end;
 	  bool ok = value.getRef(&str, &end);
-	  //if (ok) pushValue(valueToQuotedStringN(str, static_cast<unsigned>(end-str)));
-	  if (ok) pushValue(value.asString());
+	  if (ok) pushValue(valueToQuotedRefN(str, static_cast<unsigned>(end-str)));
+	  //if (ok) pushValue(value.asString());
 	  else pushValue("");
 	  break;
   }
@@ -4756,8 +4779,8 @@ void StyledWriter::writeValue(const Value& value) {
     char const* str;
     char const* end;
     bool ok = value.getString(&str, &end);
-    //if (ok) pushValue(valueToQuotedStringN(str, static_cast<unsigned>(end-str)));
-	if (ok) pushValue(value.asString());
+    if (ok) pushValue(valueToQuotedStringN(str, static_cast<unsigned>(end-str)));
+	//if (ok) pushValue(value.asString());
     else pushValue("");
     break;
   }
@@ -4995,7 +5018,7 @@ void StyledStreamWriter::writeValue(const Value& value) {
     writeArrayValue(value);
     break;
   case objectValue: {
-    Value::Members members(value.getMemberNames());
+    Value::Members members(value.getMemberNamesNum());
     if (members.empty())
       pushValue("{}");
     else {

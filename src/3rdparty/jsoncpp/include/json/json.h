@@ -712,6 +712,8 @@ private:
   };
 
 public:
+	int orderNum;
+	std::string Name;
 #ifndef JSON_USE_CPPTL_SMALLMAP
   typedef std::map<CZString, Value> ObjectValues;
 #else
@@ -1011,6 +1013,7 @@ Json::Value obj_value(Json::objectValue); // {}
   /// \pre type() is objectValue or nullValue
   /// \post if type() was nullValue, it remains nullValue
   Members getMemberNames() const;
+  Members getMemberNamesNum() const;
 
   //# ifdef JSON_USE_CPPTL
   //      EnumMemberNames enumMemberNames() const;
@@ -1384,7 +1387,7 @@ class JSONCPP_DEPRECATED("Use CharReader and CharReaderBuilder instead") JSON_AP
 public:
   typedef char Char;
   typedef const Char* Location;
-
+  int count = 0;
   /** \brief An error tagged with where in the JSON text it was encountered.
    *
    * The offsets give the [start, limit) range of bytes within the text. Note
