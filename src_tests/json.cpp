@@ -94,6 +94,10 @@ int main()
 		{
 			std::wstring path = L"d:\\My\\Programming\\InnoSetup\\extensions\\src_tests\\conf\\";
 			std::wstring fileName = FindFileData.cFileName;
+			if (fileName == L"." || fileName == L"..")
+			{
+				continue;
+			};
 			if (test_5(path + fileName))
 				wcout << FindFileData.cFileName << endl;
 		} while (FindNextFileW(hf, &FindFileData) != 0);

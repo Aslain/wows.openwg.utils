@@ -1541,7 +1541,7 @@ bool OurReader::readToken(Token& token) {
     token.type_ = tokenString;
     ok = readStringSingleQuote();
     break;
-    } // else continue
+    } // else fall through
   case '/':
     token.type_ = tokenComment;
     ok = readComment();
@@ -5060,8 +5060,13 @@ void StyledStreamWriter::writeArrayValue(const Value& value) {
       for (;;) {
         const Value& childValue = value[index];
         writeCommentBeforeValue(childValue);
-        if (hasChildValue)
-          writeWithIndent(childValues_[index]);
+		if (hasChildValue)
+		{
+			if (!(size == 1 && childValues_[index] == "null"))
+			{
+				writeWithIndent(childValues_[index]);
+			}
+		}
         else {
           if (!indented_) writeIndent();
           indented_ = true;
@@ -5134,7 +5139,7 @@ void StyledStreamWriter::writeIndent() {
 }
 
 void StyledStreamWriter::writeWithIndent(const JSONCPP_STRING& value) {
-  if (value == "{") indented_ = true;
+  if (value == "{" || value == "[") indented_ = true;
   if (!indented_) writeIndent();
   *document_ << value;
   indented_ = false;

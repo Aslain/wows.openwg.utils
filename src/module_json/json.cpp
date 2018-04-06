@@ -174,21 +174,21 @@ bool SetValue(const std::wstring& name, const std::wstring& pathValue, Json::Val
 	Json::Value node;
 	Json::Reader reader;
 	reader.parse(readFileUTF8(name), node);
-	//std::vector<std::string> tokens = String::Split(Encoding::wstring_to_utf8(pathValue), '/');
-	//try
-	//{
-	//	int size = tokens.size() - 1;
-	//	int index = 0;
-	//	if (index > size)
-	//	{
-	//		return false;
-	//	}
-	//	c_node(size, index, node, tokens, Json::Value(value));
-	//}
-	//catch (Json::LogicError&)
-	//{
-	//	return false;
-	//}
+	std::vector<std::string> tokens = String::Split(Encoding::wstring_to_utf8(pathValue), '/');
+	try
+	{
+		int size = tokens.size() - 1;
+		int index = 0;
+		if (index > size)
+		{
+			return false;
+		}
+		c_node(size, index, node, tokens, Json::Value(value));
+	}
+	catch (Json::LogicError&)
+	{
+		return false;
+	}
 	writeFile(name, node);
 	return true;
 }
