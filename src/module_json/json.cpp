@@ -28,6 +28,15 @@
 #include "common/string.h"
 
 #include <string>
+#include <iostream>
+#include <fstream>
+#include <codecvt>
+
+using std::wcout;
+using std::cout;
+using std::endl;
+
+using std::cout;
 
 Json::Value JsonUtils::ParseString(const std::string& json)
 {
@@ -104,4 +113,91 @@ std::wstring JsonUtils::GetValue(const std::wstring& json, const std::wstring& p
     }
 
     return Encoding::utf8_to_wstring(current_node.asString());
+}
+
+std::string readFileUTF8(const std::wstring& filename)
+{
+	std::wifstream fs(filename);
+	fs.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
+	std::wstringstream wss;
+	wss << fs.rdbuf();
+	fs.close();
+
+	std::string data = Encoding::wstring_to_utf8(wss.str());
+	if ((data[0] == char(0xEF)) && (data[1] == char(0xBB)) && (data[2] == char(0xBF)))
+	{
+		data.erase(data.begin(), data.begin() + 3);
+	}
+
+	return data;
+}
+
+void writeFile(const std::wstring& name, Json::Value &node)
+{
+	Json::StyledStreamWriter styled("  ");
+	std::fstream fs(name, std::ios::out);
+	const char BOM[3] = { char(0xEF), char(0xBB), char(0xBF) };
+
+	fs.write(BOM, 3);
+	try
+	{
+		styled.write(fs, node);
+	}
+	catch (Json::LogicError& e)
+	{
+		wcout << e.what() << endl;
+		
+	}
+	fs.close();
+}
+
+void c_node(const int size, int index, Json::Value &node, const std::vector<std::string>& tokens, Json::Value& value)
+{
+	if (index <= size)
+	{
+		Json::ValueType t = node.type();
+		for (Json::ValueConstIterator v = node.begin(); v != node.end(); v++)
+		{
+			std::string key = v.key().asString();
+		}
+		std::string token = tokens[index].c_str();
+		c_node(size, ++index, node[token], tokens, value);
+	}
+	else
+	{
+		node.swapPayload(value);
+	}
+}
+
+bool SetValue(const std::wstring& name, const std::wstring& pathValue, Json::Value& value)
+{
+	Json::Value node;
+	Json::Reader reader;
+	reader.parse(readFileUTF8(name), node);
+	std::vector<std::string> tokens = String::Split(Encoding::wstring_to_utf8(pathValue), '/');
+	try
+	{
+		int size = tokens.size() - 1;
+		int index = 0;
+		if (index > size)
+		{
+			return false;
+		}
+		c_node(size, index, node, tokens, Json::Value(value));
+	}
+	catch (Json::LogicError&)
+	{
+		return false;
+	}
+	writeFile(name, node);
+	return true;
+}
+
+bool JsonUtils::SetValueBool(const std::wstring& name, const std::wstring& pathValue, const bool value)
+{
+	if (!SetValue(name, pathValue, Json::Value(value)))
+	{
+		return false;
+	}
+	return true;
 }

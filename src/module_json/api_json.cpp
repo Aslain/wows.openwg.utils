@@ -44,3 +44,8 @@ void JSON_GetValueW(const wchar_t* json, const wchar_t* path, wchar_t* output, u
 
     wcscpy_s(output, output_size, val.c_str());
 }
+
+void JSON_SetValueBoolW(const wchar_t* name, const wchar_t* path, const bool value)
+{
+	JsonUtils::SetValueBool(name, path, value);
+}

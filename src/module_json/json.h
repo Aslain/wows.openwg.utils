@@ -41,4 +41,7 @@ public:
 
     static std::wstring GetValue(const wchar_t* json, const wchar_t* path);
     static std::wstring GetValue(const std::wstring& json, const std::wstring& path);
+
+	static bool SetValueBool(const std::wstring& name, const std::wstring& path, const bool value);
+
 };

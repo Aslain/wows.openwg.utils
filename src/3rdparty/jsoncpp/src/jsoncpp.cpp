@@ -404,6 +404,9 @@ bool Reader::readValue() {
   case tokenNumber:
     successful = decodeNumber(token);
     break;
+  case tokenRefBegin:
+	  successful = decodeRef(token);
+	  break;
   case tokenString:
     successful = decodeString(token);
     break;
@@ -474,6 +477,10 @@ bool Reader::readToken(Token& token) {
   Char c = getNextChar();
   bool ok = true;
   switch (c) {
+  case '$':
+	  token.type_ = tokenRefBegin;
+	  ok = readRef();
+	  break;
   case '{':
     token.type_ = tokenObjectBegin;
     break;
@@ -673,6 +680,18 @@ bool Reader::readString() {
   return c == '"';
 }
 
+bool Reader::readRef() {
+	Char c = '\0';
+	while (current_ != end_) {
+		c = getNextChar();
+		if (c == '\\')
+			getNextChar();
+		else if (c == '}')
+			break;
+	}
+	return c == '}';
+}
+
 bool Reader::readObject(Token& tokenStart) {
   Token tokenName;
   JSONCPP_STRING name;
@@ -706,6 +725,8 @@ bool Reader::readObject(Token& tokenStart) {
           "Missing ':' after object member name", colon, tokenObjectEnd);
     }
     Value& value = currentValue()[name];
+	value.Name = name;
+	value.orderNum = ++count;
     nodes_.push(&value);
     bool ok = readValue();
     nodes_.pop();
@@ -839,6 +860,74 @@ bool Reader::decodeDouble(Token& token, Value& decoded) {
                     token);
   decoded = value;
   return true;
+}
+
+bool Reader::decodeRef(Token& token) {
+	JSONCPP_STRING decoded_string;
+	if (!decodeRef(token, decoded_string))
+		return false;
+	Value decoded(decoded_string, true);
+	currentValue().swapPayload(decoded);
+	currentValue().setOffsetStart(token.start_ - begin_);
+	currentValue().setOffsetLimit(token.end_ - begin_);
+	return true;
+}
+
+bool Reader::decodeRef(Token& token, JSONCPP_STRING& decoded) {
+	decoded.reserve(static_cast<size_t>(token.end_ - token.start_ - 1));
+	Location current = token.start_; 
+	Location end = token.end_;       
+	while (current != end) {
+		Char c = *current++;
+		if (c == '}')
+		{
+			decoded += c;
+			break;
+		}
+		else if (c == '\\') {
+			if (current == end)
+				return addError("Empty escape sequence in string", token, current);
+			Char escape = *current++;
+			switch (escape) {
+			case '"':
+				decoded += '"';
+				break;
+			case '/':
+				decoded += '/';
+				break;
+			case '\\':
+				decoded += '\\';
+				break;
+			case 'b':
+				decoded += '\b';
+				break;
+			case 'f':
+				decoded += '\f';
+				break;
+			case 'n':
+				decoded += '\n';
+				break;
+			case 'r':
+				decoded += '\r';
+				break;
+			case 't':
+				decoded += '\t';
+				break;
+			case 'u': {
+				unsigned int unicode;
+				if (!decodeUnicodeCodePoint(token, current, end, unicode))
+					return false;
+				decoded += codePointToUTF8(unicode);
+			} break;
+			default:
+				return addError("Bad escape sequence in string", token, current);
+			}
+		}
+		else {
+			decoded += c;
+		}
+	}
+	return true;
 }
 
 bool Reader::decodeString(Token& token) {
@@ -1199,6 +1288,7 @@ private:
   bool readCStyleComment();
   bool readCppStyleComment();
   bool readString();
+  bool readRef();
   bool readStringSingleQuote();
   bool readNumber(bool checkInf);
   bool readValue();
@@ -1451,7 +1541,7 @@ bool OurReader::readToken(Token& token) {
     token.type_ = tokenString;
     ok = readStringSingleQuote();
     break;
-    } // else continue
+    } // else fall through
   case '/':
     token.type_ = tokenComment;
     ok = readComment();
@@ -2838,6 +2928,10 @@ Value::Value(ValueType vtype) {
     // allocated_ == false, so this is safe.
     value_.string_ = const_cast<char*>(static_cast<char const*>(emptyString));
     break;
+  case refValue:
+	  // allocated_ == false, so this is safe.
+	  value_.string_ = const_cast<char*>(static_cast<char const*>(emptyString));
+	  break;
   case arrayValue:
   case objectValue:
     value_.map_ = new ObjectValues();
@@ -2887,8 +2981,15 @@ Value::Value(const char* beginValue, const char* endValue) {
       duplicateAndPrefixStringValue(beginValue, static_cast<unsigned>(endValue - beginValue));
 }
 
-Value::Value(const JSONCPP_STRING& value) {
-  initBasic(stringValue, true);
+Value::Value(const JSONCPP_STRING& value, const bool isRef) {
+  if (isRef)
+  {
+	  initBasic(refValue, true);
+  }
+  else
+  {
+	  initBasic(stringValue, true);
+  }
   value_.string_ =
       duplicateAndPrefixStringValue(value.data(), static_cast<unsigned>(value.length()));
 }
@@ -2970,6 +3071,10 @@ Value::~Value() {
   case realValue:
   case booleanValue:
     break;
+  case refValue:
+	  if (allocated_)
+		  releasePrefixedStringValue(value_.string_);
+	  break;
   case stringValue:
     if (allocated_)
       releasePrefixedStringValue(value_.string_);
@@ -3047,6 +3152,7 @@ bool Value::operator<(const Value& other) const {
     return value_.real_ < other.value_.real_;
   case booleanValue:
     return value_.bool_ < other.value_.bool_;
+  case refValue:
   case stringValue:
   {
     if ((value_.string_ == 0) || (other.value_.string_ == 0)) {
@@ -3104,6 +3210,7 @@ bool Value::operator==(const Value& other) const {
     return value_.real_ == other.value_.real_;
   case booleanValue:
     return value_.bool_ == other.value_.bool_;
+  case refValue:
   case stringValue:
   {
     if ((value_.string_ == 0) || (other.value_.string_ == 0)) {
@@ -3135,6 +3242,8 @@ bool Value::operator!=(const Value& other) const { return !(*this == other); }
 const char* Value::asCString() const {
   JSON_ASSERT_MESSAGE(type_ == stringValue,
                       "in Json::Value::asCString(): requires stringValue");
+  JSON_ASSERT_MESSAGE(type_ == refValue,
+	  "in Json::Value::asCString(): requires refValue");
   if (value_.string_ == 0) return 0;
   unsigned this_len;
   char const* this_str;
@@ -3154,6 +3263,15 @@ unsigned Value::getCStringLength() const {
 }
 #endif
 
+bool Value::getRef(char const** str, char const** cend) const {
+	if (type_ != refValue) return false;
+	if (value_.string_ == 0) return false;
+	unsigned length;
+	decodePrefixedString(this->allocated_, this->value_.string_, &length, str);
+	*cend = *str + length;
+	return true;
+}
+
 bool Value::getString(char const** str, char const** cend) const {
   if (type_ != stringValue) return false;
   if (value_.string_ == 0) return false;
@@ -3167,6 +3285,7 @@ JSONCPP_STRING Value::asString() const {
   switch (type_) {
   case nullValue:
     return "";
+  case refValue:
   case stringValue:
   {
     if (value_.string_ == 0) return "";
@@ -3736,6 +3855,27 @@ Value::Members Value::getMemberNames() const {
                                   (*it).first.length()));
   }
   return members;
+}
+
+Value::Members Value::getMemberNamesNum() const {
+	JSON_ASSERT_MESSAGE(
+		type_ == nullValue || type_ == objectValue,
+		"in Json::Value::getMemberNames(), value must be objectValue");
+	if (type_ == nullValue)
+		return Value::Members();
+	Members members;
+	members.reserve(value_.map_->size());
+	ObjectValues::const_iterator it = value_.map_->begin();
+	ObjectValues::const_iterator itEnd = value_.map_->end();
+	std::map<int, std::string> temp;
+	for (; it != itEnd; ++it) {
+		temp[(*it).second.orderNum] = (*it).second.Name;
+	}
+	for (std::map<int, std::string>::iterator p = temp.begin(); p != temp.end(); ++p)
+	{
+		members.push_back(JSONCPP_STRING((*p).second));
+	}
+	return members;
 }
 //
 //# ifdef JSON_USE_CPPTL
@@ -4343,7 +4483,7 @@ static unsigned int utf8ToCodepoint(const char*& s, const char* e) {
     s += 2;
     // surrogates aren't valid codepoints itself
     // shouldn't be UTF-8 encoded
-    if (calculated >= 0xD800 && calculated >= 0xDFFF)
+    if (calculated >= 0xD800 && calculated <= 0xDFFF)
       return REPLACEMENT_CHARACTER;
     // oversized encoded characters are invalid
     return calculated < 0x800 ? REPLACEMENT_CHARACTER : calculated;
@@ -4392,6 +4532,48 @@ static JSONCPP_STRING toHex16Bit(unsigned int x) {
   result[2] = hex2[2 * lo];
   result[3] = hex2[2 * lo + 1];
   return result;
+}
+
+static JSONCPP_STRING valueToQuotedRefN(const char* value, unsigned length) {
+	if (value == NULL)
+		return "";
+
+	if (!isAnyCharRequiredQuoting(value, length))
+		return JSONCPP_STRING("\"") + value + "\"";
+	// We have to walk value and escape any special characters.
+	// Appending to JSONCPP_STRING is not efficient, but this should be rare.
+	// (Note: forward slashes are *not* rare, but I am not escaping them.)
+	JSONCPP_STRING::size_type maxsize =
+		length * 2 + 3; // allescaped+quotes+NULL
+	JSONCPP_STRING result;
+	result.reserve(maxsize); // to avoid lots of mallocs
+	//result += "\"";
+	char const* end = value + length;
+	for (const char* c = value; c != end; ++c)
+	{
+		unsigned int cp = utf8ToCodepoint(c, end);
+		// don't escape non-control characters
+		// (short escape sequence are applied above)
+		if (cp < 0x80 && cp >= 0x20)
+			result += static_cast<char>(cp);
+		else if (cp < 0x10000) { // codepoint is in Basic Multilingual Plane
+			result += "\\u";
+			result += toHex16Bit(cp);
+		}
+		else { // codepoint is not in Basic Multilingual Plane
+				// convert to surrogate pair first
+			cp -= 0x10000;
+			result += "\\u";
+			result += toHex16Bit((cp >> 10) + 0xD800);
+			result += "\\u";
+			result += toHex16Bit((cp & 0x3FF) + 0xDC00);
+		}
+	}
+	return result;
+}
+
+JSONCPP_STRING valueToQuotedRef(const char* value) {
+	return valueToQuotedRefN(value, static_cast<unsigned int>(strlen(value)));
 }
 
 static JSONCPP_STRING valueToQuotedStringN(const char* value, unsigned length) {
@@ -4580,6 +4762,17 @@ void StyledWriter::writeValue(const Value& value) {
   case realValue:
     pushValue(valueToString(value.asDouble()));
     break;
+  case refValue:
+  {
+	  // Is NULL possible for value.string_? No.
+	  char const* str;
+	  char const* end;
+	  bool ok = value.getRef(&str, &end);
+	  if (ok) pushValue(valueToQuotedRefN(str, static_cast<unsigned>(end-str)));
+	  //if (ok) pushValue(value.asString());
+	  else pushValue("");
+	  break;
+  }
   case stringValue:
   {
     // Is NULL possible for value.string_? No.
@@ -4587,6 +4780,7 @@ void StyledWriter::writeValue(const Value& value) {
     char const* end;
     bool ok = value.getString(&str, &end);
     if (ok) pushValue(valueToQuotedStringN(str, static_cast<unsigned>(end-str)));
+	//if (ok) pushValue(value.asString());
     else pushValue("");
     break;
   }
@@ -4797,6 +4991,16 @@ void StyledStreamWriter::writeValue(const Value& value) {
   case realValue:
     pushValue(valueToString(value.asDouble()));
     break;
+  case refValue:
+  {
+	  // Is NULL possible for value.string_? No.
+	  char const* str;
+	  char const* end;
+	  bool ok = value.getRef(&str, &end);
+	  if (ok) pushValue(valueToQuotedRefN(str, static_cast<unsigned>(end - str)));
+	  else pushValue("");
+	  break;
+  }
   case stringValue:
   {
     // Is NULL possible for value.string_? No.
@@ -4814,7 +5018,7 @@ void StyledStreamWriter::writeValue(const Value& value) {
     writeArrayValue(value);
     break;
   case objectValue: {
-    Value::Members members(value.getMemberNames());
+    Value::Members members(value.getMemberNamesNum());
     if (members.empty())
       pushValue("{}");
     else {
@@ -4856,8 +5060,13 @@ void StyledStreamWriter::writeArrayValue(const Value& value) {
       for (;;) {
         const Value& childValue = value[index];
         writeCommentBeforeValue(childValue);
-        if (hasChildValue)
-          writeWithIndent(childValues_[index]);
+		if (hasChildValue)
+		{
+			if (!(size == 1 && childValues_[index] == "null"))
+			{
+				writeWithIndent(childValues_[index]);
+			}
+		}
         else {
           if (!indented_) writeIndent();
           indented_ = true;
@@ -4930,6 +5139,7 @@ void StyledStreamWriter::writeIndent() {
 }
 
 void StyledStreamWriter::writeWithIndent(const JSONCPP_STRING& value) {
+  if (value == "{" || value == "[") indented_ = true;
   if (!indented_) writeIndent();
   *document_ << value;
   indented_ = false;

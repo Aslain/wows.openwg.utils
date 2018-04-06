@@ -7,6 +7,8 @@ external 'JSON_ContainsKeyW@files:innoextensions.dll cdecl';
 procedure JSON_GetValueW(JSON: String; Path: String; Buffer: String; BufferSize: Integer);
 external 'JSON_GetValueW@files:innoextensions.dll cdecl';
 
+procedure JSON_SetValueBoolW(FileFullName: String; ValuePath: String; Value: Boolean);
+external 'JSON_SetValueBoolW@files:innoextensions.dll cdecl';
 
 //PROCESS
 function PROCESS_GetRunningInDirectoryW(DirectoryPth: String; Buffer: String; BufferSize: Integer): Boolean;

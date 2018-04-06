@@ -24,6 +24,15 @@
 
 #include <cstring>
 #include "module_json/json.h"
+#include <iostream>
+#include <conio.h>
+#include <Windows.h>
+#include <io.h>
+#include <fcntl.h>
+
+using std::wcout;
+using std::cout;
+using std::endl;
 
 wchar_t* json = L"{\"Group\": {\"Name\": \"Шаг 1\", \"Description\": \"Сконфигурируйте свой прицел\"}, \"Component\": {\"Name\": \"Установить прицелы\", \"Description\": \"Эти моды заменят стандартный прицел игры!\", \"ID\": \"crosshair_mods\"}, \"Preview\": {\"BMP\": \"sights.bmp\"}}";
 wchar_t* path = L"Group/Name";
@@ -48,7 +57,6 @@ bool test_2()
         return true;
 
     return false;
-
 }
 
 bool test_3()
@@ -58,13 +66,44 @@ bool test_3()
         return true;
 
     return false;
-
 }
 
+bool test_5(std::wstring name)
+{
+	std::wstring path_w = L"battle/mirroredVehicleIcons";
+	return JsonUtils::SetValueBool(name, path_w, false);
+}
 
 int main()
 {
-    test_1();
-    test_2();
-    test_3();
+	_setmode(_fileno(stdout), _O_U16TEXT);
+	_setmode(_fileno(stdin), _O_U16TEXT);
+	_setmode(_fileno(stderr), _O_U16TEXT);
+	if (test_1()) 
+		wcout << "test_1" << endl;
+	if (test_2())
+		wcout << "test_2" << endl;
+	if (test_3())
+		wcout << "test_3" << endl;
+	WIN32_FIND_DATAW FindFileData;
+	HANDLE hf;
+	hf = FindFirstFileW(L"d:\\My\\Programming\\InnoSetup\\extensions\\src_tests\\conf\\*", &FindFileData);
+	if (hf != INVALID_HANDLE_VALUE)
+	{
+		do
+		{
+			std::wstring path = L"d:\\My\\Programming\\InnoSetup\\extensions\\src_tests\\conf\\";
+			std::wstring fileName = FindFileData.cFileName;
+			if (fileName == L"." || fileName == L"..")
+			{
+				continue;
+			};
+			if (test_5(path + fileName))
+				wcout << FindFileData.cFileName << endl;
+		} while (FindNextFileW(hf, &FindFileData) != 0);
+		FindClose(hf);
+	}
+	_getch();
+
+    return 0;
 }
