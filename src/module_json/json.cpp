@@ -139,16 +139,37 @@ void writeFile(const std::wstring& name, Json::Value &node)
 	const char BOM[3] = { char(0xEF), char(0xBB), char(0xBF) };
 
 	fs.write(BOM, 3);
-	try
-	{
-		styled.write(fs, node);
-	}
-	catch (Json::LogicError& e)
-	{
-		wcout << e.what() << endl;
-		
-	}
+	styled.write(fs, node);
 	fs.close();
+}
+
+std::wstring JsonUtils::GetSettingsConfig(const std::wstring& name)
+{
+	std::wstringstream result;
+	std::string file_name, value_path;
+	const wchar_t line_break = 13 ;
+	Json::Value node;
+	Json::Reader reader;
+
+	reader.parse(readFileUTF8(name), node);
+
+	
+	for (const Json::Value& child : node)
+	{
+		file_name = child.get("configFileName", "").asString();
+		if (file_name == "") continue;
+		value_path = child.get("valuePath", "").asString();
+		if (value_path == "") continue;
+
+		result << Encoding::utf8_to_wstring(child.get("name", child.Name).asString()) << line_break;
+		result << Encoding::utf8_to_wstring(child.get("imagesIfSelected", "empty.bmp").asString()) << line_break;
+		result << Encoding::utf8_to_wstring(child.get("imagesIfNotSelected", "empty.bmp").asString()) << line_break;
+		result << Encoding::utf8_to_wstring(file_name) << line_break;
+		result << Encoding::utf8_to_wstring(value_path) << line_break;
+		result << Encoding::utf8_to_wstring(child.get("valueIfSelected", "").asString()) << line_break;
+		result << Encoding::utf8_to_wstring(child.get("valueIfNotSelected", "").asString()) << line_break;
+	}
+	return result.str();
 }
 
 void c_node(const int size, int index, Json::Value &node, const std::vector<std::string>& tokens, Json::Value& value)

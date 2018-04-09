@@ -49,3 +49,17 @@ void JSON_SetValueBoolW(const wchar_t* name, const wchar_t* path, const bool val
 {
 	JsonUtils::SetValueBool(name, path, value);
 }
+
+void JSON_GetSettingsConfigW(const wchar_t* name, wchar_t* output, unsigned int output_size)
+{
+	if (output_size <= 0)
+		return;
+	output[0] = L'\0';
+
+	std::wstring val = JsonUtils::GetSettingsConfig(name);
+
+	if (val.empty())
+		return;
+
+	wcscpy_s(output, output_size, val.c_str());
+}
