@@ -146,14 +146,19 @@ void writeFile(const std::wstring& name, Json::Value &node)
 std::pair<std::wstring, std::wstring> JsonUtils::GetNamesAndValues(const std::wstring& name, const std::wstring& path)
 {
 	std::wstringstream names, values;
-	std::string file_name, value_path;
+	std::string file_name, value_path, _path;
 	const wchar_t line_break = 13 ;
 	Json::Value node;
 	Json::Reader reader;
 
 	reader.parse(readFileUTF8(name), node);
 
-	std::vector<std::string> tokens = String::Split(Encoding::wstring_to_utf8(path), '/');
+	_path = Encoding::wstring_to_utf8(path);
+
+	_path.erase(0, _path.find_first_not_of(' '));
+	_path.erase(_path.find_last_not_of(' ') + 1);
+
+	std::vector<std::string> tokens = String::Split(_path, '/');
 	try
 	{
 		for (unsigned int i = 0; i < tokens.size(); i++)
@@ -165,32 +170,21 @@ std::pair<std::wstring, std::wstring> JsonUtils::GetNamesAndValues(const std::ws
 	{
 		return std::make_pair(L"", L"");
 	}
-
-	for (const Json::Value& child : node)
+	std::vector<std::string> keys = node.getMemberNames();
+	for (size_t i = 0; i<keys.size(); i++)
 	{
-		names << Encoding::utf8_to_wstring(child.Name) << line_break;
-		switch (child.type()) 
+		const std::string& key = keys[i];
+		names << Encoding::utf8_to_wstring(key) << line_break;
+		switch (node[key].type())
 		{
 			case Json::ValueType::arrayValue:
-			{
-				for (const Json::Value& subChild : node)
-				{
-					values << L"arrayValue" << line_break;
-				}
+				values << L"arrayValue" << line_break;
 				break;
-			}
 			case Json::ValueType::objectValue:
-			{
-				for (const Json::Value& subChild : node)
-				{
-					values << L"objectValue" << line_break;
-				}
+				values << L"objectValue" << line_break;
 				break;
-			}
 			default:
-			{
-				values << Encoding::utf8_to_wstring(child.asString()) << line_break;
-			}
+				values << Encoding::utf8_to_wstring(node[key].asString()) << line_break;
 		}
 	}
 	return std::make_pair(names.str(), values.str());
