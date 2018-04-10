@@ -41,4 +41,4 @@ extern "C" API_CALL_JSON void __cdecl JSON_GetValueW(_In_ const wchar_t* json, _
 
 extern "C" API_CALL_JSON void __cdecl JSON_SetValueBoolW(_In_ const wchar_t* name, _In_ const wchar_t* path, _In_ const bool value);
 
-extern "C" API_CALL_JSON void __cdecl JSON_GetSettingsConfigW(_In_ const wchar_t* name, _Out_ wchar_t* output, _In_ unsigned int output_size);
+extern "C" API_CALL_JSON void __cdecl JSON_GetNamesAndValuesW(_In_ const wchar_t* name, _In_ const wchar_t* puth, _Out_ wchar_t* output_names, _Out_ wchar_t* output_values, _In_ unsigned int output_size);

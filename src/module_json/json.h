@@ -44,6 +44,6 @@ public:
 
 	static bool SetValueBool(const std::wstring& name, const std::wstring& path, const bool value);
 
-	static std::wstring GetSettingsConfig(const std::wstring& name);
+	static std::pair<std::wstring, std::wstring> GetNamesAndValues(const std::wstring& name, const std::wstring& path);
 
 };

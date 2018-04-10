@@ -143,9 +143,9 @@ void writeFile(const std::wstring& name, Json::Value &node)
 	fs.close();
 }
 
-std::wstring JsonUtils::GetSettingsConfig(const std::wstring& name)
+std::pair<std::wstring, std::wstring> JsonUtils::GetNamesAndValues(const std::wstring& name, const std::wstring& path)
 {
-	std::wstringstream result;
+	std::wstringstream names, values;
 	std::string file_name, value_path;
 	const wchar_t line_break = 13 ;
 	Json::Value node;
@@ -153,23 +153,47 @@ std::wstring JsonUtils::GetSettingsConfig(const std::wstring& name)
 
 	reader.parse(readFileUTF8(name), node);
 
-	
+	std::vector<std::string> tokens = String::Split(Encoding::wstring_to_utf8(path), '/');
+	try
+	{
+		for (unsigned int i = 0; i < tokens.size(); i++)
+		{
+			node = node[tokens[i].c_str()];
+		}
+	}
+	catch (Json::LogicError&)
+	{
+		return std::make_pair(L"", L"");
+	}
+
 	for (const Json::Value& child : node)
 	{
-		file_name = child.get("configFileName", "").asString();
-		if (file_name == "") continue;
-		value_path = child.get("valuePath", "").asString();
-		if (value_path == "") continue;
-
-		result << Encoding::utf8_to_wstring(child.get("name", child.Name).asString()) << line_break;
-		result << Encoding::utf8_to_wstring(child.get("imagesIfSelected", "empty.bmp").asString()) << line_break;
-		result << Encoding::utf8_to_wstring(child.get("imagesIfNotSelected", "empty.bmp").asString()) << line_break;
-		result << Encoding::utf8_to_wstring(file_name) << line_break;
-		result << Encoding::utf8_to_wstring(value_path) << line_break;
-		result << Encoding::utf8_to_wstring(child.get("valueIfSelected", "").asString()) << line_break;
-		result << Encoding::utf8_to_wstring(child.get("valueIfNotSelected", "").asString()) << line_break;
+		names << Encoding::utf8_to_wstring(child.Name) << line_break;
+		switch (child.type()) 
+		{
+			case Json::ValueType::arrayValue:
+			{
+				for (const Json::Value& subChild : node)
+				{
+					values << L"arrayValue" << line_break;
+				}
+				break;
+			}
+			case Json::ValueType::objectValue:
+			{
+				for (const Json::Value& subChild : node)
+				{
+					values << L"objectValue" << line_break;
+				}
+				break;
+			}
+			default:
+			{
+				values << Encoding::utf8_to_wstring(child.asString()) << line_break;
+			}
+		}
 	}
-	return result.str();
+	return std::make_pair(names.str(), values.str());
 }
 
 void c_node(const int size, int index, Json::Value &node, const std::vector<std::string>& tokens, Json::Value& value)

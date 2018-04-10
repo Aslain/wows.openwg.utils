@@ -50,16 +50,18 @@ void JSON_SetValueBoolW(const wchar_t* name, const wchar_t* path, const bool val
 	JsonUtils::SetValueBool(name, path, value);
 }
 
-void JSON_GetSettingsConfigW(const wchar_t* name, wchar_t* output, unsigned int output_size)
+void JSON_GetNamesAndValuesW(const wchar_t* name, const wchar_t* path, wchar_t* output_names, wchar_t* output_values, unsigned int output_size)
 {
 	if (output_size <= 0)
 		return;
-	output[0] = L'\0';
+	output_names[0] = L'\0';
+	output_values[0] = L'\0';
 
-	std::wstring val = JsonUtils::GetSettingsConfig(name);
+	std::pair<std::wstring, std::wstring> val = JsonUtils::GetNamesAndValues(name, path);
 
-	if (val.empty())
+	if (val.first.empty())
 		return;
 
-	wcscpy_s(output, output_size, val.c_str());
+	wcscpy_s(output_names, output_size, val.first.c_str());
+	wcscpy_s(output_values, output_size, val.second.c_str());
 }
