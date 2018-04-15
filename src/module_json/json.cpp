@@ -170,6 +170,10 @@ std::pair<std::wstring, std::wstring> JsonUtils::GetNamesAndValues(const std::ws
 	{
 		return std::make_pair(L"", L"");
 	}
+	if (!node.isObject() && !node.isArray())
+	{
+		return std::make_pair(L"", L"");
+	}
 	std::vector<std::string> keys = node.getMemberNames();
 	for (size_t i = 0; i<keys.size(); i++)
 	{
