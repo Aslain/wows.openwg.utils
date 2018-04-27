@@ -146,10 +146,11 @@ void writeFile(const std::wstring& name, Json::Value &node)
 std::pair<std::wstring, std::wstring> JsonUtils::GetNamesAndValues(const std::wstring& name, const std::wstring& path)
 {
 	std::wstringstream names, values;
-	std::string file_name, value_path, _path;
+	std::string _path;
 	const wchar_t line_break = 13 ;
 	Json::Value node;
 	Json::Reader reader;
+	Json::FastWriter fast;
 
 	reader.parse(readFileUTF8(name), node);
 
@@ -185,10 +186,44 @@ std::pair<std::wstring, std::wstring> JsonUtils::GetNamesAndValues(const std::ws
 				values << L"arrayValue" << line_break;
 				break;
 			case Json::ValueType::objectValue:
-				values << L"objectValue" << line_break;
+				values << Encoding::utf8_to_wstring(fast.write(node[key]));
 				break;
 			default:
 				values << Encoding::utf8_to_wstring(node[key].asString()) << line_break;
+		}
+	}
+	return std::make_pair(names.str(), values.str());
+}
+
+std::pair<std::wstring, std::wstring> JsonUtils::GetNamesAndValues(const std::wstring& str)
+{
+	std::wstringstream names, values;
+	const wchar_t line_break = 13;
+	Json::Value node;
+	Json::Reader reader;
+	Json::FastWriter fast;
+
+	reader.parse(Encoding::wstring_to_utf8(str), node);
+
+	if (!node.isObject() && !node.isArray())
+	{
+		return std::make_pair(L"", L"");
+	}
+	std::vector<std::string> keys = node.getMemberNames();
+	for (size_t i = 0; i<keys.size(); i++)
+	{
+		const std::string& key = keys[i];
+		names << Encoding::utf8_to_wstring(key) << line_break;
+		switch (node[key].type())
+		{
+		case Json::ValueType::arrayValue:
+			values << L"arrayValue" << line_break;
+			break;
+		case Json::ValueType::objectValue:
+			values << Encoding::utf8_to_wstring(fast.write(node[key]));
+			break;
+		default:
+			values << Encoding::utf8_to_wstring(node[key].asString()) << line_break;
 		}
 	}
 	return std::make_pair(names.str(), values.str());
@@ -198,7 +233,6 @@ void c_node(const int size, int index, Json::Value &node, const std::vector<std:
 {
 	if (index <= size)
 	{
-		Json::ValueType t = node.type();
 		for (Json::ValueConstIterator v = node.begin(); v != node.end(); v++)
 		{
 			std::string key = v.key().asString();
@@ -216,7 +250,7 @@ bool SetValue(const std::wstring& name, const std::wstring& pathValue, Json::Val
 {
 	Json::Value node;
 	Json::Reader reader;
-	reader.parse(readFileUTF8(name), node);
+	 
 	std::vector<std::string> tokens = String::Split(Encoding::wstring_to_utf8(pathValue), '/');
 	try
 	{
@@ -239,6 +273,49 @@ bool SetValue(const std::wstring& name, const std::wstring& pathValue, Json::Val
 bool JsonUtils::SetValueBool(const std::wstring& name, const std::wstring& pathValue, const bool value)
 {
 	if (!SetValue(name, pathValue, Json::Value(value)))
+	{
+		return false;
+	}
+	return true;
+}
+
+void _swapPayload(Json::Value &node, Json::Value &val)
+{
+	if (node.isObject() && val.isObject())
+	{
+		Json::Value::Members keys_val = val.getMemberNamesNum();
+		for (size_t i = 0; i < keys_val.size(); i++)
+		{
+			if (node.find(keys_val[i].c_str(), keys_val[i].c_str() + keys_val[i].length()) != NULL)
+			{
+				_swapPayload(node[keys_val[i]], val[keys_val[i]]);
+			}
+			else
+			{
+				node[keys_val[i]].swapPayload(val[keys_val[i]]);
+			}
+		}
+	}
+	else
+	{
+		node.swapPayload(val);
+	}
+
+}
+
+bool JsonUtils::SetValueObj(const std::wstring& name, const std::wstring& value)
+{
+	Json::Value node, val;
+	Json::Reader reader;
+
+	try
+	{
+		reader.parse(readFileUTF8(name), node);
+		reader.parse(Encoding::wstring_to_utf8(value), val);
+		_swapPayload(node, val);
+		writeFile(name, node);
+	}
+	catch (Json::LogicError&)
 	{
 		return false;
 	}

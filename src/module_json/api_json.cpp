@@ -50,6 +50,12 @@ void JSON_SetValueBoolW(const wchar_t* name, const wchar_t* path, const bool val
 	JsonUtils::SetValueBool(name, path, value);
 }
 
+
+void JSON_SetValueObjW(const wchar_t* name, const wchar_t* value)
+{
+	JsonUtils::SetValueObj(name, value);
+}
+
 void JSON_GetNamesAndValuesW(const wchar_t* name, const wchar_t* path, wchar_t* output_names, wchar_t* output_values, unsigned int output_size)
 {
 	if (output_size <= 0)
@@ -58,6 +64,22 @@ void JSON_GetNamesAndValuesW(const wchar_t* name, const wchar_t* path, wchar_t* 
 	output_values[0] = L'\0';
 
 	std::pair<std::wstring, std::wstring> val = JsonUtils::GetNamesAndValues(name, path);
+
+	if (val.first.empty())
+		return;
+
+	wcscpy_s(output_names, output_size, val.first.c_str());
+	wcscpy_s(output_values, output_size, val.second.c_str());
+}
+
+void JSON_GetNamesAndValuesW_S(const wchar_t* str, wchar_t* output_names, wchar_t* output_values, unsigned int output_size)
+{
+	if (output_size <= 0)
+		return;
+	output_names[0] = L'\0';
+	output_values[0] = L'\0';
+
+	std::pair<std::wstring, std::wstring> val = JsonUtils::GetNamesAndValues(str);
 
 	if (val.first.empty())
 		return;

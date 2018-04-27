@@ -85,24 +85,6 @@ int main()
 		wcout << "test_2" << endl;
 	if (test_3())
 		wcout << "test_3" << endl;
-	WIN32_FIND_DATAW FindFileData;
-	HANDLE hf;
-	hf = FindFirstFileW(L"d:\\My\\Programming\\InnoSetup\\extensions\\src_tests\\conf\\*", &FindFileData);
-	if (hf != INVALID_HANDLE_VALUE)
-	{
-		do
-		{
-			std::wstring path = L"d:\\My\\Programming\\InnoSetup\\extensions\\src_tests\\conf\\";
-			std::wstring fileName = FindFileData.cFileName;
-			if (fileName == L"." || fileName == L"..")
-			{
-				continue;
-			};
-			if (test_5(path + fileName))
-				wcout << FindFileData.cFileName << endl;
-		} while (FindNextFileW(hf, &FindFileData) != 0);
-		FindClose(hf);
-	}
 	_getch();
 
     return 0;
