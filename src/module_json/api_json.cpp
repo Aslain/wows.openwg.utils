@@ -45,45 +45,45 @@ void JSON_GetValueW(const wchar_t* json, const wchar_t* path, wchar_t* output, u
     wcscpy_s(output, output_size, val.c_str());
 }
 
-void JSON_SetValueBoolW(const wchar_t* name, const wchar_t* path, const bool value)
+void JSON_SetValueBoolW(const wchar_t* file_name, const wchar_t* path, const bool value)
 {
-	JsonUtils::SetValueBool(name, path, value);
+	JsonUtils::SetValueBool(file_name, path, value);
 }
 
 
-void JSON_SetValueObjW(const wchar_t* name, const wchar_t* value)
+void JSON_SetValueObjW(const wchar_t* file_name, const wchar_t* json)
 {
-	JsonUtils::SetValueObj(name, value);
+	JsonUtils::SetValueObj(file_name, json);
 }
 
-void JSON_GetNamesAndValuesW(const wchar_t* name, const wchar_t* path, wchar_t* output_names, wchar_t* output_values, unsigned int output_size)
+void JSON_GetNamesAndValuesW(const wchar_t* file_name, const wchar_t* path, wchar_t* names, wchar_t* values, unsigned int output_size)
 {
 	if (output_size <= 0)
 		return;
-	output_names[0] = L'\0';
-	output_values[0] = L'\0';
+	names[0] = L'\0';
+	values[0] = L'\0';
 
-	std::pair<std::wstring, std::wstring> val = JsonUtils::GetNamesAndValues(name, path);
+	std::pair<std::wstring, std::wstring> val = JsonUtils::GetNamesAndValues(file_name, path);
 
 	if (val.first.empty())
 		return;
 
-	wcscpy_s(output_names, output_size, val.first.c_str());
-	wcscpy_s(output_values, output_size, val.second.c_str());
+	wcscpy_s(names, output_size, val.first.c_str());
+	wcscpy_s(values, output_size, val.second.c_str());
 }
 
-void JSON_GetNamesAndValuesW_S(const wchar_t* str, wchar_t* output_names, wchar_t* output_values, unsigned int output_size)
+void JSON_GetNamesAndValuesW_S(const wchar_t* json, wchar_t* names, wchar_t* values, unsigned int output_size)
 {
 	if (output_size <= 0)
 		return;
-	output_names[0] = L'\0';
-	output_values[0] = L'\0';
+	names[0] = L'\0';
+	values[0] = L'\0';
 
-	std::pair<std::wstring, std::wstring> val = JsonUtils::GetNamesAndValues(str);
+	std::pair<std::wstring, std::wstring> val = JsonUtils::GetNamesAndValues(json);
 
 	if (val.first.empty())
 		return;
 
-	wcscpy_s(output_names, output_size, val.first.c_str());
-	wcscpy_s(output_values, output_size, val.second.c_str());
+	wcscpy_s(names, output_size, val.first.c_str());
+	wcscpy_s(values, output_size, val.second.c_str());
 }

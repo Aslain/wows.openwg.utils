@@ -29,6 +29,10 @@
 
 class String {
 public:
+	static std::string & Trim(std::string & str);
+	static std::string & LTrim(std::string & str);
+	static std::string & RTrim(std::string & str);
+
     static std::wstring & Trim(std::wstring & str);
     static std::wstring & LTrim(std::wstring & str);
     static std::wstring & RTrim(std::wstring & str);

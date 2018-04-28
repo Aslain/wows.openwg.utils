@@ -39,10 +39,10 @@ extern "C" API_CALL_JSON bool __cdecl JSON_ContainsKeyW(_In_ const wchar_t* json
 
 extern "C" API_CALL_JSON void __cdecl JSON_GetValueW(_In_ const wchar_t* json, _In_ const wchar_t* path, _Out_ wchar_t* output, _In_ unsigned int output_size);
 
-extern "C" API_CALL_JSON void __cdecl JSON_SetValueBoolW(_In_ const wchar_t* name, _In_ const wchar_t* path, _In_ const bool value);
+extern "C" API_CALL_JSON void __cdecl JSON_SetValueBoolW(_In_ const wchar_t* file_name, _In_ const wchar_t* path, _In_ const bool value);
 
-extern "C" API_CALL_JSON void __cdecl JSON_SetValueObjW(_In_ const wchar_t* name, _In_ const wchar_t* value);
+extern "C" API_CALL_JSON void __cdecl JSON_SetValueObjW(_In_ const wchar_t* file_name, _In_ const wchar_t* json);
 
-extern "C" API_CALL_JSON void __cdecl JSON_GetNamesAndValuesW(_In_ const wchar_t* name, _In_ const wchar_t* path, _Out_ wchar_t* output_names, _Out_ wchar_t* output_values, _In_ unsigned int output_size);
+extern "C" API_CALL_JSON void __cdecl JSON_GetNamesAndValuesW(_In_ const wchar_t* file_name, _In_ const wchar_t* path, _Out_ wchar_t* names, _Out_ wchar_t* values, _In_ unsigned int output_size);
 
-extern "C" API_CALL_JSON void __cdecl JSON_GetNamesAndValuesW_S(_In_ const wchar_t* str, _Out_ wchar_t* output_names, _Out_ wchar_t* output_values, _In_ unsigned int output_size);
+extern "C" API_CALL_JSON void __cdecl JSON_GetNamesAndValuesW_S(_In_ const wchar_t* json, _Out_ wchar_t* names, _Out_ wchar_t* values, _In_ unsigned int output_size);

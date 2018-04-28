@@ -30,6 +30,10 @@
 
 #include <json/json.h>
 
+#include <iostream>
+#include <fstream>
+#include <codecvt>
+
 class API_CALL_JSON JsonUtils
 {
 public:
@@ -42,11 +46,11 @@ public:
     static std::wstring GetValue(const wchar_t* json, const wchar_t* path);
     static std::wstring GetValue(const std::wstring& json, const std::wstring& path);
 
-	static bool SetValueBool(const std::wstring& name, const std::wstring& path, const bool value);
+	static bool SetValueBool(const std::wstring& file_name, const std::wstring& path, const bool value);
 
-	static bool JsonUtils::SetValueObj(const std::wstring& name, const std::wstring& value);
+	static bool JsonUtils::SetValueObj(const std::wstring& file_name, const std::wstring& value);
 
-	static std::pair<std::wstring, std::wstring> GetNamesAndValues(const std::wstring& name, const std::wstring& path);
-	static std::pair<std::wstring, std::wstring> GetNamesAndValues(const std::wstring& str);
+	static std::pair<std::wstring, std::wstring> GetNamesAndValues(const std::wstring& file_name, const std::wstring& path);
+	static std::pair<std::wstring, std::wstring> GetNamesAndValues(const std::wstring& json);
 
 };
