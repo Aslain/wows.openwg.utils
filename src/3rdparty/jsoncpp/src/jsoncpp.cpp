@@ -3024,6 +3024,7 @@ Value::Value(Value const& other)
   case booleanValue:
     value_ = other.value_;
     break;
+  case refValue:
   case stringValue:
     if (other.value_.string_ && other.allocated_) {
       unsigned len;
@@ -4020,6 +4021,8 @@ bool Value::isNumeric() const { return isDouble(); }
 
 bool Value::isString() const { return type_ == stringValue; }
 
+bool Value::isRef() const { return type_ == refValue; }
+
 bool Value::isArray() const { return type_ == arrayValue; }
 
 bool Value::isObject() const { return type_ == objectValue; }
@@ -4547,7 +4550,6 @@ static JSONCPP_STRING valueToQuotedRefN(const char* value, unsigned length) {
 		length * 2 + 3; // allescaped+quotes+NULL
 	JSONCPP_STRING result;
 	result.reserve(maxsize); // to avoid lots of mallocs
-	//result += "\"";
 	char const* end = value + length;
 	for (const char* c = value; c != end; ++c)
 	{
@@ -4692,6 +4694,15 @@ void FastWriter::writeValue(const Value& value) {
   case realValue:
     document_ += valueToString(value.asDouble());
     break;
+  case refValue:
+  {
+	  // Is NULL possible for value.string_? No.
+	  char const* str;
+	  char const* end;
+	  bool ok = value.getRef(&str, &end);
+	  if (ok) document_ += valueToQuotedRefN(str, static_cast<unsigned>(end - str));
+	  break;
+  }
   case stringValue:
   {
     // Is NULL possible for value.string_? No.

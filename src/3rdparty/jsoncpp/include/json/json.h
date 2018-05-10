@@ -836,6 +836,7 @@ Json::Value obj_value(Json::objectValue); // {}
   bool isDouble() const;
   bool isNumeric() const;
   bool isString() const;
+  bool isRef() const;
   bool isArray() const;
   bool isObject() const;
 

@@ -51,9 +51,9 @@ void JSON_SetValueBoolW(const wchar_t* file_name, const wchar_t* path, const boo
 }
 
 
-void JSON_SetValueObjW(const wchar_t* file_name, const wchar_t* json)
+void JSON_SetValueObjW(const wchar_t* file_name, const wchar_t* json, bool is_add)
 {
-	JsonUtils::SetValueObj(file_name, json);
+	JsonUtils::SetValueObj(file_name, json, is_add);
 }
 
 void JSON_GetNamesAndValuesW(const wchar_t* file_name, const wchar_t* path, wchar_t* names, wchar_t* values, unsigned int output_size)
@@ -86,4 +86,18 @@ void JSON_GetNamesAndValuesW_S(const wchar_t* json, wchar_t* names, wchar_t* val
 
 	wcscpy_s(names, output_size, val.first.c_str());
 	wcscpy_s(values, output_size, val.second.c_str());
+}
+
+void JSON_GetArrayValueW_S(const wchar_t* json, wchar_t* output, unsigned int output_size)
+{
+	if (output_size <= 0)
+		return;
+	output[0] = L'\0';
+
+	std::wstring val = JsonUtils::GetArrayValue(json);
+
+	if (val.empty())
+		return;
+
+	wcscpy_s(output, output_size, val.c_str());
 }
