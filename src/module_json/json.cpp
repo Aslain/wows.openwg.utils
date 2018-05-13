@@ -292,13 +292,20 @@ void _swapPayload(Json::Value &node, Json::Value &value, bool is_add)
 		for (size_t i = 0; i < size; i++)
 		{
 			std::string member = keys_val[i];
-			if (node.find(member.c_str(), member.c_str() + member.length()) != NULL)
+			if (member.length() > 0)
 			{
-				_swapPayload(node[member], value[member], is_add);
-			}
-			else
-			{
-				node[member].swapPayload(value[member]);
+				if (node.find(member.c_str(), member.c_str() + member.length()) != NULL)
+				{
+					_swapPayload(node[member], value[member], is_add);
+				}
+				else
+				{
+					Json::Value::Members keys_node = node.getMemberNamesNum();
+					node[member].swapPayload(value[member]);
+					node[member].Name = member;
+					node[member].orderNum = node[keys_node[keys_node.size() - 1]].orderNum + 1;
+
+				}
 			}
 		}
 	}

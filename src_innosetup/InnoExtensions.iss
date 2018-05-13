@@ -10,6 +10,20 @@ external 'JSON_GetValueW@files:innoextensions.dll cdecl';
 procedure JSON_SetValueBoolW(FileFullName: String; ValuePath: String; Value: Boolean);
 external 'JSON_SetValueBoolW@files:innoextensions.dll cdecl';
 
+
+//value isAdd - True add value to the array, False replace the whole array
+procedure JSON_SetValueObjW(FileFullName: String; Value: String; isAdd: Boolean);
+external 'JSON_SetValueObjW@files:innoextensions.dll cdecl';
+
+procedure JSON_GetNamesAndValuesW(FileFullName: String; Path: String; BufNames: String; BufValues: String; BufferSize: Integer);
+external 'JSON_GetNamesAndValuesW@files:innoextensions.dll cdecl';
+
+procedure JSON_GetNamesAndValuesW_S(StrJSON: String; BufNames: String; BufValues: String; BufferSize: Integer);
+external 'JSON_GetNamesAndValuesW_S@files:innoextensions.dll cdecl';
+
+procedure JSON_GetArrayValueW_S(StrJSON: String; BufValues: String; BufferSize: Integer);
+external 'JSON_GetArrayValueW_S@files:innoextensions.dll cdecl';
+
 //PROCESS
 function PROCESS_GetRunningInDirectoryW(DirectoryPth: String; Buffer: String; BufferSize: Integer): Boolean;
 external 'PROCESS_GetRunningInDirectoryW@files:innoextensions.dll cdecl';
