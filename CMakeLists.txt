@@ -73,10 +73,32 @@ set(SOURCES_WOTFINDER
 )
 source_group("wotfinder" FILES ${SOURCES_WOTFINDER})
 
+set(SOURCES_IMAGEDRAW
+    src/module_imagedraw/api_imagedraw.cpp
+    src/module_imagedraw/api_imagedraw.h
+    src/module_imagedraw/imagedraw.cpp
+    src/module_imagedraw/imagedraw.h
+)
+source_group("imagedraw" FILES ${SOURCES_IMAGEDRAW})
+
+set(SOURCES_UNPACK
+    src/module_unpack/api_unpack.cpp
+    src/module_unpack/api_unpack.h
+    src/module_unpack/divider.cpp
+    src/module_unpack/divider.h
+)
+source_group("unpack" FILES ${SOURCES_UNPACK})
+
+
 set(SOURCES_3RDPARTY_JSONCPP
     src/3rdparty/jsoncpp/src/jsoncpp.cpp
 )
 source_group("3rdparty\\jsoncpp" FILES ${SOURCES_3RDPARTY_JSONCPP})
+
+set(SOURCES_3RDPARTY_LODEPNG
+    src/3rdparty/lodepng/src/lodepng.cpp
+)
+source_group("3rdparty\\lodepng" FILES ${SOURCES_3RDPARTY_LODEPNG})
 
 ###############################
 ### Library: InnoExtensions ###
@@ -84,18 +106,24 @@ source_group("3rdparty\\jsoncpp" FILES ${SOURCES_3RDPARTY_JSONCPP})
 add_library(innoextensions SHARED 
     ${SOURCES_COMMON} 
     ${SOURCES_JSON}
-    ${SOURCES_WOTFINDER} 
+    ${SOURCES_WOTFINDER}
+    ${SOURCES_IMAGEDRAW}
+    ${SOURCES_UNPACK}
     ${SOURCES_3RDPARTY_JSONCPP}
+    ${SOURCES_3RDPARTY_LODEPNG}
 )
 
 target_include_directories(innoextensions PRIVATE src/3rdparty/jsoncpp/include)
 target_include_directories(innoextensions PRIVATE src/3rdparty/rapidxml/include)
+target_include_directories(innoextensions PRIVATE src/3rdparty/lodepng/include)
 target_include_directories(innoextensions PRIVATE src)
 
 target_link_libraries(innoextensions "Version" "Kernel32" "Psapi")
 target_compile_definitions(innoextensions PRIVATE "-DBUILD_COMMON")
 target_compile_definitions(innoextensions PRIVATE "-DBUILD_JSON")
 target_compile_definitions(innoextensions PRIVATE "-DBUILD_WOTFINDER")
+target_compile_definitions(innoextensions PRIVATE "-DBUILD_IMAGEDRAW")
+target_compile_definitions(innoextensions PRIVATE "-DBUILD_UNPACK")
 target_compile_definitions(innoextensions PRIVATE "-D_CRT_SECURE_NO_WARNINGS")
 
 install(
