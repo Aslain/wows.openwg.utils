@@ -764,6 +764,8 @@ bool Reader::readArray(Token& tokenStart) {
   int index = 0;
   for (;;) {
     Value& value = currentValue()[index++];
+	value.Name = std::to_string(index);
+	value.orderNum = ++count;
     nodes_.push(&value);
     bool ok = readValue();
     nodes_.pop();
@@ -3040,7 +3042,9 @@ Value::Value(Value const& other)
     break;
   case arrayValue:
   case objectValue:
-    value_.map_ = new ObjectValues(*other.value_.map_);
+    //value_.map_ = new ObjectValues(*other.value_.map_);
+    value_.map_ = new ObjectValues();
+	value_.map_->swap(*other.value_.map_);
     break;
   default:
     JSON_ASSERT_UNREACHABLE;
@@ -3734,7 +3738,14 @@ Value const& Value::operator[](CppTL::ConstString const& key) const
 }
 #endif
 
-Value& Value::append(const Value& value) { return (*this)[size()] = value; }
+Value& Value::append(const Value& value) 
+{
+	int index = size();
+	(*this)[index] = value;
+	(*this)[index].orderNum = value.orderNum;
+	(*this)[index].Name = std::to_string(index);
+	return (*this)[index];
+}
 
 #if JSON_HAS_RVALUE_REFERENCES
   Value& Value::append(Value&& value) { return (*this)[size()] = std::move(value); }
@@ -5041,7 +5052,7 @@ void StyledStreamWriter::writeValue(const Value& value) {
         const Value& childValue = value[name];
         writeCommentBeforeValue(childValue);
         writeWithIndent(valueToQuotedString(name.c_str()));
-        *document_ << " : ";
+        *document_ << ": ";
         writeValue(childValue);
         if (++it == members.end()) {
           writeCommentAfterValueOnSameLine(childValue);

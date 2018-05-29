@@ -85,7 +85,6 @@ int main()
 		wcout << "test_2" << endl;
 	if (test_3())
 		wcout << "test_3" << endl;
-	JsonUtils::SetValueObj(L"d:\\My\\Programming\\InnoSetup\\battleLabelsTemplates.xc", L"{\"def\":{\"sixthSenseTimer\":{\"enabled\":true, \"format\" : \"{{py:xvm.sixthSenseTimer(10)}}\", \"height\" : 50, \"screenHAlign\" : \"center\", \"screenVAlign\" : \"center\", \"textFormat\" : {\"align\":\"center\", \"size\" : 40}, \"updateEvent\" : \"PY(ON_SIXTH_SENSE_SHOW)\", \"width\" : 60, \"x\" : 0, \"y\" : \"{{py:sub(-{{py:div({{py:xvm.screenHeight}}, 4)}}, 14)}}\"}}}", true);
 	_getch();
 
     return 0;
