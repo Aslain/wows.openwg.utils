@@ -36,6 +36,4 @@
 #include <windows.h>
 
 
-//extern "C" API_CALL_IMAGEDRAW void __cdecl IMAGEDRAW_PngDraw(_In_ const wchar_t* filename, _In_ HDC hDC, _In_ HBITMAP hBitmap);
-
 extern "C" API_CALL_IMAGEDRAW void __cdecl IMAGEDRAW_PngToBmp(_In_ const wchar_t* filename);

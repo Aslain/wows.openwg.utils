@@ -25,10 +25,6 @@
 #include "api_imagedraw.h"
 #include "imagedraw.h"
 
-//void IMAGEDRAW_PngDraw(const wchar_t* filename, HDC hDC, HBITMAP hBitmap)
-//{
-//	ImageDraw::PngDraw(filename, hDC, hBitmap);
-//}
 
 void IMAGEDRAW_PngToBmp(const wchar_t* filename)
 {

@@ -322,7 +322,6 @@ void _swapPayload(Json::Value &node, Json::Value &value, bool is_add)
 	{
 		node.swapPayload(value);
 	}
-
 }
 
 bool JsonUtils::SetValueObj(const std::wstring& file_name, const std::wstring& json, bool is_add)

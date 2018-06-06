@@ -81,15 +81,6 @@ set(SOURCES_IMAGEDRAW
 )
 source_group("imagedraw" FILES ${SOURCES_IMAGEDRAW})
 
-set(SOURCES_UNPACK
-    src/module_unpack/api_unpack.cpp
-    src/module_unpack/api_unpack.h
-    src/module_unpack/divider.cpp
-    src/module_unpack/divider.h
-)
-source_group("unpack" FILES ${SOURCES_UNPACK})
-
-
 set(SOURCES_3RDPARTY_JSONCPP
     src/3rdparty/jsoncpp/src/jsoncpp.cpp
 )
@@ -108,7 +99,6 @@ add_library(innoextensions SHARED
     ${SOURCES_JSON}
     ${SOURCES_WOTFINDER}
     ${SOURCES_IMAGEDRAW}
-    ${SOURCES_UNPACK}
     ${SOURCES_3RDPARTY_JSONCPP}
     ${SOURCES_3RDPARTY_LODEPNG}
 )
@@ -123,7 +113,6 @@ target_compile_definitions(innoextensions PRIVATE "-DBUILD_COMMON")
 target_compile_definitions(innoextensions PRIVATE "-DBUILD_JSON")
 target_compile_definitions(innoextensions PRIVATE "-DBUILD_WOTFINDER")
 target_compile_definitions(innoextensions PRIVATE "-DBUILD_IMAGEDRAW")
-target_compile_definitions(innoextensions PRIVATE "-DBUILD_UNPACK")
 target_compile_definitions(innoextensions PRIVATE "-D_CRT_SECURE_NO_WARNINGS")
 
 install(

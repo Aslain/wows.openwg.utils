@@ -34,8 +34,6 @@ class API_CALL_IMAGEDRAW ImageDraw
 {
 public:
 
-	//static void PngDraw(const std::wstring& filename, HDC hDC, HBITMAP hBitmap);
-
 	static void ImageDraw::PngToBmp(const std::wstring& filename);
 
 };
