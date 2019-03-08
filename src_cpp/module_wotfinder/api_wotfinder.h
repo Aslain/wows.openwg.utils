@@ -24,19 +24,13 @@
 
 #pragma once
 
-#define API_VERSION_WOTFINDER 4
+#define API_VERSION_WOTFINDER 5
 
 #ifdef BUILD_WOTFINDER
 #define API_CALL_WOTFINDER __declspec(dllexport)
 #else
 #define API_CALL_WOTFINDER __declspec(dllimport)
 #endif
-
-
-//WGC
-extern "C" API_CALL_WOTFINDER void __cdecl WGC_GetInstallPathA(char *buffer, int buffer_size);
-extern "C" API_CALL_WOTFINDER void __cdecl WGC_GetInstallPathW(wchar_t *buffer, int buffer_size);
-extern "C" API_CALL_WOTFINDER bool __cdecl WGC_IsInstalled();
 
 //WOT
 extern "C" API_CALL_WOTFINDER int __cdecl WOT_AddClientA(char *path);
@@ -65,5 +59,3 @@ extern "C" API_CALL_WOTFINDER int  __cdecl WOT_GetClientBranch(unsigned int inde
 
 // -1- error, 0-unknown, 1-sd , 2-hd
 extern "C" API_CALL_WOTFINDER int  __cdecl WOT_GetClientType(unsigned int index);
-
-

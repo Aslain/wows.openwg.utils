@@ -25,64 +25,12 @@
 #include "api_wotfinder.h"
 
 #include "wotfinder.h"
-#include "wgc.h"
 
 #include <Windows.h>
 
 #include <locale>
 #include <codecvt>
 #include <string>
-
-void WGC_GetInstallPathA(char * buffer, int buffer_size)
-{
-	if (buffer_size <= 0)
-	{
-		return;
-	}
-
-	wchar_t* wbuffer = (wchar_t*)malloc(buffer_size * sizeof(wchar_t));
-
-	if (wbuffer != nullptr)
-	{
-		WGC_GetInstallPathW(wbuffer, buffer_size);
-
-		WideCharToMultiByte(
-			CP_ACP,
-			0,
-			wbuffer,
-			buffer_size * sizeof(wchar_t),
-			buffer,
-			buffer_size * sizeof(char),
-			NULL,
-			NULL);
-
-		free(wbuffer);
-	}
-}
-
-void WGC_GetInstallPathW(wchar_t * buffer, int buffer_size)
-{
-	if (buffer_size <= 0)
-	{
-		return;
-	}
-
-	std::wstring wgcpath = WGC::GetWGCInstallPath();
-
-	if (!wgcpath.empty())
-	{
-		wcscpy_s(buffer, buffer_size, wgcpath.c_str());
-	}
-	else
-	{
-		buffer[0] = '\0';
-	}
-}
-
-bool WGC_IsInstalled()
-{
-	return !WGC::GetWGCInstallPath().empty();
-}
 
 int WOT_AddClientA(char * path)
 {

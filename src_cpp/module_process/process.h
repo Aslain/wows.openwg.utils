@@ -27,11 +27,10 @@
 #include <string>
 #include <vector>
 
-#include "api_common.h"
-
-class API_CALL_COMMON Process
+class Process
 {
 public:
     static std::vector<std::wstring> GetRunningProcessesInDirectory(wchar_t* directoryPath);
+
     static bool TerminateProcess(wchar_t* processName);
 };

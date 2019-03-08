@@ -1,4 +1,4 @@
-/* Copyright (c) 2017, Mikhail Paulyshka
+/* Copyright (c) 2017-2019, Mikhail Paulyshka
 * All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -28,8 +28,6 @@
 #include <TlHelp32.h>
 #include <Psapi.h>
 
-
-#include <iostream>
 
 const wchar_t* wcsistr(const wchar_t *wcs1, const wchar_t *wcs2)
 {

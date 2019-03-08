@@ -1,4 +1,4 @@
-/* Copyright (c) 2017, Mikhail Paulyshka
+/* Copyright (c) 2017-2019, Mikhail Paulyshka
 * All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -22,44 +22,16 @@
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "api_common.h"
+#pragma once
 
-#include "process.h"
-#include "wine.h"
+#define API_VERSION_WINE 1
 
-bool PROCESS_GetRunningInDirectoryW(wchar_t * directory_path, wchar_t * output_list, int output_list_size)
-{
-    if (output_list_size == 0)
-        return false;
+#ifdef BUILD_WINE
+#define API_CALL_WINE __declspec(dllexport)
+#else
+#define API_CALL_WINE __declspec(dllimport)
+#endif
 
-    if (output_list == nullptr)
-        return false;
+#include <sal.h>
 
-    output_list[0] = L'\0';
-
-    std::vector<std::wstring> procs = Process::GetRunningProcessesInDirectory(directory_path);
-
-    if (procs.size() == 0)
-        return false;
-
-    std::wstring output = L"";
-    for (auto&proc : procs)
-    {
-        output += proc + L";";
-    }
-    output.pop_back();
-
-    wcscpy_s(output_list, output_list_size, output.c_str());
-
-    return true;
-}
-
-API_CALL_COMMON bool PROCESS_TerminateProcess(wchar_t * processName)
-{
-    return Process::TerminateProcess(processName);
-}
-
-bool WINE_IsRunningUnder()
-{
-    return Wine::GetStatus().running_on;
-}
+extern "C" API_CALL_WINE bool __cdecl WINE_IsRunningUnder();

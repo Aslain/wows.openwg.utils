@@ -1,4 +1,4 @@
-/* Copyright (c) 2017, Mikhail Paulyshka
+/* Copyright (c) 2017-2019, Mikhail Paulyshka
 * All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -22,20 +22,12 @@
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#pragma once
+#include "api_wine.h"
 
-#include <sal.h>
+#include "wine.h"
 
-#define API_VERSION_COMMON 1
 
-#ifdef BUILD_COMMON
-#define API_CALL_COMMON __declspec(dllexport)
-#else
-#define API_CALL_COMMON __declspec(dllimport)
-#endif
-
-extern "C" API_CALL_COMMON bool __cdecl PROCESS_GetRunningInDirectoryW(_In_ wchar_t* directory_path, _Out_ wchar_t* output_list, int output_list_size);
-
-extern "C" API_CALL_COMMON bool __cdecl PROCESS_TerminateProcess(_In_ wchar_t* process_name);
-
-extern "C" API_CALL_COMMON bool __cdecl WINE_IsRunningUnder();
+bool WINE_IsRunningUnder()
+{
+    return Wine::GetStatus().running_on;
+}
