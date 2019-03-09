@@ -41,21 +41,21 @@ namespace XVM.Extensions
         {
             var stringBuilder = new StringBuilder(Constants.MaxPathSize);
 
-            switch (RuntimeInformation.ProcessArchitecture)
+            switch (ProcessorArchitecture.GetProcessArchitecture())
             {
-                case Architecture.X86:
+                case ProcessorArchitectureType.X86:
                     _GetPreferredClientPathW_x86_32(stringBuilder, Constants.MaxPathSize);
                     break;
 
-                case Architecture.X64:
+                case ProcessorArchitectureType.X64:
                     _GetPreferredClientPathW_x86_64(stringBuilder, Constants.MaxPathSize);
                     break;
 
-                case Architecture.Arm:
+                case ProcessorArchitectureType.Arm:
                     _GetPreferredClientPathW_ARM_32(stringBuilder, Constants.MaxPathSize);
                     break;
 
-                case Architecture.Arm64:
+                case ProcessorArchitectureType.Arm64:
                     _GetPreferredClientPathW_ARM_64(stringBuilder, Constants.MaxPathSize);
                     break;
 
@@ -84,18 +84,18 @@ namespace XVM.Extensions
 
         public static long GetClientsCount()
         {
-            switch (RuntimeInformation.ProcessArchitecture)
+            switch (ProcessorArchitecture.GetProcessArchitecture())
             {
-                case Architecture.X86:
+                case ProcessorArchitectureType.X86:
                     return _GetClientsCount_x86_32();
 
-                case Architecture.X64:
+                case ProcessorArchitectureType.X64:
                     return _GetClientsCount_x86_64();
 
-                case Architecture.Arm:
+                case ProcessorArchitectureType.Arm:
                     return _GetClientsCount_ARM_32();
 
-                case Architecture.Arm64:
+                case ProcessorArchitectureType.Arm64:
                     return _GetClientsCount_ARM_64();
 
                 default:
@@ -124,21 +124,21 @@ namespace XVM.Extensions
         {
             var stringBuilder = new StringBuilder(Constants.MaxPathSize);
 
-            switch (RuntimeInformation.ProcessArchitecture)
+            switch (ProcessorArchitecture.GetProcessArchitecture())
             {
-                case Architecture.X86:
+                case ProcessorArchitectureType.X86:
                     _GetClientLocaleW_x86_32(stringBuilder, Constants.MaxPathSize, clientIndex);
                     break;
 
-                case Architecture.X64:
+                case ProcessorArchitectureType.X64:
                     _GetClientLocaleW_x86_64(stringBuilder, Constants.MaxPathSize, clientIndex);
                     break;
 
-                case Architecture.Arm:
+                case ProcessorArchitectureType.Arm:
                     _GetClientLocaleW_ARM_32(stringBuilder, Constants.MaxPathSize, clientIndex);
                     break;
 
-                case Architecture.Arm64:
+                case ProcessorArchitectureType.Arm64:
                     _GetClientLocaleW_ARM_64(stringBuilder, Constants.MaxPathSize, clientIndex);
                     break;
 
@@ -169,21 +169,21 @@ namespace XVM.Extensions
         {
             var stringBuilder = new StringBuilder(Constants.MaxPathSize);
 
-            switch (RuntimeInformation.ProcessArchitecture)
+            switch (ProcessorArchitecture.GetProcessArchitecture())
             {
-                case Architecture.X86:
+                case ProcessorArchitectureType.X86:
                     _GetClientPathW_x86_32(stringBuilder, Constants.MaxPathSize, clientIndex);
                     break;
 
-                case Architecture.X64:
+                case ProcessorArchitectureType.X64:
                     _GetClientPathW_x86_64(stringBuilder, Constants.MaxPathSize, clientIndex);
                     break;
 
-                case Architecture.Arm:
+                case ProcessorArchitectureType.Arm:
                     _GetClientPathW_ARM_32(stringBuilder, Constants.MaxPathSize, clientIndex);
                     break;
 
-                case Architecture.Arm64:
+                case ProcessorArchitectureType.Arm64:
                     _GetClientPathW_ARM_64(stringBuilder, Constants.MaxPathSize, clientIndex);
                     break;
 
@@ -218,21 +218,21 @@ namespace XVM.Extensions
         {
             var stringBuilder = new StringBuilder(Constants.MaxPathSize);
 
-            switch (RuntimeInformation.ProcessArchitecture)
+            switch (ProcessorArchitecture.GetProcessArchitecture())
             {
-                case Architecture.X86:
+                case ProcessorArchitectureType.X86:
                     _GetClientVersionW_x86_32(stringBuilder, Constants.MaxPathSize, clientIndex);
                     break;
 
-                case Architecture.X64:
+                case ProcessorArchitectureType.X64:
                     _GetClientVersionW_x86_64(stringBuilder, Constants.MaxPathSize, clientIndex);
                     break;
 
-                case Architecture.Arm:
+                case ProcessorArchitectureType.Arm:
                     _GetClientVersionW_ARM_32(stringBuilder, Constants.MaxPathSize, clientIndex);
                     break;
 
-                case Architecture.Arm64:
+                case ProcessorArchitectureType.Arm64:
                     _GetClientVersionW_ARM_64(stringBuilder, Constants.MaxPathSize, clientIndex);
                     break;
 
@@ -279,21 +279,21 @@ namespace XVM.Extensions
         {
             var stringBuilder = new StringBuilder(Constants.MaxPathSize);
 
-            switch (RuntimeInformation.ProcessArchitecture)
+            switch (ProcessorArchitecture.GetProcessArchitecture())
             {
-                case Architecture.X86:
+                case ProcessorArchitectureType.X86:
                     _GetClientExeVersionW_x86_32(stringBuilder, Constants.MaxPathSize, clientIndex);
                     break;
 
-                case Architecture.X64:
+                case ProcessorArchitectureType.X64:
                     _GetClientExeVersionW_x86_64(stringBuilder, Constants.MaxPathSize, clientIndex);
                     break;
 
-                case Architecture.Arm:
+                case ProcessorArchitectureType.Arm:
                     _GetClientExeVersionW_ARM_32(stringBuilder, Constants.MaxPathSize, clientIndex);
                     break;
 
-                case Architecture.Arm64:
+                case ProcessorArchitectureType.Arm64:
                     _GetClientExeVersionW_ARM_64(stringBuilder, Constants.MaxPathSize, clientIndex);
                     break;
 
@@ -335,21 +335,21 @@ namespace XVM.Extensions
         public static WotClientBranch GetClientBranch(int clientIndex)
         {
             Int32 result = 0;
-            switch (RuntimeInformation.ProcessArchitecture)
+            switch (ProcessorArchitecture.GetProcessArchitecture())
             {
-                case Architecture.X86:
+                case ProcessorArchitectureType.X86:
                     result = _GetClientBranch_x86_32(clientIndex);
                     break;
 
-                case Architecture.X64:
+                case ProcessorArchitectureType.X64:
                     result = _GetClientBranch_x86_64(clientIndex);
                     break;
 
-                case Architecture.Arm:
+                case ProcessorArchitectureType.Arm:
                     result = _GetClientBranch_ARM_32(clientIndex);
                     break;
 
-                case Architecture.Arm64:
+                case ProcessorArchitectureType.Arm64:
                     result = _GetClientBranch_ARM_64(clientIndex);
                     break;
 
@@ -386,21 +386,21 @@ namespace XVM.Extensions
         public static WotClientType GetClientType(int clientIndex)
         {
             Int32 result = 0;
-            switch (RuntimeInformation.ProcessArchitecture)
+            switch (ProcessorArchitecture.GetProcessArchitecture())
             {
-                case Architecture.X86:
+                case ProcessorArchitectureType.X86:
                     result = _GetClientType_x86_32(clientIndex);
                     break;
 
-                case Architecture.X64:
+                case ProcessorArchitectureType.X64:
                     result = _GetClientType_x86_64(clientIndex);
                     break;
 
-                case Architecture.Arm:
+                case ProcessorArchitectureType.Arm:
                     result = _GetClientType_ARM_32(clientIndex);
                     break;
 
-                case Architecture.Arm64:
+                case ProcessorArchitectureType.Arm64:
                     result = _GetClientType_ARM_64(clientIndex);
                     break;
 

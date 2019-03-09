@@ -24,21 +24,21 @@ namespace XVM.Extensions
         {
             var stringBuilder = new StringBuilder(Constants.MaxPathSize);
 
-            switch(RuntimeInformation.ProcessArchitecture)
+            switch (ProcessorArchitecture.GetProcessArchitecture())
             {
-                case Architecture.X86:
+                case ProcessorArchitectureType.X86:
                     _GetInstallPathW_x86_32(stringBuilder, Constants.MaxPathSize);
                     break;
 
-                case Architecture.X64:
+                case ProcessorArchitectureType.X64:
                     _GetInstallPathW_x86_64(stringBuilder, Constants.MaxPathSize);
                     break;
 
-                case Architecture.Arm:
+                case ProcessorArchitectureType.Arm:
                     _GetInstallPathW_ARM_32(stringBuilder, Constants.MaxPathSize);
                     break;
 
-                case Architecture.Arm64:
+                case ProcessorArchitectureType.Arm64:
                     _GetInstallPathW_ARM_64(stringBuilder, Constants.MaxPathSize);
                     break;
 
@@ -67,18 +67,18 @@ namespace XVM.Extensions
 
         public static bool IsInstalled()
         {
-            switch (RuntimeInformation.ProcessArchitecture)
+            switch (ProcessorArchitecture.GetProcessArchitecture())
             {
-                case Architecture.X86:
+                case ProcessorArchitectureType.X86:
                     return _IsInstalled_x86_32();
 
-                case Architecture.X64:
+                case ProcessorArchitectureType.X64:
                     return _IsInstalled_x86_64();
                     
-                case Architecture.Arm:
+                case ProcessorArchitectureType.Arm:
                     return _IsInstalled_ARM_32();
 
-                case Architecture.Arm64:
+                case ProcessorArchitectureType.Arm64:
                     return _IsInstalled_ARM_64();
 
                 default:

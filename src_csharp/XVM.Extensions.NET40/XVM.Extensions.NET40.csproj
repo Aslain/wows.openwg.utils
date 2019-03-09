@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XVM.Extensions</RootNamespace>
     <AssemblyName>XVM.Extensions</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\~output\csharp\lib\net472\</OutputPath>
+    <OutputPath>..\..\~output\csharp\lib\net40\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -48,6 +48,9 @@
     </Compile>
     <Compile Include="..\src\Process.cs">
       <Link>Process.cs</Link>
+    </Compile>
+    <Compile Include="..\src\ProcessorArchitecture.cs">
+      <Link>ProcessorArchitecture.cs</Link>
     </Compile>
     <Compile Include="..\src\WGC.cs">
       <Link>WGC.cs</Link>

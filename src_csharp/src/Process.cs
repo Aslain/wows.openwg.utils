@@ -29,20 +29,20 @@ namespace XVM.Extensions
             var stringBuilder = new StringBuilder(bufferSize);
 
 
-            switch (RuntimeInformation.ProcessArchitecture)
+            switch (ProcessorArchitecture.GetProcessArchitecture())
             {
-                case Architecture.X86:
+                case ProcessorArchitectureType.X86:
                     _GetRunningInDirectoryW_x86_32(directoryPath, stringBuilder, bufferSize);
                     break;
 
-                case Architecture.X64:
+                case ProcessorArchitectureType.X64:
                     _GetRunningInDirectoryW_x86_64(directoryPath, stringBuilder, bufferSize);
                     break;
 
-                case Architecture.Arm:
+                case ProcessorArchitectureType.Arm:
                     _GetRunningInDirectoryW_ARM_32(directoryPath, stringBuilder, bufferSize);
                     break;
-                case Architecture.Arm64:
+                case ProcessorArchitectureType.Arm64:
                     _GetRunningInDirectoryW_ARM_64(directoryPath, stringBuilder, bufferSize);
                     break;
 
@@ -72,18 +72,18 @@ namespace XVM.Extensions
 
         public static bool TerminateProcess(string processName)
         {
-            switch (RuntimeInformation.ProcessArchitecture)
+            switch (ProcessorArchitecture.GetProcessArchitecture())
             {
-                case Architecture.X86:
+                case ProcessorArchitectureType.X86:
                     return _TerminateProcess_x86_32(processName);
 
-                case Architecture.X64:
+                case ProcessorArchitectureType.X64:
                     return _TerminateProcess_x86_64(processName);
 
-                case Architecture.Arm:
+                case ProcessorArchitectureType.Arm:
                     return _TerminateProcess_ARM_32(processName);
 
-                case Architecture.Arm64:
+                case ProcessorArchitectureType.Arm64:
                     return _TerminateProcess_ARM_64(processName);
 
                 default:

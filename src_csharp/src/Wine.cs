@@ -22,18 +22,18 @@ namespace XVM.Extensions
 
         public static bool IsRunningUnder()
         {
-            switch (RuntimeInformation.ProcessArchitecture)
+            switch (ProcessorArchitecture.GetProcessArchitecture())
             {
-                case Architecture.X86:
+                case ProcessorArchitectureType.X86:
                     return _IsRunningUnder_x86_32();
 
-                case Architecture.X64:
+                case ProcessorArchitectureType.X64:
                     return _IsRunningUnder_x86_64();
 
-                case Architecture.Arm:
+                case ProcessorArchitectureType.Arm:
                     return _IsRunningUnder_ARM_32();
 
-                case Architecture.Arm64:
+                case ProcessorArchitectureType.Arm64:
                     return _IsRunningUnder_ARM_64();
 
                 default:
