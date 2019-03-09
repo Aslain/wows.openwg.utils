@@ -3,3 +3,10 @@ syntax: glob
 .vs/
 build/
 output/
+src_csharp/packages/
+~output/
+src_csharp/*/obj/
+src_csharp/*/bin/
+*.nupkg
+*.user
+nuget.exe

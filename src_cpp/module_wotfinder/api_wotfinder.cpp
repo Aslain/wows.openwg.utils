@@ -54,7 +54,7 @@ int WOT_AddClientW(wchar_t * path)
 }
 
 
-void WOT_GetPreferredClientPathW(wchar_t *buffer, int buffer_size)
+void WOT_GetPreferredClientPathW(wchar_t *buffer, int32_t buffer_size)
 {
 	if (buffer_size <= 0)
 	{
@@ -76,7 +76,7 @@ void WOT_GetPreferredClientPathW(wchar_t *buffer, int buffer_size)
 	}
 }
 
-void WOT_GetPreferredClientPathA(char *buffer, int buffer_size)
+void WOT_GetPreferredClientPathA(char *buffer, int32_t buffer_size)
 {
 	if (buffer_size <= 0)
 	{
@@ -103,7 +103,7 @@ void WOT_GetPreferredClientPathA(char *buffer, int buffer_size)
 	}
 }
 
-int  WOT_GetClientsCount()
+int32_t WOT_GetClientsCount()
 {
 	if (!WotDetector::IsInitialized())
 	{
@@ -113,7 +113,7 @@ int  WOT_GetClientsCount()
 	return WotDetector::clients.size();
 }
 
-void WOT_GetClientLocaleW(wchar_t * buffer, int buffer_size, unsigned int index)
+void WOT_GetClientLocaleW(wchar_t * buffer, int32_t buffer_size, int32_t index)
 {
 	if (buffer_size <= 0)
 	{
@@ -135,7 +135,7 @@ void WOT_GetClientLocaleW(wchar_t * buffer, int buffer_size, unsigned int index)
 	}
 }
 
-void WOT_GetClientLocaleA(char * buffer, int buffer_size, unsigned int index)
+void WOT_GetClientLocaleA(char * buffer, int32_t buffer_size, int32_t index)
 {
 	if (buffer_size <= 0)
 	{
@@ -161,7 +161,7 @@ void WOT_GetClientLocaleA(char * buffer, int buffer_size, unsigned int index)
 	}
 }
 
-void WOT_GetClientPathW(wchar_t *buffer, int buffer_size, unsigned int index)
+void WOT_GetClientPathW(wchar_t *buffer, int32_t buffer_size, int32_t index)
 {
 	if (buffer_size <= 0)
 	{
@@ -183,7 +183,7 @@ void WOT_GetClientPathW(wchar_t *buffer, int buffer_size, unsigned int index)
 	}
 }
 
-void WOT_GetClientPathA(char *buffer, int buffer_size, unsigned int index)
+void WOT_GetClientPathA(char *buffer, int32_t buffer_size, int32_t index)
 {
 	if (buffer_size <= 0)
 	{
@@ -209,7 +209,7 @@ void WOT_GetClientPathA(char *buffer, int buffer_size, unsigned int index)
 	}
 }
 
-void WOT_GetClientVersionW(wchar_t *buffer, int buffer_size, unsigned int index)
+void WOT_GetClientVersionW(wchar_t *buffer, int32_t buffer_size, int32_t index)
 {
 	if (buffer_size <= 0)
 	{
@@ -231,7 +231,7 @@ void WOT_GetClientVersionW(wchar_t *buffer, int buffer_size, unsigned int index)
 	}
 }
 
-extern "C" void __cdecl WOT_GetClientVersionA(char *buffer, int buffer_size, unsigned int index)
+void WOT_GetClientVersionA(char *buffer, int32_t buffer_size, int32_t index)
 {
 	if (buffer_size <= 0)
 	{
@@ -257,7 +257,7 @@ extern "C" void __cdecl WOT_GetClientVersionA(char *buffer, int buffer_size, uns
 	}
 }
 
-void WOT_GetClientExeVersionW(wchar_t *buffer, int buffer_size, unsigned int index)
+void WOT_GetClientExeVersionW(wchar_t *buffer, int32_t buffer_size, int32_t index)
 {
 	if (buffer_size <= 0)
 	{
@@ -279,7 +279,7 @@ void WOT_GetClientExeVersionW(wchar_t *buffer, int buffer_size, unsigned int ind
 	}
 }
 
-extern "C" void __cdecl WOT_GetClientExeVersionA(char *buffer, int buffer_size, unsigned int index)
+void WOT_GetClientExeVersionA(char *buffer, int32_t buffer_size, int32_t index)
 {
 	if (buffer_size <= 0)
 	{
@@ -305,7 +305,7 @@ extern "C" void __cdecl WOT_GetClientExeVersionA(char *buffer, int buffer_size, 
 	}
 }
 
-int WOT_GetClientBranch(unsigned int index)
+int32_t WOT_GetClientBranch(int32_t index)
 {
 	if (!WotDetector::IsInitialized())
 	{
@@ -322,7 +322,7 @@ int WOT_GetClientBranch(unsigned int index)
 	}
 }
 
-int WOT_GetClientType(unsigned int index)
+int32_t WOT_GetClientType(int32_t index)
 {
 	if (!WotDetector::IsInitialized())
 	{

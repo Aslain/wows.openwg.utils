@@ -26,13 +26,15 @@
 
 #include "process.h"
 
-bool PROCESS_GetRunningInDirectoryW(wchar_t * directory_path, wchar_t * output_list, int output_list_size)
+bool PROCESS_GetRunningInDirectoryW(wchar_t * directory_path, wchar_t * output_list, int32_t output_list_size)
 {
-    if (output_list_size == 0)
+    if (output_list_size == 0) {
         return false;
+    }
 
-    if (output_list == nullptr)
+    if (output_list == nullptr) {
         return false;
+    }
 
     output_list[0] = L'\0';
 
@@ -42,8 +44,7 @@ bool PROCESS_GetRunningInDirectoryW(wchar_t * directory_path, wchar_t * output_l
         return false;
 
     std::wstring output = L"";
-    for (auto&proc : procs)
-    {
+    for (auto&proc : procs) {
         output += proc + L";";
     }
     output.pop_back();

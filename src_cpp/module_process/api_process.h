@@ -24,6 +24,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 #include <sal.h>
 
 #define API_VERSION_PROCESS 1
@@ -34,7 +36,7 @@
 #define API_CALL_PROCESS __declspec(dllimport)
 #endif
 
-extern "C" API_CALL_PROCESS bool __cdecl PROCESS_GetRunningInDirectoryW(_In_ wchar_t* directory_path, _Out_ wchar_t* output_list, int output_list_size);
+extern "C" API_CALL_PROCESS bool __cdecl PROCESS_GetRunningInDirectoryW(_In_ wchar_t* directory_path, _Out_ wchar_t* output_list, int32_t output_list_size);
 
 extern "C" API_CALL_PROCESS bool __cdecl PROCESS_TerminateProcess(_In_ wchar_t* process_name);
 

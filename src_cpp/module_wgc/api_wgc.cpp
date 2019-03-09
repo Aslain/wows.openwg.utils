@@ -31,7 +31,7 @@
 #include <locale>
 #include <string>
 
-void WGC_GetInstallPathA(char * buffer, int buffer_size)
+void WGC_GetInstallPathA(char * buffer, int32_t buffer_size)
 {
 	if (buffer_size <= 0)
 	{
@@ -58,7 +58,7 @@ void WGC_GetInstallPathA(char * buffer, int buffer_size)
 	}
 }
 
-void WGC_GetInstallPathW(wchar_t * buffer, int buffer_size)
+void WGC_GetInstallPathW(wchar_t * buffer, int32_t buffer_size)
 {
 	if (buffer_size <= 0)
 	{

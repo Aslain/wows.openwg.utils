@@ -22,6 +22,12 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # 
 
+cmake_minimum_required(VERSION 3.13)
+project(xvmextensions)
+
+include("ucm.cmake")
+ucm_set_runtime(STATIC)
+
 set(SOURCES_COMMON
     dllmain.cpp
     dllmain.rc
@@ -105,38 +111,63 @@ set(SOURCES_3RDPARTY_LODEPNG
 source_group("3rdparty\\lodepng" FILES ${SOURCES_3RDPARTY_LODEPNG})
 
 ###############################
-### Library: InnoExtensions ###
+### Library: xvmextensions ###
 ###############################
 
-add_library(innoextensions SHARED 
+add_library(xvmextensions SHARED 
     ${SOURCES_COMMON} 
     ${SOURCES_JSON}
-	${SOURCES_PROCESS}
-	${SOURCES_WGC}
-	${SOURCES_WINE}
+    ${SOURCES_PROCESS}
+    ${SOURCES_WGC}
+    ${SOURCES_WINE}
     ${SOURCES_WOTFINDER}
     ${SOURCES_IMAGEDRAW}
     ${SOURCES_3RDPARTY_JSONCPP}
     ${SOURCES_3RDPARTY_LODEPNG}
 )
 
-target_include_directories(innoextensions PRIVATE 3rdparty/jsoncpp/include)
-target_include_directories(innoextensions PRIVATE 3rdparty/rapidxml/include)
-target_include_directories(innoextensions PRIVATE 3rdparty/lodepng/include)
-target_include_directories(innoextensions PRIVATE .)
+target_include_directories(xvmextensions PRIVATE 3rdparty/jsoncpp/include)
+target_include_directories(xvmextensions PRIVATE 3rdparty/rapidxml/include)
+target_include_directories(xvmextensions PRIVATE 3rdparty/lodepng/include)
+target_include_directories(xvmextensions PRIVATE .)
 
-target_link_libraries(innoextensions "Version" "Kernel32" "Psapi")
-target_compile_definitions(innoextensions PRIVATE "-DBUILD_COMMON")
-target_compile_definitions(innoextensions PRIVATE "-DBUILD_JSON")
-target_compile_definitions(innoextensions PRIVATE "-DBUILD_PROCESS")
-target_compile_definitions(innoextensions PRIVATE "-DBUILD_WGC")
-target_compile_definitions(innoextensions PRIVATE "-DBUILD_WINE")
-target_compile_definitions(innoextensions PRIVATE "-DBUILD_WOTFINDER")
-target_compile_definitions(innoextensions PRIVATE "-DBUILD_IMAGEDRAW")
-target_compile_definitions(innoextensions PRIVATE "-D_CRT_SECURE_NO_WARNINGS")
+target_link_libraries(xvmextensions "Version" "Kernel32" "Psapi" "Shell32" "Advapi32")
+target_compile_definitions(xvmextensions PRIVATE "-DBUILD_COMMON")
+target_compile_definitions(xvmextensions PRIVATE "-DBUILD_JSON")
+target_compile_definitions(xvmextensions PRIVATE "-DBUILD_PROCESS")
+target_compile_definitions(xvmextensions PRIVATE "-DBUILD_WGC")
+target_compile_definitions(xvmextensions PRIVATE "-DBUILD_WINE")
+target_compile_definitions(xvmextensions PRIVATE "-DBUILD_WOTFINDER")
+target_compile_definitions(xvmextensions PRIVATE "-DBUILD_IMAGEDRAW")
+target_compile_definitions(xvmextensions PRIVATE "-D_CRT_SECURE_NO_WARNINGS")
+
+set_target_properties(xvmextensions PROPERTIES PREFIX "")
+
+#detect platform
+if(CMAKE_GENERATOR_PLATFORM STREQUAL "ARM")
+    set(XVMEXT_PLAT "arm")
+    set(XVMEXT_BIT "32")
+elseif(CMAKE_GENERATOR_PLATFORM STREQUAL "ARM64")
+    set(XVMEXT_PLAT "arm")
+    set(XVMEXT_BIT "64")
+elseif(CMAKE_GENERATOR_PLATFORM STREQUAL "Win32")
+    set(XVMEXT_PLAT "x86")
+    set(XVMEXT_BIT "32")
+elseif(CMAKE_GENERATOR_PLATFORM STREQUAL "x64")
+    set(XVMEXT_PLAT "x86")
+    set(XVMEXT_BIT "64")
+else()
+    error("Unknown platform")
+endif()
+
+ 
+set_target_properties(xvmextensions PROPERTIES DEBUG_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}d")
+set_target_properties(xvmextensions PROPERTIES RELEASE_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
+set_target_properties(xvmextensions PROPERTIES RELWITHDEBINFO_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
+set_target_properties(xvmextensions PROPERTIES MINSIZEREL_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
 
 install(
-    TARGETS innoextensions
+    TARGETS xvmextensions
     RUNTIME DESTINATION bin
 )
 
@@ -145,15 +176,10 @@ install(
 ###############################
 
 add_executable(test_json "tests/json.cpp")
-target_link_libraries(test_json innoextensions)
+target_link_libraries(test_json xvmextensions)
 target_include_directories(test_json PRIVATE 3rdparty/jsoncpp/include)
 target_include_directories(test_json PRIVATE .)
 
 add_executable(test_process "tests/process.cpp")
-target_link_libraries(test_process innoextensions)
+target_link_libraries(test_process xvmextensions)
 target_include_directories(test_process PRIVATE .)
-
-install(
-    TARGETS test_json test_process
-    RUNTIME DESTINATION tests
-)

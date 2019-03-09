@@ -32,13 +32,14 @@ WineStatus Wine::GetStatus()
     typedef char *(__cdecl *t_wine_get_build_id)(void);
     typedef void (__cdecl *t_wine_get_host_version)(const char **sysname, const char **release );
 
-    WineStatus st;
+    WineStatus st{};
 
     const HMODULE ntdll = GetModuleHandleA("ntdll.dll");
     if(ntdll != nullptr)
     {
-        if(GetProcAddress(ntdll,"wine_server_call") != nullptr)
+        if (GetProcAddress(ntdll, "wine_server_call") != nullptr) {
             st.running_on = true;
+        }
 
         const auto wine_get_build_id = t_wine_get_build_id(GetProcAddress(ntdll, "wine_get_version"));
         if (wine_get_build_id != nullptr)

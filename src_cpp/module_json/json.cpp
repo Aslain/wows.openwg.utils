@@ -315,7 +315,7 @@ void _swapPayload(Json::Value &node, Json::Value &value, bool is_add)
 		size_t const size = value.size();
 		for (size_t i = 0; i < size; i++)
 		{
-			node.append(value[i]);
+			node.append(value[static_cast<Json::ArrayIndex>(i)]);
 		}
 	}
 	else

@@ -24,6 +24,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 #define API_VERSION_WGC 1
 
 #ifdef BUILD_WGC
@@ -32,6 +34,6 @@
 #define API_CALL_WGC __declspec(dllimport)
 #endif
 
-extern "C" API_CALL_WGC void __cdecl WGC_GetInstallPathA(char *buffer, int buffer_size);
-extern "C" API_CALL_WGC void __cdecl WGC_GetInstallPathW(wchar_t *buffer, int buffer_size);
+extern "C" API_CALL_WGC void __cdecl WGC_GetInstallPathA(char *buffer, int32_t buffer_size);
+extern "C" API_CALL_WGC void __cdecl WGC_GetInstallPathW(wchar_t *buffer, int32_t buffer_size);
 extern "C" API_CALL_WGC bool __cdecl WGC_IsInstalled();

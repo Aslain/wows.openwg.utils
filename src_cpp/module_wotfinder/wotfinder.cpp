@@ -21,20 +21,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
-#include "wotfinder.h"
-
-#include "common/filesystem.h"
-#include "common/wine.h"
-
-#include "wgc.h"
-#include "wotlauncher.h"
-
-#include <Windows.h>
 
 #include <algorithm>
 #include <filesystem>
 #include <iostream>
+
+#include <Windows.h>
+
+#include "wotfinder.h"
+
+#include "common/filesystem.h"
+#include "module_wine/wine.h"
+#include "module_wgc/wgc.h"
+#include "wotlauncher.h"
 
 using namespace std::experimental::filesystem::v1;
 

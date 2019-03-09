@@ -25,12 +25,17 @@
 Push-Location $PSScriptRoot 
 $root = (Get-Location).Path -replace "\\","/"
 
-Remove-Item -Path ./build/ -Force -Recurse
-New-Item -ItemType Directory -Path ./build/ | Out-Null
+Remove-Item -Path ./build/ -Force -Recurse -ErrorAction SilentlyContinue
 
-Push-Location ./build/ -ErrorAction Stop
+function Build-CppProject($Toolset, $Architecture) {
+    New-Item -ItemType Directory -Path ./build/$Architecture/ | Out-Null
+    Push-Location ./build/$Architecture/ -ErrorAction Stop
+    cmake -T $Toolset -A $Architecture $root/src_cpp/ -DCMAKE_INSTALL_PREFIX="$root/~output/cpp/"
+    cmake --build . --config Release --target Install 
+    Pop-Location  
+}
 
-cmake -T v141_xp $root/ -DCMAKE_INSTALL_PREFIX="$root/output/"
-cmake --build . --config Release --target Install 
-
-Pop-Location
+Build-CppProject -Toolset v141_xp -Architectur Win32
+Build-CppProject -Toolset v141_xp -Architectur x64
+Build-CppProject -Toolset v142 -Architectur ARM
+Build-CppProject -Toolset v142 -Architectur ARM64

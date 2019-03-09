@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+    <metadata>
+        <!-- The identifier that must be unique within the hosting gallery -->
+        <id>XVM.Extensions</id>
+
+        <!-- The package version number that is used when resolving dependencies -->
+        <version>1.0.7</version>
+
+        <!-- Authors contain text that appears directly on the gallery -->
+        <authors>Mikhail Paulyshka</authors>
+
+        <!-- 
+            Owners are typically nuget.org identities that allow gallery
+            users to easily find other packages by the same owners.  
+        -->
+        <owners>Mixaill</owners>
+        
+         <!-- Project URL provides a link for the gallery -->
+        <projectUrl>https://bitbucket.org/xvm/xvm.extensions</projectUrl>
+
+         <!-- License information is displayed on the gallery -->
+        <license type="expression">MIT</license>
+        
+
+        <!-- The icon is used in Visual Studio's package manager UI -->
+        <iconUrl>https://modxvm.com/assets/xvm.png</iconUrl>
+
+        <!-- 
+            If true, this value prompts the user to accept the license when
+            installing the package. 
+        -->
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+
+        <!-- Any details about this particular release -->
+        <releaseNotes>Initial release</releaseNotes>
+
+        <!-- 
+            The description can be used in package manager UI. Note that the
+            nuget.org gallery uses information you add in the portal. 
+        -->
+        <description>Helpers for detecting Wargaming WGC and World of Tanks</description>
+
+        <!-- Copyright information -->
+        <copyright>Copyright ©2019 XVM Team</copyright>
+
+        <!-- Tags appear in the gallery and can be used for tag searches -->
+        <tags>games wot wgc wargaming</tags>
+
+        <!-- Dependencies are automatically installed when the package is installed -->
+        <dependencies>
+        </dependencies>
+    </metadata>
+
+    <files>
+        <file src="..\~output\csharp\lib\**\XVM.Extensions.*" target="lib/" />
+        <file src="..\~output\cpp\bin\**" target="content/" />
+        <file src="src_nuget\*.targets" target="build/" />
+    </files>
+
+</package>
