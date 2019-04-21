@@ -21,6 +21,29 @@ namespace XVM.Extensions
         HD = 2,
     }
 
+    public enum WotClientRegion
+    {
+        Unknown = 0,
+        CIS = 1,
+        EU = 2,
+        NA = 3,
+        ASIA = 4,
+        CN = 5
+    }
+
+    public class WotRegionIdRange
+    {
+        public long Min { get; }
+        public long Max { get; }
+
+        public WotRegionIdRange(long min, long max)
+        {
+            Min = min;
+            Max = max;
+        }
+    }
+
+
     public class Wot
     {
         #region WOT::GetPreferredClientPath
@@ -368,7 +391,6 @@ namespace XVM.Extensions
 
         #endregion
 
-
         #region WOT::GetClientType
 
         [DllImport(Constants.DllName_X86_32, EntryPoint = "WOT_GetClientType", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
@@ -418,5 +440,28 @@ namespace XVM.Extensions
         }
 
         #endregion
+
+      
+        public static WotRegionIdRange GetIdsRangeForRegion(WotClientRegion region)
+        {
+            switch (region)
+            {
+                case WotClientRegion.CIS:
+                    return new WotRegionIdRange(1L, 499999999L);
+
+                case WotClientRegion.EU:
+                    return new WotRegionIdRange(500000000L, 999999999L);
+
+                case WotClientRegion.NA:
+                    return new WotRegionIdRange(1000000000L, 1499999999L);
+
+                case WotClientRegion.ASIA:
+                    return new WotRegionIdRange(2000000000L, 3499999999L);
+
+                default:
+                    return new WotRegionIdRange(0L, 0L);
+
+            }
+        }
     }
 }

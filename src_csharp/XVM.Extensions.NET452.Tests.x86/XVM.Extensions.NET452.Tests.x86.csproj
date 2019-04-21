@@ -72,6 +72,9 @@
     <Compile Include="..\src\WotTests.cs">
       <Link>WotTests.cs</Link>
     </Compile>
+    <Compile Include="..\src\XvmTests.cs">
+      <Link>XvmTests.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -81,9 +84,9 @@
     <Analyzer Include="..\packages\xunit.analyzers.0.10.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XVM.Extensions.NET40\XVM.Extensions.NET40.csproj">
-      <Project>{1e8f5f78-c6cf-4970-86f1-e86a6c8e6b49}</Project>
-      <Name>XVM.Extensions.NET40</Name>
+    <ProjectReference Include="..\XVM.Extensions.NET45\XVM.Extensions.NET45.csproj">
+      <Project>{71645ee6-eb0a-4bf9-b57e-2e8974982a95}</Project>
+      <Name>XVM.Extensions.NET45</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
