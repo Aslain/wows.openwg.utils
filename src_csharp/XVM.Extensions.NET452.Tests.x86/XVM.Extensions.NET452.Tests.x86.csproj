@@ -60,19 +60,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\src\ProcessTests.cs">
+    <Compile Include="..\src_test\ProcessTests.cs">
       <Link>ProcessTests.cs</Link>
     </Compile>
-    <Compile Include="..\src\WGCTests.cs">
+    <Compile Include="..\src_test\WGCTests.cs">
       <Link>WGCTests.cs</Link>
     </Compile>
-    <Compile Include="..\src\WineTests.cs">
+    <Compile Include="..\src_test\WineTests.cs">
       <Link>WineTests.cs</Link>
     </Compile>
-    <Compile Include="..\src\WotTests.cs">
+    <Compile Include="..\src_test\WotTests.cs">
       <Link>WotTests.cs</Link>
     </Compile>
-    <Compile Include="..\src\XvmTests.cs">
+    <Compile Include="..\src_test\XvmTests.cs">
       <Link>XvmTests.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
