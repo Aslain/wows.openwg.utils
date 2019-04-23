@@ -441,6 +441,25 @@ namespace XVM.Extensions
 
         #endregion
 
+        public static WotClientRegion GetRegionFromString(string regionName)
+        {
+            switch(regionName.ToUpper())
+            {
+                case "RU":
+                case "CIS":
+                    return WotClientRegion.CIS;
+                case "EU":
+                    return WotClientRegion.EU;
+                case "NA":
+                    return WotClientRegion.NA;
+                case "ASIA":
+                    return WotClientRegion.ASIA;
+                case "CN":
+                    return WotClientRegion.CN;
+                default:
+                    return WotClientRegion.Unknown;
+            }
+        }
       
         public static WotRegionIdRange GetIdsRangeForRegion(WotClientRegion region)
         {

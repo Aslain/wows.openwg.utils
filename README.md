@@ -35,5 +35,7 @@ This project provides several ways to use it features:
 | WOT::GetClientVersion          | ✅    | ✅                    | ✅         |
 | WOT::GetClientExeVersion       | ✅    | ✅                    | ✅         |
 | WOT::GetIdsRangeForRegion      | ❌    | ✅                    | ❌         |
+| WOT::GetRegionFromString       | ❌    | ✅                    | ❌         |
 | XVM::GetLatestVersion          | ❌    | ✅<sup>.NET 4.5</sup> | ❌         |
+| XVM::GetVersion                | ❌    | ✅<sup>.NET 4.5</sup> | ❌         |
 
