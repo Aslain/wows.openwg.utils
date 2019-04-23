@@ -5,7 +5,7 @@
         <id>XVM.Extensions</id>
 
         <!-- The package version number that is used when resolving dependencies -->
-        <version>1.0.8</version>
+        <version>1.0.9</version>
 
         <!-- Authors contain text that appears directly on the gallery -->
         <authors>Mikhail Paulyshka</authors>
@@ -33,7 +33,7 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
 
         <!-- Any details about this particular release -->
-        <releaseNotes>Lowered framework requirements to NET40</releaseNotes>
+        <releaseNotes>Added functionality to detect XVM</releaseNotes>
 
         <!-- 
             The description can be used in package manager UI. Note that the
