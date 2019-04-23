@@ -49,6 +49,9 @@
 
         <!-- Dependencies are automatically installed when the package is installed -->
         <dependencies>
+            <group>
+                <dependency id="Newtonsoft.Json" />
+            </group>
         </dependencies>
     </metadata>
 
