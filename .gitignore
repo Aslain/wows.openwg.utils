@@ -1,0 +1,16 @@
+syntax: glob
+
+.vscode/
+.vs/
+
+build/
+output/
+~output/
+
+src_csharp/*/obj/
+src_csharp/*/bin/
+src_csharp/packages/
+
+*.nupkg
+*.user
+nuget.exe
