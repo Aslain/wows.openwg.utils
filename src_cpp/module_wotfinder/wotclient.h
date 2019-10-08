@@ -59,7 +59,9 @@ private:
 
 	void updateData();
 	bool updateData_apptype();
+	bool updateData_gameinfo();
 	bool updateData_versionxml();
+
 	void clear();
 
 public:

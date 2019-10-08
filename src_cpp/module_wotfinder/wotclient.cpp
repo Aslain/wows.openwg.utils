@@ -111,6 +111,8 @@ void WotClient::updateData()
 	}
 
 	isValid = true;
+
+	updateData_gameinfo()
 }
 
 bool WotClient::updateData_apptype()
@@ -142,6 +144,40 @@ bool WotClient::updateData_apptype()
 		{
 			this->clientType = ClientType::WoTType_HD;
 		}
+	}
+	catch (const std::exception&)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool WotClient::updateData_gameinfo()
+{
+	std::wstring gameinfoxml(path + L"game_info.xml");
+	if (!exists(gameinfoxml))
+		return false;
+
+	std::wstring content = Filesystem::GetFileContent(gameinfoxml);
+	xml_document<wchar_t> gameinfodoc;
+	gameinfodoc.parse<0>(_wcsdup(content.c_str()));
+	try
+	{
+		xml_node<wchar_t> *node_root = gameinfodoc.first_node(L"protocol");
+		if (node_root == nullptr)
+			return false;
+
+		xml_node<wchar_t> *node_game = node_root->first_node(L"game");
+		if (node_game == nullptr)
+			return false;
+
+		xml_node<wchar_t> *node_localization = node_game->first_node(L"localization");
+		if (node_localization == nullptr)
+			return false;
+
+		std::wstring locale(node_localization->value());
+		clientLocale = locale;
 	}
 	catch (const std::exception&)
 	{
