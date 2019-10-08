@@ -25,6 +25,9 @@
 cmake_minimum_required(VERSION 3.13)
 project(xvmextensions)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 include("ucm.cmake")
 ucm_set_runtime(STATIC)
 

@@ -29,9 +29,6 @@
 
 #include <filesystem>
 
-
-using namespace std::experimental::filesystem::v1;
-
 std::vector<std::wstring> WotLauncher::GetWotPaths() {
 	std::vector<std::wstring> paths;
 
@@ -52,7 +49,7 @@ std::vector<std::wstring> WotLauncher::GetWotPaths() {
 	for (auto& p : keys)
 	{
 		std::wstring path = Registry::GetStringValue(p.c_str(), L"InstallLocation");
-		if (!path.empty() && exists(path + L"\\WorldOfTanks.exe"))
+		if (!path.empty() && std::filesystem::exists(path + L"\\WorldOfTanks.exe"))
 		{
 			paths.push_back(path);
 		}

@@ -30,22 +30,21 @@
 #include "rapidxml.hpp"
 
 using namespace rapidxml;
-using namespace std::experimental::filesystem::v1;
 
 std::wstring WGC::GetWGCInstallPath()
 {
 	std::wstring programDataPath = Filesystem::GetProgramDataPath();
 
 	std::wstring wgcPathFile(programDataPath + L"\\Wargaming.net\\GameCenter\\data\\wgc_path.dat");
-	if (exists(wgcPathFile))
+	if (std::filesystem::exists(wgcPathFile))
 	{
 		std::wstring path = Filesystem::GetFileContent(wgcPathFile);
-		if (exists(path + L"\\wgc.exe"))
+		if (std::filesystem::exists(path + L"\\wgc.exe"))
 		{
 			return path;
 		}
 	}
-	else if (exists(programDataPath + L"\\Wargaming.net\\GameCenter\\wgc.exe"))
+	else if (std::filesystem::exists(programDataPath + L"\\Wargaming.net\\GameCenter\\wgc.exe"))
 	{
 		return programDataPath + L"\\Wargaming.net\\GameCenter";
 	}
@@ -62,11 +61,11 @@ std::vector<std::wstring> WGC::GetWotPaths()
 
 	try
 	{
-		for (auto& p : directory_iterator(programDataPath + L"\\Wargaming.net\\GameCenter\\apps\\wot\\"))
+		for (auto& p : std::filesystem::directory_iterator(programDataPath + L"\\Wargaming.net\\GameCenter\\apps\\wot\\"))
 		{
 			std::wstring path = Filesystem::GetFileContent(p.path().wstring());
 
-			if (exists(path + L"\\WorldOfTanks.exe"))
+			if (std::filesystem::exists(path + L"\\WorldOfTanks.exe"))
 			{
 				wotPaths.push_back(path);
 			}
@@ -83,7 +82,7 @@ std::wstring WGC::GetWotPreferedPath()
 	std::wstring wgcPath = GetWGCInstallPath();
 
 	std::wstring preferences(wgcPath + L"\\preferences.xml");
-	if (!exists(preferences))
+	if (!std::filesystem::exists(preferences))
 		return std::wstring();
 
 	std::wstring content = Filesystem::GetFileContent(preferences);
@@ -113,7 +112,7 @@ std::wstring WGC::GetWotPreferedPath()
 		if (target == nullptr)
 			return std::wstring();
 
-		if (exists(std::wstring(target->value()) + L"\\WorldOfTanks.exe"))
+		if (std::filesystem::exists(std::wstring(target->value()) + L"\\WorldOfTanks.exe"))
 		{
 			return std::wstring(target->value());
 		}

@@ -29,7 +29,6 @@
 
 #include <filesystem>
 
-using namespace std::experimental::filesystem::v1;
 
 #include "rapidxml.hpp"
 using namespace rapidxml;
@@ -93,7 +92,7 @@ void WotClient::updateData()
 {
 	clear();
 
-	if (!exists(path + L"\\WorldOfTanks.exe"))
+	if (!std::filesystem::exists(path + L"\\WorldOfTanks.exe"))
 	{
 		return;
 	}
@@ -112,13 +111,13 @@ void WotClient::updateData()
 
 	isValid = true;
 
-	updateData_gameinfo()
+	updateData_gameinfo();
 }
 
 bool WotClient::updateData_apptype()
 {
 	std::wstring apptypexml(path + L"app_type.xml");
-	if (!exists(apptypexml))
+	if (!std::filesystem::exists(apptypexml))
 		return false;
 
 	std::wstring content = Filesystem::GetFileContent(apptypexml);
@@ -156,7 +155,7 @@ bool WotClient::updateData_apptype()
 bool WotClient::updateData_gameinfo()
 {
 	std::wstring gameinfoxml(path + L"game_info.xml");
-	if (!exists(gameinfoxml))
+	if (!std::filesystem::exists(gameinfoxml))
 		return false;
 
 	std::wstring content = Filesystem::GetFileContent(gameinfoxml);
@@ -190,7 +189,7 @@ bool WotClient::updateData_gameinfo()
 bool WotClient::updateData_versionxml()
 {
 	std::wstring versionxml(path + L"version.xml");
-	if (!exists(versionxml))
+	if (!std::filesystem::exists(versionxml))
 		return false;
 
 	std::wstring content = Filesystem::GetFileContent(versionxml);
@@ -218,15 +217,15 @@ bool WotClient::updateData_versionxml()
 		{
 			this->clientBranch = ClientBranch::WoT_Release;
 		}
-		else if (type == "Common Test")
+		else if (type == L"Common Test")
 		{
 			this->clientBranch = ClientBranch::WoT_CommonTest;
 		}
-		else if (type == "ST")
+		else if (type == L"ST")
 		{
 			this->clientBranch = ClientBranch::WoT_SuperTest;
 		}
-		else if (type == "SB")
+		else if (type == L"SB")
 		{
 			this->clientBranch = ClientBranch::WoT_Sandbox;
 		}

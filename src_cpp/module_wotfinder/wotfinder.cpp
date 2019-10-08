@@ -35,8 +35,6 @@
 #include "module_wgc/wgc.h"
 #include "wotlauncher.h"
 
-using namespace std::experimental::filesystem::v1;
-
 bool WotDetector::isInitialized = false;
 std::vector<WotClient> WotDetector::clients;
 
@@ -72,11 +70,11 @@ void WotDetector::FindClients()
         {
             // /media/<USERNAME>/ mounted partitions
             std::wstring linux_mounts(std::wstring(L"Z:\\media\\") + std::wstring(buf) + std::wstring(L"\\"));
-            if (exists(linux_mounts))
+            if (std::filesystem::exists(linux_mounts))
             {
-                for (auto& p : directory_iterator(linux_mounts))
+                for (auto& p : std::filesystem::directory_iterator(linux_mounts))
                 {
-                    if (!is_directory(p))
+                    if (!std::filesystem::is_directory(p))
                         continue;
 
                     drives.push_back(p.path().wstring()+L"\\");
@@ -87,11 +85,11 @@ void WotDetector::FindClients()
         if (wcscmp(wine_status.system, L"Darwin")==0)
         {
             // /Volumes/ mounted partitions
-            if (exists(L"Z:\\Volumes\\"))
+            if (std::filesystem::exists(L"Z:\\Volumes\\"))
             {
-                for (auto& p : directory_iterator(L"Z:\\Volumes\\"))
+                for (auto& p : std::filesystem::directory_iterator(L"Z:\\Volumes\\"))
                 {
-                    if (!is_directory(p))
+                    if (!std::filesystem::is_directory(p))
                         continue;
 
                     drives.push_back(p.path().wstring() + L"\\");
@@ -101,7 +99,7 @@ void WotDetector::FindClients()
 
         // WoT OSX edition (Wargaming.net wine wrapper)
         std::wstring wot_osx = std::wstring(L"Z:\\Users\\") + std::wstring(buf) + std::wstring(L"\\Library\\Application Support\\World of Tanks\\Bottles\\worldoftanks\\drive_c\\Games\\World_of_Tanks\\");
-        if(exists(wot_osx))
+        if(std::filesystem::exists(wot_osx))
             WotDetector::AddClient(wot_osx);
 
         delete[] buf;
@@ -111,9 +109,9 @@ void WotDetector::FindClients()
     {
         for (auto& path : pathes)
         {
-            for (auto& p : directory_iterator(drive + path))
+            for (auto& p : std::filesystem::directory_iterator(drive + path))
             {
-                if (!is_directory(p))
+                if (!std::filesystem::is_directory(p))
                     continue;
 
                 WotDetector::AddClient(p.path().wstring());
