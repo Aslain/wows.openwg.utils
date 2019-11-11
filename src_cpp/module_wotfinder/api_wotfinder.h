@@ -35,29 +35,29 @@
 #endif
 
 //WOT
-extern "C" API_CALL_WOTFINDER int32_t __cdecl WOT_AddClientA(char *path);
-extern "C" API_CALL_WOTFINDER int32_t __cdecl WOT_AddClientW(wchar_t *path);
+extern "C" API_CALL_WOTFINDER int32_t WOT_AddClientA(char *path);
+extern "C" API_CALL_WOTFINDER int32_t WOT_AddClientW(wchar_t *path);
 
 
-extern "C" API_CALL_WOTFINDER void __cdecl WOT_GetPreferredClientPathA(char *buffer, int32_t buffer_size);
-extern "C" API_CALL_WOTFINDER void __cdecl WOT_GetPreferredClientPathW(wchar_t *buffer, int32_t buffer_size);
+extern "C" API_CALL_WOTFINDER void WOT_GetPreferredClientPathA(char *buffer, int32_t buffer_size);
+extern "C" API_CALL_WOTFINDER void WOT_GetPreferredClientPathW(wchar_t *buffer, int32_t buffer_size);
 
-extern "C" API_CALL_WOTFINDER int32_t  __cdecl WOT_GetClientsCount();
+extern "C" API_CALL_WOTFINDER int32_t WOT_GetClientsCount();
 
-extern "C" API_CALL_WOTFINDER void __cdecl WOT_GetClientLocaleW(wchar_t *buffer, int32_t buffer_size, int32_t index);
-extern "C" API_CALL_WOTFINDER void __cdecl WOT_GetClientLocaleA(char *buffer, int32_t buffer_size, int32_t index);
+extern "C" API_CALL_WOTFINDER void WOT_GetClientLocaleW(wchar_t *buffer, int32_t buffer_size, int32_t index);
+extern "C" API_CALL_WOTFINDER void WOT_GetClientLocaleA(char *buffer, int32_t buffer_size, int32_t index);
 
-extern "C" API_CALL_WOTFINDER void __cdecl WOT_GetClientPathW(wchar_t *buffer, int32_t size, int32_t index);
-extern "C" API_CALL_WOTFINDER void __cdecl WOT_GetClientPathA(char *buffer, int32_t size, int32_t index);
+extern "C" API_CALL_WOTFINDER void WOT_GetClientPathW(wchar_t *buffer, int32_t size, int32_t index);
+extern "C" API_CALL_WOTFINDER void WOT_GetClientPathA(char *buffer, int32_t size, int32_t index);
 
-extern "C" API_CALL_WOTFINDER void __cdecl WOT_GetClientVersionW(wchar_t *buffer, int32_t size, int32_t index);
-extern "C" API_CALL_WOTFINDER void __cdecl WOT_GetClientVersionA(char *buffer, int32_t size, int32_t index);
+extern "C" API_CALL_WOTFINDER void WOT_GetClientVersionW(wchar_t *buffer, int32_t size, int32_t index);
+extern "C" API_CALL_WOTFINDER void WOT_GetClientVersionA(char *buffer, int32_t size, int32_t index);
 
-extern "C" API_CALL_WOTFINDER void __cdecl WOT_GetClientExeVersionW(wchar_t *buffer, int32_t size, int32_t index);
-extern "C" API_CALL_WOTFINDER void __cdecl WOT_GetClientExeVersionA(char *buffer, int32_t size, int32_t index);
+extern "C" API_CALL_WOTFINDER void WOT_GetClientExeVersionW(wchar_t *buffer, int32_t size, int32_t index);
+extern "C" API_CALL_WOTFINDER void WOT_GetClientExeVersionA(char *buffer, int32_t size, int32_t index);
 
 // -1- error, 0-unknown, 1-release , 2-ct, 3-st, 4-sandbox
-extern "C" API_CALL_WOTFINDER int32_t  __cdecl WOT_GetClientBranch(int32_t index);
+extern "C" API_CALL_WOTFINDER int32_t WOT_GetClientBranch(int32_t index);
 
 // -1- error, 0-unknown, 1-sd , 2-hd
-extern "C" API_CALL_WOTFINDER int32_t  __cdecl WOT_GetClientType(int32_t index);
+extern "C" API_CALL_WOTFINDER int32_t WOT_GetClientType(int32_t index);

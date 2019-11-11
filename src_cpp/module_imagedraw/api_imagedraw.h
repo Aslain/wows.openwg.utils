@@ -36,4 +36,4 @@
 #include <windows.h>
 
 
-extern "C" API_CALL_IMAGEDRAW void __cdecl IMAGEDRAW_PngToBmp(_In_ const wchar_t* filename);
+extern "C" API_CALL_IMAGEDRAW void IMAGEDRAW_PngToBmp(_In_ const wchar_t* filename);

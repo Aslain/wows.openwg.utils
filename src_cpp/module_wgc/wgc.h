@@ -24,12 +24,12 @@
  
 #pragma once
 
-#include <string>
+#include <filesystem>
 #include <vector>
 
 class WGC {
 public:
-	static std::wstring GetWGCInstallPath();
-	static std::vector<std::wstring> GetWotPaths();
-	static std::wstring GetWotPreferedPath();
+	static std::filesystem::path GetWGCInstallPath();
+	static std::vector<std::filesystem::path> GetClientPaths();
+	static std::filesystem::path GetClientPreferedPath();
 };

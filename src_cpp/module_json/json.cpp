@@ -287,7 +287,7 @@ void _swapPayload(Json::Value &node, Json::Value &value, bool is_add)
 {
 	if (node.isObject() && value.isObject())
 	{
-		Json::Value::Members keys_val = value.getMemberNamesNum();
+		Json::Value::Members keys_val = value.getMemberNames();
 		size_t const size = keys_val.size();
 		for (size_t i = 0; i < size; i++)
 		{
@@ -300,10 +300,10 @@ void _swapPayload(Json::Value &node, Json::Value &value, bool is_add)
 				}
 				else
 				{
-					Json::Value::Members keys_node = node.getMemberNamesNum();
+					Json::Value::Members keys_node = node.getMemberNames();
 					node[member].swapPayload(value[member]);
-					node[member].Name = member;
-					node[member].orderNum = node[keys_node[keys_node.size() - 1]].orderNum + 1;
+					//node[member].Name = member;
+					//node[member].orderNum = node[keys_node[keys_node.size() - 1]].orderNum + 1;
 
 				}
 			}

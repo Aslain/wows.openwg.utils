@@ -22,31 +22,10 @@
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "module_process/process.h"
-
-
-bool test_1()
-{
-    /*
-    std::vector<std::wstring> t = Process::GetRunningProcessesInDirectory(L"C:\\Windows\\");
-    if (t.size() > 0)
-        return true;
-        */
-    return false;
-}
-
-
-bool test_2()
-{
-    /*
-    Process::TerminateProcess(L"Wotlauncher");
-    */
-    return true;
-}
+#include "module_wine/api_wine.h"
 
 int main()
 {
-    //test_1();
-    test_2();
-
+	bool result = WINE_IsRunningUnder();
+	return 0;
 }

@@ -29,5 +29,12 @@
 
 class Vector{
 public:
-	static void RemoveDuplicates(std::vector<std::wstring>& vec);
+
+	template <typename T>
+	static void RemoveDuplicates(std::vector<T>& vec)
+	{
+		std::sort(vec.begin(), vec.end());
+		vec.erase(std::unique(vec.begin(), vec.end()), vec.end());
+	}
+
 };

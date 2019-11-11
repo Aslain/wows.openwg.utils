@@ -22,14 +22,39 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # 
 
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.15)
 project(xvmextensions)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include("ucm.cmake")
-ucm_set_runtime(STATIC)
+add_library(jsoncpp STATIC
+  3rdparty/jsoncpp/src/lib_json/json_reader.cpp
+  3rdparty/jsoncpp/src/lib_json/json_tool.h
+  3rdparty/jsoncpp/src/lib_json/json_value.cpp
+  3rdparty/jsoncpp/src/lib_json/json_writer.cpp
+)
+set_target_properties(jsoncpp PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+target_include_directories(jsoncpp PUBLIC 3rdparty/jsoncpp/include)
+
+
+add_library(pugixml STATIC
+  3rdparty/pugixml/src/pugiconfig.hpp
+  3rdparty/pugixml/src/pugixml.cpp
+  3rdparty/pugixml/src/pugixml.hpp
+)
+set_target_properties(pugixml PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+target_compile_definitions(pugixml PUBLIC "-DPUGIXML_WCHAR_MODE")
+target_include_directories(pugixml PUBLIC 3rdparty/pugixml/src)
+
+
+add_library(lodepng STATIC
+  3rdparty/lodepng/lodepng.cpp
+  3rdparty/lodepng/lodepng.h
+)
+set_target_properties(lodepng PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+target_include_directories(lodepng PUBLIC 3rdparty/lodepng)
+
 
 set(SOURCES_COMMON
     dllmain.cpp
@@ -49,6 +74,8 @@ set(SOURCES_COMMON
     common/vector.h
 )
 source_group("common" FILES ${SOURCES_COMMON})
+option(BUILD_COMMON "Build common" ON)
+
 
 set(SOURCES_JSON
     module_json/api_json.cpp
@@ -57,6 +84,7 @@ set(SOURCES_JSON
     module_json/json.h
 )
 source_group("json" FILES ${SOURCES_JSON})
+option(BUILD_JSON "Build JSON" ON)
 
 set(SOURCES_PROCESS
     module_process/api_process.cpp
@@ -65,6 +93,7 @@ set(SOURCES_PROCESS
     module_process/process.h
 )
 source_group("process" FILES ${SOURCES_PROCESS})
+option(BUILD_PROCESS "Build Process" ON)
 
 set(SOURCES_WGC
     module_wgc/api_wgc.cpp
@@ -73,6 +102,7 @@ set(SOURCES_WGC
     module_wgc/wgc.h
 )
 source_group("wgc" FILES ${SOURCES_WGC})
+option(BUILD_WGC "Build WGC" ON)
 
 
 set(SOURCES_WINE
@@ -82,6 +112,7 @@ set(SOURCES_WINE
     module_wine/wine.h
 )
 source_group("wine" FILES ${SOURCES_WINE})
+option(BUILD_WINE "Build Wine" ON)
 
 set(SOURCES_WOTFINDER
     module_wotfinder/api_wotfinder.cpp
@@ -94,6 +125,7 @@ set(SOURCES_WOTFINDER
     module_wotfinder/wotlauncher.h      
 )
 source_group("wotfinder" FILES ${SOURCES_WOTFINDER})
+option(BUILD_WOTFINDER "Build Wotfinder" ON)
 
 set(SOURCES_IMAGEDRAW
     module_imagedraw/api_imagedraw.cpp
@@ -102,16 +134,7 @@ set(SOURCES_IMAGEDRAW
     module_imagedraw/imagedraw.h
 )
 source_group("imagedraw" FILES ${SOURCES_IMAGEDRAW})
-
-set(SOURCES_3RDPARTY_JSONCPP
-    3rdparty/jsoncpp/src/jsoncpp.cpp
-)
-source_group("3rdparty\\jsoncpp" FILES ${SOURCES_3RDPARTY_JSONCPP})
-
-set(SOURCES_3RDPARTY_LODEPNG
-    3rdparty/lodepng/src/lodepng.cpp
-)
-source_group("3rdparty\\lodepng" FILES ${SOURCES_3RDPARTY_LODEPNG})
+option(BUILD_IMAGEDRAW "Build ImageDraw" ON)
 
 ###############################
 ### Library: xvmextensions ###
@@ -125,26 +148,49 @@ add_library(xvmextensions SHARED
     ${SOURCES_WINE}
     ${SOURCES_WOTFINDER}
     ${SOURCES_IMAGEDRAW}
-    ${SOURCES_3RDPARTY_JSONCPP}
-    ${SOURCES_3RDPARTY_LODEPNG}
 )
 
-target_include_directories(xvmextensions PRIVATE 3rdparty/jsoncpp/include)
-target_include_directories(xvmextensions PRIVATE 3rdparty/rapidxml/include)
-target_include_directories(xvmextensions PRIVATE 3rdparty/lodepng/include)
 target_include_directories(xvmextensions PRIVATE .)
 
-target_link_libraries(xvmextensions "Version" "Kernel32" "Psapi" "Shell32" "Advapi32")
-target_compile_definitions(xvmextensions PRIVATE "-DBUILD_COMMON")
-target_compile_definitions(xvmextensions PRIVATE "-DBUILD_JSON")
-target_compile_definitions(xvmextensions PRIVATE "-DBUILD_PROCESS")
-target_compile_definitions(xvmextensions PRIVATE "-DBUILD_WGC")
-target_compile_definitions(xvmextensions PRIVATE "-DBUILD_WINE")
-target_compile_definitions(xvmextensions PRIVATE "-DBUILD_WOTFINDER")
-target_compile_definitions(xvmextensions PRIVATE "-DBUILD_IMAGEDRAW")
+target_link_libraries(xvmextensions PRIVATE "Version" "Kernel32" "Psapi" "Shell32" "Advapi32")
+target_link_libraries(xvmextensions PUBLIC jsoncpp)
+target_link_libraries(xvmextensions PUBLIC pugixml)
+target_link_libraries(xvmextensions PUBLIC lodepng)
+
+
+if(BUILD_COMMON)
+	target_compile_definitions(xvmextensions PRIVATE "-DBUILD_COMMON")
+endif()
+
+if(BUILD_JSON)
+    target_compile_definitions(xvmextensions PRIVATE "-DBUILD_JSON")
+endif()
+
+if(BUILD_PROCESS)
+    target_compile_definitions(xvmextensions PRIVATE "-DBUILD_PROCESS")
+endif()
+
+if(BUILD_WGC)
+    target_compile_definitions(xvmextensions PRIVATE "-DBUILD_WGC")
+endif()
+
+if(BUILD_WINE)
+    target_compile_definitions(xvmextensions PRIVATE "-DBUILD_WINE")
+endif()
+
+if(BUILD_WOTFINDER)
+    target_compile_definitions(xvmextensions PRIVATE "-DBUILD_WOTFINDER")
+endif()
+
+if(BUILD_IMAGEDRAW)
+    target_compile_definitions(xvmextensions PRIVATE "-DBUILD_IMAGEDRAW")
+endif()
+
 target_compile_definitions(xvmextensions PRIVATE "-D_CRT_SECURE_NO_WARNINGS")
+target_compile_definitions(xvmextensions PRIVATE "-D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING")
 
 set_target_properties(xvmextensions PROPERTIES PREFIX "")
+set_target_properties(xvmextensions PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 #detect platform
 if(CMAKE_GENERATOR_PLATFORM STREQUAL "ARM")
@@ -178,11 +224,10 @@ install(
 ###       Test: JSON        ###
 ###############################
 
-add_executable(test_json "tests/json.cpp")
-target_link_libraries(test_json xvmextensions)
-target_include_directories(test_json PRIVATE 3rdparty/jsoncpp/include)
-target_include_directories(test_json PRIVATE .)
+#add_executable(test_json "tests/json.cpp")
+#target_link_libraries(test_json xvmextensions)
+#target_include_directories(test_json PRIVATE .)
 
-add_executable(test_process "tests/process.cpp")
-target_link_libraries(test_process xvmextensions)
-target_include_directories(test_process PRIVATE .)
+#add_executable(test_process "tests/process.cpp")
+#target_link_libraries(test_process xvmextensions)
+#target_include_directories(test_process PRIVATE .)

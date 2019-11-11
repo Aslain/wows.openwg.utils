@@ -27,6 +27,9 @@
 
 #include <fstream>
 
+#include <lodepng.h>
+
+
 
 //Input image must be RGB buffer (3 bytes per pixel), but you can easily make it
 //support RGBA input and output by changing the inputChannels and/or outputChannels

@@ -34,7 +34,7 @@
 #include <fstream>
 #include <codecvt>
 
-class API_CALL_JSON JsonUtils
+class JsonUtils
 {
 public:
     static Json::Value ParseString(const std::string& json);

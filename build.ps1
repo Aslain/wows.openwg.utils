@@ -37,5 +37,5 @@ function Build-CppProject($Toolset, $Architecture) {
 
 Build-CppProject -Toolset v141_xp -Architecture Win32
 Build-CppProject -Toolset v141_xp -Architecture x64
-Build-CppProject -Toolset v141 -Architecture ARM
-Build-CppProject -Toolset v141 -Architecture ARM64
+Build-CppProject -Toolset v142 -Architecture ARM
+Build-CppProject -Toolset v142 -Architecture ARM64

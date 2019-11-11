@@ -34,4 +34,4 @@
 
 #include <sal.h>
 
-extern "C" API_CALL_WINE bool __cdecl WINE_IsRunningUnder();
+extern "C" API_CALL_WINE bool WINE_IsRunningUnder();

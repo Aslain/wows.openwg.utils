@@ -27,7 +27,8 @@
 #include "wine.h"
 
 
-bool WINE_IsRunningUnder()
+extern "C" API_CALL_WINE bool WINE_IsRunningUnder()
 {
-    return Wine::GetStatus().running_on;
+	auto st = Wine::GetStatus();
+    return st.running_on;
 }

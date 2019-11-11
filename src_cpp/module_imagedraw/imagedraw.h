@@ -26,11 +26,9 @@
 
 #include "api_imagedraw.h"
 
-#include <lodepng.h>
-
 #include <string>
 
-class API_CALL_IMAGEDRAW ImageDraw
+class ImageDraw
 {
 public:
 

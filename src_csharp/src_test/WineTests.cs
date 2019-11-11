@@ -4,13 +4,12 @@ namespace XVM.Extensions.Tests
 {
     public class WineTests
     {
-        [Fact(Skip = "broken")]
+        [Fact(Skip = "Broken")]
         public void IsRunningUnder_1()
         {
             var underWine = Wine.IsRunningUnder();
 
             Assert.False(underWine);
         }
-
     }
 }

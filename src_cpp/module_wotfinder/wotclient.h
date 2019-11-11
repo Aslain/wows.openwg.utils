@@ -24,30 +24,47 @@
 
 #pragma once
 
+#include <filesystem>
 #include <string>
 
 enum ClientBranch
 {
-	WoT_Unknown,
-	WoT_Release,
-	WoT_CommonTest,
-	WoT_SuperTest,
-	WoT_Sandbox,
+	WoT_Unknown = 0,
+	WoT_Release = 1,
+	WoT_CommonTest = 2,
+	WoT_SuperTest = 3,
+	WoT_Sandbox = 4,
 };
 
 enum ClientType
 {
-	WoTType_Unknown,
-	WoTType_SD,
-	WoTType_HD,
+	WoTType_Unknown = 0,
+	WoTType_SD = 1,
+	WoTType_HD = 2,
 };
 
 
 class WotClient {
+public:
+	WotClient();
+	WotClient(const std::filesystem::path& wotDirectory);
+	~WotClient() = default;
+
+	bool IsValid();
+
+	std::wstring GetPath();
+	void SetPath(const std::filesystem::path& path);
+
+	ClientBranch GetClientBranch();
+	std::wstring GetClientExeVersion();
+	std::wstring GetClientVersion();
+	std::wstring GetClientLocale();
+	ClientType GetClientType();
+
 private:
 	bool isValid = false;
 
-	std::wstring path;
+	std::filesystem::path path;
 	
 	ClientBranch clientBranch = ClientBranch::WoT_Unknown;
 	ClientType clientType = ClientType::WoTType_Unknown;
@@ -63,20 +80,4 @@ private:
 	bool updateData_versionxml();
 
 	void clear();
-
-public:
-	bool IsValid();
-
-	WotClient();
-	WotClient(const std::wstring& wotDirectory);
-
-	std::wstring GetPath();
-	void SetPath(const std::wstring& path);
-
-	ClientBranch GetClientBranch();
-	std::wstring GetClientExeVersion();
-	std::wstring GetClientVersion();
-	std::wstring GetClientLocale();
-	ClientType GetClientType();
-
 };

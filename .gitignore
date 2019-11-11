@@ -4,6 +4,7 @@ syntax: glob
 .vs/
 
 build/
+~build/
 output/
 ~output/
 

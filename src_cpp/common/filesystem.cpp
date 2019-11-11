@@ -86,14 +86,13 @@ std::wstring Filesystem::GetFileContent(const std::wstring& filepath)
 	return content;
 }
 
-std::wstring Filesystem::GetProgramDataPath()
+std::filesystem::path Filesystem::GetProgramDataPath()
 {
 	wchar_t szProgramDataPath[MAX_PATH]{ 0 };
-	if (!SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_COMMON_APPDATA, NULL, 0, szProgramDataPath)))
-	{
-		return std::wstring();
+	if (!SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_COMMON_APPDATA, NULL, 0, szProgramDataPath))){
+		return std::filesystem::path();
 	}
-	return std::wstring(szProgramDataPath);
+	return std::filesystem::path(szProgramDataPath);
 }
 
 std::vector<std::wstring> Filesystem::GetLogicalDrives()
