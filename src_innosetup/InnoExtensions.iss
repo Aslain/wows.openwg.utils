@@ -34,6 +34,10 @@ external 'PROCESS_GetRunningInDirectoryW@files:innoextensions.dll cdecl';
 function PROCESS_TerminateProcess(ProcessName: String): Boolean;
 external 'PROCESS_TerminateProcess@files:innoextensions.dll cdecl';
 
+//SPLASHSCREEN
+function SPLASHSCREEN_ShowSplashScreenW(FileName: String, SecondsToShow: Integer): Boolean;
+external 'SPLASHSCREEN_ShowSplashScreenW@files:innoextensions.dll cdecl';
+
 
 //WGC
 procedure WGC_GetInstallPathW(Buffer: String; BufferSize: Integer);

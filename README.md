@@ -24,6 +24,7 @@ This project provides several ways to use it features:
 | ImageDraw::PngToBmp            | ✅    | ❌                    | ✅         |
 | Process::GetRunningInDirectory | ✅    | ✅                    | ✅         |
 | Process::TerminateProcess      | ✅    | ✅                    | ✅         |
+| SplashScreen::ShowSplashScreen | ✅    | ✅                    | ✅         |
 | WGC::GetInstallPath            | ✅    | ✅                    | ✅         |
 | WGC::IsInstalled               | ✅    | ✅                    | ✅         |
 | Wine::IsRunningUnder           | 🐍    | 🐍                    | 🐍         |
@@ -38,6 +39,6 @@ This project provides several ways to use it features:
 | WOT::GetClientExeVersion       | ✅    | ✅                    | ✅         |
 | WOT::GetIdsRangeForRegion      | ❌    | ✅                    | ❌         |
 | WOT::GetRegionFromString       | ❌    | ✅                    | ❌         |
-| XVM::GetLatestVersion          | ❌    | ✅<sup>.NET 4.5</sup> | ❌         |
-| XVM::GetVersion                | ❌    | ✅<sup>.NET 4.5</sup> | ❌         |
+| XVM::GetLatestVersion          | ❌    | 🐍<sup>.NET 4.5</sup> | ❌         |
+| XVM::GetVersion                | ❌    | 🐍<sup>.NET 4.5</sup> | ❌         |
 

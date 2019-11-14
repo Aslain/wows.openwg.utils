@@ -54,6 +54,9 @@
     <Compile Include="..\src\ProcessorArchitecture.cs">
       <Link>ProcessorArchitecture.cs</Link>
     </Compile>
+    <Compile Include="..\src\SplashScreen.cs">
+      <Link>SplashScreen.cs</Link>
+    </Compile>
     <Compile Include="..\src\WGC.cs">
       <Link>WGC.cs</Link>
     </Compile>

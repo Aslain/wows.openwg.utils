@@ -55,6 +55,8 @@ add_library(lodepng STATIC
 set_target_properties(lodepng PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 target_include_directories(lodepng PUBLIC 3rdparty/lodepng)
 
+add_library(stb INTERFACE)
+target_include_directories(stb INTERFACE 3rdparty/stb)
 
 set(SOURCES_COMMON
     dllmain.cpp
@@ -94,6 +96,15 @@ set(SOURCES_PROCESS
 )
 source_group("process" FILES ${SOURCES_PROCESS})
 option(BUILD_PROCESS "Build Process" ON)
+
+set(SOURCES_SPLASHSCREEN
+    module_splashscreen/api_splashscreen.cpp
+    module_splashscreen/api_splashscreen.h
+    module_splashscreen/splashscreen.cpp
+    module_splashscreen/splashscreen.h
+)
+source_group("splashscreen" FILES ${SOURCES_SPLASHSCREEN})
+option(BUILD_SPLASHSCREEN "Build Splashscreen" ON)
 
 set(SOURCES_WGC
     module_wgc/api_wgc.cpp
@@ -144,6 +155,7 @@ add_library(xvmextensions SHARED
     ${SOURCES_COMMON} 
     ${SOURCES_JSON}
     ${SOURCES_PROCESS}
+	${SOURCES_SPLASHSCREEN}
     ${SOURCES_WGC}
     ${SOURCES_WINE}
     ${SOURCES_WOTFINDER}
@@ -152,10 +164,11 @@ add_library(xvmextensions SHARED
 
 target_include_directories(xvmextensions PRIVATE .)
 
-target_link_libraries(xvmextensions PRIVATE "Version" "Kernel32" "Psapi" "Shell32" "Advapi32")
+target_link_libraries(xvmextensions PRIVATE "Version" "Kernel32" "Psapi" "Shell32" "Advapi32" "Gdi32")
 target_link_libraries(xvmextensions PUBLIC jsoncpp)
 target_link_libraries(xvmextensions PUBLIC pugixml)
 target_link_libraries(xvmextensions PUBLIC lodepng)
+target_link_libraries(xvmextensions PUBLIC stb)
 
 
 if(BUILD_COMMON)
@@ -168,6 +181,10 @@ endif()
 
 if(BUILD_PROCESS)
     target_compile_definitions(xvmextensions PRIVATE "-DBUILD_PROCESS")
+endif()
+
+if(BUILD_SPLASHSCREEN)
+    target_compile_definitions(xvmextensions PRIVATE "-DBUILD_SPLASHSCREEN")
 endif()
 
 if(BUILD_WGC)
@@ -228,6 +245,6 @@ install(
 #target_link_libraries(test_json xvmextensions)
 #target_include_directories(test_json PRIVATE .)
 
-#add_executable(test_process "tests/process.cpp")
-#target_link_libraries(test_process xvmextensions)
-#target_include_directories(test_process PRIVATE .)
+add_executable(test_process "tests/process.cpp")
+target_link_libraries(test_process xvmextensions)
+target_include_directories(test_process PRIVATE .)

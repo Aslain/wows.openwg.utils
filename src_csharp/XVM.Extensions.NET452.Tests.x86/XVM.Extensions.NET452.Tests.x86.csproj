@@ -63,6 +63,9 @@
     <Compile Include="..\src_test\ProcessTests.cs">
       <Link>ProcessTests.cs</Link>
     </Compile>
+    <Compile Include="..\src_test\SplashScreenTests.cs">
+      <Link>SplashScreenTests.cs</Link>
+    </Compile>
     <Compile Include="..\src_test\WGCTests.cs">
       <Link>WGCTests.cs</Link>
     </Compile>
@@ -88,6 +91,12 @@
       <Project>{71645ee6-eb0a-4bf9-b57e-2e8974982a95}</Project>
       <Name>XVM.Extensions.NET45</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\src_test\test.png">
+      <Link>test.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

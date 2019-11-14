@@ -28,8 +28,8 @@ $root = (Get-Location).Path -replace "\\","/"
 Remove-Item -Path ./build/ -Force -Recurse -ErrorAction SilentlyContinue
 
 function Build-CppProject($Toolset, $Architecture) {
-    New-Item -ItemType Directory -Path ./build/$Architecture/ | Out-Null
-    Push-Location ./build/$Architecture/ -ErrorAction Stop
+    New-Item -ItemType Directory -Path ./~build/$Architecture/ | Out-Null
+    Push-Location ./~build/$Architecture/ -ErrorAction Stop
     cmake -T $Toolset -A $Architecture $root/src_cpp/ -DCMAKE_INSTALL_PREFIX="$root/~output/cpp/"
     cmake --build . --config Release --target Install 
     Pop-Location  

@@ -22,10 +22,10 @@
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "module_wine/api_wine.h"
+#include "module_splashscreen/api_splashscreen.h"
 
 int main()
 {
-	bool result = WINE_IsRunningUnder();
+	bool result = SPLASHSCREEN_ShowSplashScreenW(L"D:\\Untitled.png", 5);
 	return 0;
 }
