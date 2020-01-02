@@ -1,4 +1,4 @@
-/* Copyright (c) 2017-2019, Mikhail Paulyshka
+/* Copyright (c) 2017-2020, Mikhail Paulyshka.
 * All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without

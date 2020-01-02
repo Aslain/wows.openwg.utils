@@ -1,7 +1,7 @@
 /*
 * Copyright (c) 2005     , Bjarke Viksoe
 * Copyright (c) 2008     , Bradley Grainger
-* Copyright (c) 2017-2019, Mikhail Paulyshka
+* Copyright (c) 2017-2020, Mikhail Paulyshka.
 *
 * All rights reserved.
 *

@@ -4,7 +4,7 @@
 #define VER_FILEDESCRIPTION_STR  "InnoSetup extensions library\0"
 #define VER_PRODUCTNAME_STR      "InnoSetup extensions\0"
 #define VER_INTERNALNAME_STR     "innosetupextensions\0"
-#define VER_LEGALCOPYRIGHT_STR   "Mikhail Paulyshka, 2017. MIT license\0"
+#define VER_LEGALCOPYRIGHT_STR   "Mikhail Paulyshka, 2017-2020. MIT license\0"
 #define VER_ORIGINALFILENAME_STR "innosetupextensions.dll\0"
 #define VER_PRIVATEBUILD_STR     "0\0"
 
