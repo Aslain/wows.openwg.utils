@@ -29,6 +29,6 @@
 
 extern "C" API_CALL_WINE bool WINE_IsRunningUnder()
 {
-	auto st = Wine::GetStatus();
+    auto st = Wine::GetStatus();
     return st.running_on;
 }

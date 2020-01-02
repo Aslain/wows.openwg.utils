@@ -33,51 +33,51 @@
 
 void WGC_GetInstallPathA(char * buffer, int32_t buffer_size)
 {
-	if (buffer_size <= 0)
-	{
-		return;
-	}
+    if (buffer_size <= 0)
+    {
+        return;
+    }
 
-	wchar_t* wbuffer = (wchar_t*)malloc(buffer_size * sizeof(wchar_t));
+    wchar_t* wbuffer = (wchar_t*)malloc(buffer_size * sizeof(wchar_t));
 
-	if (wbuffer != nullptr)
-	{
-		WGC_GetInstallPathW(wbuffer, buffer_size);
+    if (wbuffer != nullptr)
+    {
+        WGC_GetInstallPathW(wbuffer, buffer_size);
 
-		WideCharToMultiByte(
-			CP_ACP,
-			0,
-			wbuffer,
-			buffer_size * sizeof(wchar_t),
-			buffer,
-			buffer_size * sizeof(char),
-			NULL,
-			NULL);
+        WideCharToMultiByte(
+            CP_ACP,
+            0,
+            wbuffer,
+            buffer_size * sizeof(wchar_t),
+            buffer,
+            buffer_size * sizeof(char),
+            NULL,
+            NULL);
 
-		free(wbuffer);
-	}
+        free(wbuffer);
+    }
 }
 
 void WGC_GetInstallPathW(wchar_t * buffer, int32_t buffer_size)
 {
-	if (buffer_size <= 0)
-	{
-		return;
-	}
+    if (buffer_size <= 0)
+    {
+        return;
+    }
 
-	std::wstring wgcpath = WGC::GetWGCInstallPath();
+    std::wstring wgcpath = WGC::GetWGCInstallPath();
 
-	if (!wgcpath.empty())
-	{
-		wcscpy_s(buffer, buffer_size, wgcpath.c_str());
-	}
-	else
-	{
-		buffer[0] = '\0';
-	}
+    if (!wgcpath.empty())
+    {
+        wcscpy_s(buffer, buffer_size, wgcpath.c_str());
+    }
+    else
+    {
+        buffer[0] = '\0';
+    }
 }
 
 bool WGC_IsInstalled()
 {
-	return !WGC::GetWGCInstallPath().empty();
+    return !WGC::GetWGCInstallPath().empty();
 }

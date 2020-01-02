@@ -34,9 +34,9 @@ class SplashScreen
 public:
     static bool ShowSplashScreen(wchar_t* file_path, int seconds);
 private:
-	static void registerWindowClass();
-	static void setSplashImage(HWND hwndSplash, HBITMAP hbmpSplash);
-	static HBITMAP loadImage(wchar_t* file_path);
-	static HWND createSplashWindow();
-	static void premultiplyBitmapAlpha(HDC hDC, HBITMAP hBmp);
+    static void registerWindowClass();
+    static void setSplashImage(HWND hwndSplash, HBITMAP hbmpSplash);
+    static HBITMAP loadImage(wchar_t* file_path);
+    static HWND createSplashWindow();
+    static void premultiplyBitmapAlpha(HDC hDC, HBITMAP hBmp);
 };

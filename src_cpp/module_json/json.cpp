@@ -110,235 +110,235 @@ std::wstring JsonUtils::GetValue(const std::wstring& json, const std::wstring& p
 
 std::string readFileUtf8(const std::wstring& file_name)
 {
-	std::wifstream fs(file_name);
-	fs.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
-	std::wstringstream wss;
-	wss << fs.rdbuf();
-	fs.close();
+    std::wifstream fs(file_name);
+    fs.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
+    std::wstringstream wss;
+    wss << fs.rdbuf();
+    fs.close();
 
-	std::string data = Encoding::wstring_to_utf8(wss.str());
-	if ((data[0] == char(0xEF)) && (data[1] == char(0xBB)) && (data[2] == char(0xBF)))
-	{
-		data.erase(data.begin(), data.begin() + 3);
-	}
+    std::string data = Encoding::wstring_to_utf8(wss.str());
+    if ((data[0] == char(0xEF)) && (data[1] == char(0xBB)) && (data[2] == char(0xBF)))
+    {
+        data.erase(data.begin(), data.begin() + 3);
+    }
 
-	return data;
+    return data;
 }
 
 void writeFileUtf8(const std::wstring& file_name, Json::Value &node)
 {
-	Json::StyledStreamWriter styled("  ");
-	std::fstream fs(file_name, std::ios::out);
-	const char BOM[3] = { char(0xEF), char(0xBB), char(0xBF) };
+    Json::StyledStreamWriter styled("  ");
+    std::fstream fs(file_name, std::ios::out);
+    const char BOM[3] = { char(0xEF), char(0xBB), char(0xBF) };
 
-	fs.write(BOM, 3);
-	styled.write(fs, node);
-	fs.close();
+    fs.write(BOM, 3);
+    styled.write(fs, node);
+    fs.close();
 }
 
 std::pair<std::wstring, std::wstring> getMemberNamesAndValues(Json::Value &node)
 {
-	const wchar_t line_break = 13;
-	std::wstringstream names, values;
-	Json::FastWriter fast_write;
+    const wchar_t line_break = 13;
+    std::wstringstream names, values;
+    Json::FastWriter fast_write;
 
-	if (!node.isObject() && !node.isArray())
-	{
-		return std::make_pair(L"", L"");
-	}
+    if (!node.isObject() && !node.isArray())
+    {
+        return std::make_pair(L"", L"");
+    }
 
-	std::vector<std::string> keys = node.getMemberNames();
-	for (size_t i = 0; i<keys.size(); i++)
-	{
-		const std::string& key = keys[i];
-		names << Encoding::utf8_to_wstring(key) << line_break;
-		switch (node[key].type())
-		{
-		case Json::ValueType::arrayValue:
-			//values << L"arrayValue" << line_break;
-			//break;
-		case Json::ValueType::objectValue:
-			values << Encoding::utf8_to_wstring(fast_write.write(node[key]));
-			break;
-		default:
-			values << Encoding::utf8_to_wstring(node[key].asString()) << line_break;
-		}
-	}
-	return std::make_pair(names.str(), values.str());
+    std::vector<std::string> keys = node.getMemberNames();
+    for (size_t i = 0; i<keys.size(); i++)
+    {
+        const std::string& key = keys[i];
+        names << Encoding::utf8_to_wstring(key) << line_break;
+        switch (node[key].type())
+        {
+        case Json::ValueType::arrayValue:
+            //values << L"arrayValue" << line_break;
+            //break;
+        case Json::ValueType::objectValue:
+            values << Encoding::utf8_to_wstring(fast_write.write(node[key]));
+            break;
+        default:
+            values << Encoding::utf8_to_wstring(node[key].asString()) << line_break;
+        }
+    }
+    return std::make_pair(names.str(), values.str());
 }
 
 std::pair<std::wstring, std::wstring> JsonUtils::GetNamesAndValues(const std::wstring& file_name, const std::wstring& path)
 {
-	std::string _path = Encoding::wstring_to_utf8(path);
-	Json::Value node;
-	Json::Reader reader;
+    std::string _path = Encoding::wstring_to_utf8(path);
+    Json::Value node;
+    Json::Reader reader;
 
-	reader.parse(readFileUtf8(file_name), node);
+    reader.parse(readFileUtf8(file_name), node);
 
-	std::vector<std::string> tokens = String::Split(String::Trim(_path), '/');
-	try
-	{
-		for (unsigned int i = 0; i < tokens.size(); i++)
-		{
-			node = node[tokens[i].c_str()];
-		}
-	}
-	catch (Json::LogicError&)
-	{
-		return std::make_pair(L"", L"");
-	}
+    std::vector<std::string> tokens = String::Split(String::Trim(_path), '/');
+    try
+    {
+        for (unsigned int i = 0; i < tokens.size(); i++)
+        {
+            node = node[tokens[i].c_str()];
+        }
+    }
+    catch (Json::LogicError&)
+    {
+        return std::make_pair(L"", L"");
+    }
 
-	return getMemberNamesAndValues(node);
+    return getMemberNamesAndValues(node);
 }
 
 std::pair<std::wstring, std::wstring> JsonUtils::GetNamesAndValues(const std::wstring& json)
 {
-	Json::Value node;
-	Json::Reader reader;
+    Json::Value node;
+    Json::Reader reader;
 
-	reader.parse(Encoding::wstring_to_utf8(json), node);
-	return getMemberNamesAndValues(node);
+    reader.parse(Encoding::wstring_to_utf8(json), node);
+    return getMemberNamesAndValues(node);
 }
 
 std::wstring JsonUtils::GetArrayValue(const std::wstring& json)
 {
-	Json::Value node;
-	Json::Reader reader;
+    Json::Value node;
+    Json::Reader reader;
 
-	reader.parse(Encoding::wstring_to_utf8(json), node);
+    reader.parse(Encoding::wstring_to_utf8(json), node);
 
-	if (node.isArray())
-	{
-		std::wstringstream values;
-		const wchar_t line_break = 13;
-		Json::FastWriter fast_write;
-		Json::ArrayIndex size = node.size();
-		for (Json::ArrayIndex i = 0; i < size; ++i)
-		{
-			switch (node[i].type())
-			{
-			case Json::ValueType::arrayValue:
-			case Json::ValueType::objectValue:
-				values << Encoding::utf8_to_wstring(fast_write.write(node[i]));
-				break;
-			default:
-				values << Encoding::utf8_to_wstring(node[i].asString()) << line_break;
-			}
-		}
-		return values.str();
-	}
-	else
-	{
-		return json;
-	}
+    if (node.isArray())
+    {
+        std::wstringstream values;
+        const wchar_t line_break = 13;
+        Json::FastWriter fast_write;
+        Json::ArrayIndex size = node.size();
+        for (Json::ArrayIndex i = 0; i < size; ++i)
+        {
+            switch (node[i].type())
+            {
+            case Json::ValueType::arrayValue:
+            case Json::ValueType::objectValue:
+                values << Encoding::utf8_to_wstring(fast_write.write(node[i]));
+                break;
+            default:
+                values << Encoding::utf8_to_wstring(node[i].asString()) << line_break;
+            }
+        }
+        return values.str();
+    }
+    else
+    {
+        return json;
+    }
 }
 
 void c_node(const size_t count, size_t index, Json::Value &node, const std::vector<std::string>& tokens, Json::Value& value)
 {
-	if (index < count)
-	{
-		for (Json::ValueConstIterator v = node.begin(); v != node.end(); v++)
-		{
-			std::string key = v.key().asString();
-		}
-		std::string token = tokens[index].c_str();
-		c_node(count, ++index, node[token], tokens, value);
-	}
-	else
-	{
-		node.swapPayload(value);
-	}
+    if (index < count)
+    {
+        for (Json::ValueConstIterator v = node.begin(); v != node.end(); v++)
+        {
+            std::string key = v.key().asString();
+        }
+        std::string token = tokens[index].c_str();
+        c_node(count, ++index, node[token], tokens, value);
+    }
+    else
+    {
+        node.swapPayload(value);
+    }
 }
 
 bool SetValue(const std::wstring& file_name, const std::wstring& path_value, Json::Value& value)
 {
-	Json::Value node;
-	Json::Reader reader;
-	
-	std::vector<std::string> tokens = String::Split(Encoding::wstring_to_utf8(path_value), '/');
-	try
-	{
-		size_t count = tokens.size();
-		size_t index = 0;
-		if (index >= count)
-		{
-			return false;
-		}
-		c_node(count, index, node, tokens, Json::Value(value));
-	}
-	catch (Json::LogicError&)
-	{
-		return false;
-	}
-	writeFileUtf8(file_name, node);
-	return true;
+    Json::Value node;
+    Json::Reader reader;
+    
+    std::vector<std::string> tokens = String::Split(Encoding::wstring_to_utf8(path_value), '/');
+    try
+    {
+        size_t count = tokens.size();
+        size_t index = 0;
+        if (index >= count)
+        {
+            return false;
+        }
+        c_node(count, index, node, tokens, Json::Value(value));
+    }
+    catch (Json::LogicError&)
+    {
+        return false;
+    }
+    writeFileUtf8(file_name, node);
+    return true;
 }
 
 bool JsonUtils::SetValueBool(const std::wstring& file_name, const std::wstring& path_value, const bool value)
 {
-	if (!SetValue(file_name, path_value, Json::Value(value)))
-	{
-		return false;
-	}
-	return true;
+    if (!SetValue(file_name, path_value, Json::Value(value)))
+    {
+        return false;
+    }
+    return true;
 }
 
 void _swapPayload(Json::Value &node, Json::Value &value, bool is_add)
 {
-	if (node.isObject() && value.isObject())
-	{
-		Json::Value::Members keys_val = value.getMemberNames();
-		size_t const size = keys_val.size();
-		for (size_t i = 0; i < size; i++)
-		{
-			std::string member = keys_val[i];
-			if (member.length() > 0)
-			{
-				if (node.find(member.c_str(), member.c_str() + member.length()) != NULL)
-				{
-					_swapPayload(node[member], value[member], is_add);
-				}
-				else
-				{
-					Json::Value::Members keys_node = node.getMemberNames();
-					node[member].swapPayload(value[member]);
-					//node[member].Name = member;
-					//node[member].orderNum = node[keys_node[keys_node.size() - 1]].orderNum + 1;
+    if (node.isObject() && value.isObject())
+    {
+        Json::Value::Members keys_val = value.getMemberNames();
+        size_t const size = keys_val.size();
+        for (size_t i = 0; i < size; i++)
+        {
+            std::string member = keys_val[i];
+            if (member.length() > 0)
+            {
+                if (node.find(member.c_str(), member.c_str() + member.length()) != NULL)
+                {
+                    _swapPayload(node[member], value[member], is_add);
+                }
+                else
+                {
+                    Json::Value::Members keys_node = node.getMemberNames();
+                    node[member].swapPayload(value[member]);
+                    //node[member].Name = member;
+                    //node[member].orderNum = node[keys_node[keys_node.size() - 1]].orderNum + 1;
 
-				}
-			}
-		}
-	}
-	else if (node.isArray() && value.isArray() && is_add)
-	{
-		//Json::Value::Members keys_val = value.getMemberNamesNum();
-		size_t const size = value.size();
-		for (size_t i = 0; i < size; i++)
-		{
-			node.append(value[static_cast<Json::ArrayIndex>(i)]);
-		}
-	}
-	else
-	{
-		node.swapPayload(value);
-	}
+                }
+            }
+        }
+    }
+    else if (node.isArray() && value.isArray() && is_add)
+    {
+        //Json::Value::Members keys_val = value.getMemberNamesNum();
+        size_t const size = value.size();
+        for (size_t i = 0; i < size; i++)
+        {
+            node.append(value[static_cast<Json::ArrayIndex>(i)]);
+        }
+    }
+    else
+    {
+        node.swapPayload(value);
+    }
 }
 
 bool JsonUtils::SetValueObj(const std::wstring& file_name, const std::wstring& json, bool is_add)
 {
-	Json::Value node, value;
-	Json::Reader reader;
+    Json::Value node, value;
+    Json::Reader reader;
 
-	try
-	{
-		reader.parse(readFileUtf8(file_name), node);
-		reader.parse(Encoding::wstring_to_utf8(json), value);
-		_swapPayload(node, value, is_add);
-		writeFileUtf8(file_name, node);
-	}
-	catch (Json::LogicError&)
-	{
-		return false;
-	}
-	return true;
+    try
+    {
+        reader.parse(readFileUtf8(file_name), node);
+        reader.parse(Encoding::wstring_to_utf8(json), value);
+        _swapPayload(node, value, is_add);
+        writeFileUtf8(file_name, node);
+    }
+    catch (Json::LogicError&)
+    {
+        return false;
+    }
+    return true;
 }

@@ -32,60 +32,60 @@
 
 std::filesystem::path WGC::GetWGCInstallPath()
 {
-	auto programDataPath = Filesystem::GetProgramDataPath();
+    auto programDataPath = Filesystem::GetProgramDataPath();
 
-	auto wgcPathFile = programDataPath / L"Wargaming.net" / L"GameCenter" / "data" / "wgc_path.dat";
-	if (std::filesystem::exists(wgcPathFile)){
-		auto path = std::filesystem::path(Filesystem::GetFileContent(wgcPathFile));
-		if (std::filesystem::exists(path / "wgc.exe")){
-			return path;
-		}
-	}
-	else if (std::filesystem::exists(programDataPath / "Wargaming.net" / "GameCenter" / "wgc.exe")){
-		return programDataPath / "Wargaming.net" / "GameCenter";
-	}
+    auto wgcPathFile = programDataPath / L"Wargaming.net" / L"GameCenter" / "data" / "wgc_path.dat";
+    if (std::filesystem::exists(wgcPathFile)){
+        auto path = std::filesystem::path(Filesystem::GetFileContent(wgcPathFile));
+        if (std::filesystem::exists(path / "wgc.exe")){
+            return path;
+        }
+    }
+    else if (std::filesystem::exists(programDataPath / "Wargaming.net" / "GameCenter" / "wgc.exe")){
+        return programDataPath / "Wargaming.net" / "GameCenter";
+    }
 
-	return  std::filesystem::path();
+    return  std::filesystem::path();
 }
 
 
 std::vector<std::filesystem::path> WGC::GetClientPaths()
 {
-	std::wstring programDataPath = Filesystem::GetProgramDataPath();
+    std::wstring programDataPath = Filesystem::GetProgramDataPath();
 
-	std::vector<std::filesystem::path> wotPaths;
+    std::vector<std::filesystem::path> wotPaths;
 
-	try{
-		for (auto& p : std::filesystem::directory_iterator(programDataPath + L"\\Wargaming.net\\GameCenter\\apps\\wot\\")){
-			auto path = std::filesystem::path(Filesystem::GetFileContent(p.path().wstring()));
+    try{
+        for (auto& p : std::filesystem::directory_iterator(programDataPath + L"\\Wargaming.net\\GameCenter\\apps\\wot\\")){
+            auto path = std::filesystem::path(Filesystem::GetFileContent(p.path().wstring()));
 
-			if (std::filesystem::exists(path / L"WorldOfTanks.exe")){
-				wotPaths.push_back(path);
-			}
-		}
-	}
-	catch (const std::exception&) {}
+            if (std::filesystem::exists(path / L"WorldOfTanks.exe")){
+                wotPaths.push_back(path);
+            }
+        }
+    }
+    catch (const std::exception&) {}
 
-	return wotPaths;
+    return wotPaths;
 }
 
 
 std::filesystem::path WGC::GetClientPreferedPath()
 {
-	auto preferencesPath = GetWGCInstallPath() / L"preferences.xml";
-	if (!std::filesystem::exists(preferencesPath)) {
-		return std::filesystem::path();
-	}
+    auto preferencesPath = GetWGCInstallPath() / L"preferences.xml";
+    if (!std::filesystem::exists(preferencesPath)) {
+        return std::filesystem::path();
+    }
 
-	pugi::xml_document doc;
-	if (!doc.load_file(preferencesPath.wstring().c_str())) {
-		return false;
-	}
+    pugi::xml_document doc;
+    if (!doc.load_file(preferencesPath.wstring().c_str())) {
+        return false;
+    }
 
-	auto wot = doc.select_single_node(L"/protocol/application/games_manager/selectedGames/WOT");
-	if (!wot) {
-		return std::filesystem::path();
-	}
+    auto wot = doc.select_single_node(L"/protocol/application/games_manager/selectedGames/WOT");
+    if (!wot) {
+        return std::filesystem::path();
+    }
 
-	return std::filesystem::path(wot.node().first_child().value());
+    return std::filesystem::path(wot.node().first_child().value());
 }

@@ -28,9 +28,9 @@
 
 API_CALL_SPLASHSCREEN bool __cdecl SPLASHSCREEN_ShowSplashScreenW(wchar_t* file_path, int32_t seconds)
 {
-	if (!file_path) {
-		return false;
-	}
+    if (!file_path) {
+        return false;
+    }
 
-	return SplashScreen::ShowSplashScreen(file_path, seconds);
+    return SplashScreen::ShowSplashScreen(file_path, seconds);
 }

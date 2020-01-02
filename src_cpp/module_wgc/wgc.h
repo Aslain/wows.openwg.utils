@@ -29,7 +29,7 @@
 
 class WGC {
 public:
-	static std::filesystem::path GetWGCInstallPath();
-	static std::vector<std::filesystem::path> GetClientPaths();
-	static std::filesystem::path GetClientPreferedPath();
+    static std::filesystem::path GetWGCInstallPath();
+    static std::vector<std::filesystem::path> GetClientPaths();
+    static std::filesystem::path GetClientPreferedPath();
 };

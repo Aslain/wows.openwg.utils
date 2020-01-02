@@ -29,5 +29,5 @@
 class Registry
 {
 public:
-	static std::wstring GetStringValue(const wchar_t* subkey, const wchar_t* value);
+    static std::wstring GetStringValue(const wchar_t* subkey, const wchar_t* value);
 };

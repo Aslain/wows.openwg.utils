@@ -34,7 +34,7 @@
 
 bool WotClient::IsValid()
 {
-	return isValid;
+    return isValid;
 }
 
 ////////CTOR
@@ -44,185 +44,185 @@ WotClient::WotClient()
 
 WotClient::WotClient(const std::filesystem::path& wotDirectory)
 {
-	SetPath(wotDirectory);
+    SetPath(wotDirectory);
 }
 
 
 ////GET/SET
 std::wstring WotClient::GetPath()
 {
-	return path;
+    return path;
 }
 
 void WotClient::SetPath(const std::filesystem::path& path)
 {
-	this->path = path;
-	updateData();
+    this->path = path;
+    updateData();
 }
 
 ClientBranch WotClient::GetClientBranch()
 {
-	return clientBranch;
+    return clientBranch;
 }
 
 std::wstring WotClient::GetClientExeVersion()
 {
-	return this->exeVersion;
+    return this->exeVersion;
 }
 
 std::wstring WotClient::GetClientVersion()
 {
-	return clientVersion;
+    return clientVersion;
 }
 
 std::wstring WotClient::GetClientLocale()
 {
-	return clientLocale;
+    return clientLocale;
 }
 
 ClientType WotClient::GetClientType()
 {
-	return clientType;
+    return clientType;
 }
 
 ////////
 void WotClient::updateData()
 {
-	clear();
+    clear();
 
-	if (!std::filesystem::exists(path / L"WorldOfTanks.exe")){
-		return;
-	}
+    if (!std::filesystem::exists(path / L"WorldOfTanks.exe")){
+        return;
+    }
 
-	exeVersion = Filesystem::GetExeVersion(path /  L"WorldOfTanks.exe");
-	if (exeVersion == L"0.0.0.0" && std::filesystem::exists(path / "win32" / L"WorldOfTanks.exe")) {
-		exeVersion = Filesystem::GetExeVersion(path / "win32" / L"WorldOfTanks.exe");
-	}
+    exeVersion = Filesystem::GetExeVersion(path /  L"WorldOfTanks.exe");
+    if (exeVersion == L"0.0.0.0" && std::filesystem::exists(path / "win32" / L"WorldOfTanks.exe")) {
+        exeVersion = Filesystem::GetExeVersion(path / "win32" / L"WorldOfTanks.exe");
+    }
 
-	if (!updateData_versionxml()){
-		return;
-	}
+    if (!updateData_versionxml()){
+        return;
+    }
 
-	if (!updateData_apptype()){
-		return;
-	}
+    if (!updateData_apptype()){
+        return;
+    }
 
-	isValid = true;
-	updateData_gameinfo();
+    isValid = true;
+    updateData_gameinfo();
 }
 
 bool WotClient::updateData_apptype()
 {
-	auto apptypexml = path / L"app_type.xml";
-	if (!std::filesystem::exists(apptypexml)) {
-		return false;
-	}
+    auto apptypexml = path / L"app_type.xml";
+    if (!std::filesystem::exists(apptypexml)) {
+        return false;
+    }
 
-	pugi::xml_document doc;
-	if (!doc.load_file(apptypexml.wstring().c_str())) {
-		return false;
-	}
+    pugi::xml_document doc;
+    if (!doc.load_file(apptypexml.wstring().c_str())) {
+        return false;
+    }
 
-	auto apptype = doc.select_single_node(L"/protocol/app_type");
-	if (!apptype) {
-		return false;
-	}
+    auto apptype = doc.select_single_node(L"/protocol/app_type");
+    if (!apptype) {
+        return false;
+    }
 
-	std::wstring value = apptype.node().first_child().value();
-	if (value == L"sd") {
-		this->clientType = ClientType::WoTType_SD;
-	}
-	else if (value == L"hd") {
-		this->clientType = ClientType::WoTType_HD;
-	}
+    std::wstring value = apptype.node().first_child().value();
+    if (value == L"sd") {
+        this->clientType = ClientType::WoTType_SD;
+    }
+    else if (value == L"hd") {
+        this->clientType = ClientType::WoTType_HD;
+    }
 
-	return true;
+    return true;
 }
 
 bool WotClient::updateData_gameinfo()
 {
-	auto gameinfoxml = path / L"game_info.xml";
-	if (!std::filesystem::exists(gameinfoxml)) {
-		return false;
-	}
+    auto gameinfoxml = path / L"game_info.xml";
+    if (!std::filesystem::exists(gameinfoxml)) {
+        return false;
+    }
 
-	pugi::xml_document doc;
-	if (!doc.load_file(gameinfoxml.wstring().c_str())) {
-		return false;
-	}
+    pugi::xml_document doc;
+    if (!doc.load_file(gameinfoxml.wstring().c_str())) {
+        return false;
+    }
 
-	auto localization = doc.select_single_node(L"/protocol/game/localization");
-	if (!localization) {
-		return false;
-	}
+    auto localization = doc.select_single_node(L"/protocol/game/localization");
+    if (!localization) {
+        return false;
+    }
 
-	clientLocale = localization.node().first_child().value();
-	return true;
+    clientLocale = localization.node().first_child().value();
+    return true;
 }
 
 bool WotClient::updateData_versionxml()
 {
-	auto versionxml = path / L"version.xml";
-	if (!std::filesystem::exists(versionxml)) {
-		return false;
-	}
+    auto versionxml = path / L"version.xml";
+    if (!std::filesystem::exists(versionxml)) {
+        return false;
+    }
 
 
-	pugi::xml_document doc;
-	if (!doc.load_file(versionxml.wstring().c_str())) {
-		return false;
-	}
+    pugi::xml_document doc;
+    if (!doc.load_file(versionxml.wstring().c_str())) {
+        return false;
+    }
 
-	auto version = doc.select_single_node(L"/version.xml/version");
-	if (!version) {
-		return false;
-	}
+    auto version = doc.select_single_node(L"/version.xml/version");
+    if (!version) {
+        return false;
+    }
 
 
-	std::wstring clientver = version.node().first_child().value();
-	clientver.replace(clientver.find(L" v."), std::wstring(L" v.").length(), L"");
-	clientVersion = clientver.substr(0, clientver.find(L' '));
-	std::wstring type = clientver.substr(clientver.find(L' ') + 1);
-	type = type.substr(0, type.find(L'#'));
-	type = String::Trim(type);
+    std::wstring clientver = version.node().first_child().value();
+    clientver.replace(clientver.find(L" v."), std::wstring(L" v.").length(), L"");
+    clientVersion = clientver.substr(0, clientver.find(L' '));
+    std::wstring type = clientver.substr(clientver.find(L' ') + 1);
+    type = type.substr(0, type.find(L'#'));
+    type = String::Trim(type);
 
-	if (type.empty())
-	{
-		this->clientBranch = ClientBranch::WoT_Release;
-	}
-	else if (type == L"Common Test")
-	{
-		this->clientBranch = ClientBranch::WoT_CommonTest;
-	}
-	else if (type == L"ST")
-	{
-		this->clientBranch = ClientBranch::WoT_SuperTest;
-	}
-	else if (type == L"SB")
-	{
-		this->clientBranch = ClientBranch::WoT_Sandbox;
-	}
-	else
-	{
-		this->clientBranch = ClientBranch::WoT_Unknown;
-	}
+    if (type.empty())
+    {
+        this->clientBranch = ClientBranch::WoT_Release;
+    }
+    else if (type == L"Common Test")
+    {
+        this->clientBranch = ClientBranch::WoT_CommonTest;
+    }
+    else if (type == L"ST")
+    {
+        this->clientBranch = ClientBranch::WoT_SuperTest;
+    }
+    else if (type == L"SB")
+    {
+        this->clientBranch = ClientBranch::WoT_Sandbox;
+    }
+    else
+    {
+        this->clientBranch = ClientBranch::WoT_Unknown;
+    }
 
-	//get locale
-	auto localization = doc.select_single_node(L"/version.xml/meta/localization");
-	if (!localization) {
-		return false;
-	}
+    //get locale
+    auto localization = doc.select_single_node(L"/version.xml/meta/localization");
+    if (!localization) {
+        return false;
+    }
 
-	auto locale = String::Trim(std::wstring(localization.node().first_child().value()));
-	clientLocale = locale.substr(locale.find(L' ') + 1);
+    auto locale = String::Trim(std::wstring(localization.node().first_child().value()));
+    clientLocale = locale.substr(locale.find(L' ') + 1);
 
-	return true;
+    return true;
 }
 
 void WotClient::clear()
 {
-	isValid = false;
-	clientBranch = ClientBranch::WoT_Unknown;
-	exeVersion.clear();
-	clientVersion.clear();
+    isValid = false;
+    clientBranch = ClientBranch::WoT_Unknown;
+    exeVersion.clear();
+    clientVersion.clear();
 }

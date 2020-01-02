@@ -70,22 +70,22 @@ bool test_3()
 
 bool test_5(std::wstring name)
 {
-	std::wstring path_w = L"battle/mirroredVehicleIcons";
-	return JsonUtils::SetValueBool(name, path_w, false);
+    std::wstring path_w = L"battle/mirroredVehicleIcons";
+    return JsonUtils::SetValueBool(name, path_w, false);
 }
 
 int main()
 {
-	_setmode(_fileno(stdout), _O_U16TEXT);
-	_setmode(_fileno(stdin), _O_U16TEXT);
-	_setmode(_fileno(stderr), _O_U16TEXT);
-	if (test_1())
-		wcout << "test_1" << endl;
-	if (test_2())
-		wcout << "test_2" << endl;
-	if (test_3())
-		wcout << "test_3" << endl;
-	_getch();
+    _setmode(_fileno(stdout), _O_U16TEXT);
+    _setmode(_fileno(stdin), _O_U16TEXT);
+    _setmode(_fileno(stderr), _O_U16TEXT);
+    if (test_1())
+        wcout << "test_1" << endl;
+    if (test_2())
+        wcout << "test_2" << endl;
+    if (test_3())
+        wcout << "test_3" << endl;
+    _getch();
 
     return 0;
 }

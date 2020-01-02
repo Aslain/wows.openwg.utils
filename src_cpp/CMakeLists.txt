@@ -155,7 +155,7 @@ add_library(xvmextensions SHARED
     ${SOURCES_COMMON}
     ${SOURCES_JSON}
     ${SOURCES_PROCESS}
-	${SOURCES_SPLASHSCREEN}
+    ${SOURCES_SPLASHSCREEN}
     ${SOURCES_WGC}
     ${SOURCES_WINE}
     ${SOURCES_WOTFINDER}
@@ -172,7 +172,7 @@ target_link_libraries(xvmextensions PUBLIC stb)
 
 
 if(BUILD_COMMON)
-	target_compile_definitions(xvmextensions PRIVATE "-DBUILD_COMMON")
+    target_compile_definitions(xvmextensions PRIVATE "-DBUILD_COMMON")
 endif()
 
 if(BUILD_JSON)

@@ -29,5 +29,5 @@
 
 class WotLauncher {
 public:
-	static std::vector<std::filesystem::path> GetWotPaths();
+    static std::vector<std::filesystem::path> GetWotPaths();
 };

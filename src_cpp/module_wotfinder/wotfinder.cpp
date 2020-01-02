@@ -46,15 +46,15 @@ void WotDetector::FindClients()
     {
         WotDetector::AddClient(WGC::GetClientPreferedPath());
 
-		for (auto& path : WGC::GetClientPaths()) {
-			WotDetector::AddClient(path);
-		}
+        for (auto& path : WGC::GetClientPaths()) {
+            WotDetector::AddClient(path);
+        }
     }
 
     // Legacy
-	for (auto& path : WotLauncher::GetWotPaths()) {
-		WotDetector::AddClient(path);
-	}
+    for (auto& path : WotLauncher::GetWotPaths()) {
+        WotDetector::AddClient(path);
+    }
 
     // DRIVE:\Games\World_of_Tanks*
     std::vector<std::wstring> pathes{L"", L"Games\\", L"Games\\Wargaming.net\\"};
@@ -64,7 +64,7 @@ void WotDetector::FindClients()
     WineStatus wine_status = Wine::GetStatus();
     if(wine_status.running_on)
     {
-		wchar_t* buf = new wchar_t[256]{};
+        wchar_t* buf = new wchar_t[256]{};
         GetEnvironmentVariableW(L"USERNAME", buf, 256);
 
         if (wcscmp(wine_status.system, L"Linux")==0)
@@ -100,28 +100,28 @@ void WotDetector::FindClients()
 
         // WoT OSX edition (Wargaming.net wine wrapper)
         std::wstring wot_osx = std::wstring(L"Z:\\Users\\") + std::wstring(buf) + std::wstring(L"\\Library\\Application Support\\World of Tanks\\Bottles\\worldoftanks\\drive_c\\Games\\World_of_Tanks\\");
-		if (std::filesystem::exists(wot_osx)) {
-			WotDetector::AddClient(wot_osx);
-		}
+        if (std::filesystem::exists(wot_osx)) {
+            WotDetector::AddClient(wot_osx);
+        }
 
         delete[] buf;
     }
 
     for (auto& drive : drives){
         for (auto& path : pathes){
-			try {
-				for (auto& p : std::filesystem::directory_iterator(drive + path)) {
+            try {
+                for (auto& p : std::filesystem::directory_iterator(drive + path)) {
 
-					if (!std::filesystem::is_directory(p)) {
-						continue;
-					}
+                    if (!std::filesystem::is_directory(p)) {
+                        continue;
+                    }
 
-					WotDetector::AddClient(p.path());
-				}
-			}
-			catch (std::filesystem::filesystem_error & ex) {
-				continue;
-			}
+                    WotDetector::AddClient(p.path());
+                }
+            }
+            catch (std::filesystem::filesystem_error & ex) {
+                continue;
+            }
         }
     }
 

@@ -29,55 +29,55 @@
 
 enum ClientBranch
 {
-	WoT_Unknown = 0,
-	WoT_Release = 1,
-	WoT_CommonTest = 2,
-	WoT_SuperTest = 3,
-	WoT_Sandbox = 4,
+    WoT_Unknown = 0,
+    WoT_Release = 1,
+    WoT_CommonTest = 2,
+    WoT_SuperTest = 3,
+    WoT_Sandbox = 4,
 };
 
 enum ClientType
 {
-	WoTType_Unknown = 0,
-	WoTType_SD = 1,
-	WoTType_HD = 2,
+    WoTType_Unknown = 0,
+    WoTType_SD = 1,
+    WoTType_HD = 2,
 };
 
 
 class WotClient {
 public:
-	WotClient();
-	WotClient(const std::filesystem::path& wotDirectory);
-	~WotClient() = default;
+    WotClient();
+    WotClient(const std::filesystem::path& wotDirectory);
+    ~WotClient() = default;
 
-	bool IsValid();
+    bool IsValid();
 
-	std::wstring GetPath();
-	void SetPath(const std::filesystem::path& path);
+    std::wstring GetPath();
+    void SetPath(const std::filesystem::path& path);
 
-	ClientBranch GetClientBranch();
-	std::wstring GetClientExeVersion();
-	std::wstring GetClientVersion();
-	std::wstring GetClientLocale();
-	ClientType GetClientType();
+    ClientBranch GetClientBranch();
+    std::wstring GetClientExeVersion();
+    std::wstring GetClientVersion();
+    std::wstring GetClientLocale();
+    ClientType GetClientType();
 
 private:
-	bool isValid = false;
+    bool isValid = false;
 
-	std::filesystem::path path;
+    std::filesystem::path path;
 
-	ClientBranch clientBranch = ClientBranch::WoT_Unknown;
-	ClientType clientType = ClientType::WoTType_Unknown;
+    ClientBranch clientBranch = ClientBranch::WoT_Unknown;
+    ClientType clientType = ClientType::WoTType_Unknown;
 
-	std::wstring exeVersion;
-	std::wstring clientVersion;
+    std::wstring exeVersion;
+    std::wstring clientVersion;
 
-	std::wstring clientLocale;
+    std::wstring clientLocale;
 
-	void updateData();
-	bool updateData_apptype();
-	bool updateData_gameinfo();
-	bool updateData_versionxml();
+    void updateData();
+    bool updateData_apptype();
+    bool updateData_gameinfo();
+    bool updateData_versionxml();
 
-	void clear();
+    void clear();
 };
