@@ -1,15 +1,15 @@
 /* Copyright (c) 2017, Mikhail Paulyshka
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -73,8 +73,8 @@ std::vector<std::string> String::Split(const std::string & s, const char delim)
     std::vector<std::string> elems;
     std::stringstream ss(s);
     std::string item;
-    
-    while (std::getline(ss, item, delim)) 
+
+    while (std::getline(ss, item, delim))
     {
         *(std::back_inserter(elems)++) = item;
     }
@@ -88,7 +88,7 @@ std::vector<std::wstring> String::Split(const std::wstring & s, const wchar_t de
     std::wstringstream ss(s);
     std::wstring item;
 
-    while (std::getline(ss, item, delim)) 
+    while (std::getline(ss, item, delim))
     {
         *(std::back_inserter(elems)++) = item;
     }

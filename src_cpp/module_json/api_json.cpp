@@ -32,7 +32,7 @@ bool JSON_ContainsKeyW(const wchar_t* json, const wchar_t* path)
 }
 
 void JSON_GetValueW(const wchar_t* json, const wchar_t* path, wchar_t* output, unsigned int output_size)
-{ 
+{
     if (output_size <= 0)
         return;
     output[0] = L'\0';

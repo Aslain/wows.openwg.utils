@@ -61,7 +61,7 @@ void encodeBMP(std::vector<uint8_t>& bmp, const uint8_t* image, uint16_t w, uint
 	*/
 	int pix_in_line = w * 3;
 	int imagerowbytes = (pix_in_line & 3) == 0 ? pix_in_line : 4 + (pix_in_line & ~3); //must be multiple of 4
-	
+
 	for (int y = h * pix_in_line; y >= pix_in_line; y -= pix_in_line) //the rows are stored inversed in bmp
 	{
 		for (int x = y - pix_in_line; x < y; x += 3)

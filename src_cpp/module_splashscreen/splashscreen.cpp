@@ -51,7 +51,7 @@ void SplashScreen::premultiplyBitmapAlpha(HDC hDC, HBITMAP hBmp)
 {
 	BITMAP bm{};
 	GetObject(hBmp, sizeof(bm), &bm);
-	
+
 	BITMAPINFO* bmi = (BITMAPINFO*)_alloca(sizeof(BITMAPINFOHEADER) + (256 * sizeof(RGBQUAD)));
 	ZeroMemory(bmi, sizeof(BITMAPINFOHEADER) + (256 * sizeof(RGBQUAD)));
 	bmi->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
@@ -65,7 +65,7 @@ void SplashScreen::premultiplyBitmapAlpha(HDC hDC, HBITMAP hBmp)
 	if (pBitData == NULL) {
 		return;
 	}
-	
+
 	LPBYTE pData = pBitData;
 	GetDIBits(hDC, hBmp, 0, bm.bmHeight, pData, bmi, DIB_RGB_COLORS);
 	for (int y = 0; y < bm.bmHeight; y++) {
@@ -77,7 +77,7 @@ void SplashScreen::premultiplyBitmapAlpha(HDC hDC, HBITMAP hBmp)
 		}
 	}
 	SetDIBits(hDC, hBmp, 0, bm.bmHeight, pBitData, bmi, DIB_RGB_COLORS);
-	
+
 	LocalFree(pBitData);
 }
 
@@ -136,7 +136,7 @@ HBITMAP SplashScreen::loadImage(wchar_t* file_path)
 	if (!data) {
 		return nullptr;
 	}
-	
+
 	HBITMAP hbitmap = CreateBitmap(image_width, image_height, 1, 32, data);
 
 	stbi_image_free(data);

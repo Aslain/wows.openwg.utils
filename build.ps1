@@ -1,15 +1,15 @@
 # Copyright (c) 2017, Mikhail Paulyshka
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
+#
 # 1. Redistributions of source code must retain the above copyright notice, this
 #    list of conditions and the following disclaimer.
 # 2. Redistributions in binary form must reproduce the above copyright notice,
 #    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 # ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -20,9 +20,9 @@
 # ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-# 
+#
 
-Push-Location $PSScriptRoot 
+Push-Location $PSScriptRoot
 $root = (Get-Location).Path -replace "\\","/"
 
 Remove-Item -Path ./build/ -Force -Recurse -ErrorAction SilentlyContinue
@@ -31,8 +31,8 @@ function Build-CppProject($Toolset, $Architecture) {
     New-Item -ItemType Directory -Path ./~build/$Architecture/ | Out-Null
     Push-Location ./~build/$Architecture/ -ErrorAction Stop
     cmake -T $Toolset -A $Architecture $root/src_cpp/ -DCMAKE_INSTALL_PREFIX="$root/~output/cpp/"
-    cmake --build . --config Release --target Install 
-    Pop-Location  
+    cmake --build . --config Release --target Install
+    Pop-Location
 }
 
 Build-CppProject -Toolset v141_xp -Architecture Win32

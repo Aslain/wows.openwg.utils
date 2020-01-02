@@ -48,7 +48,7 @@ bool test_1()
         return true;
     else
         return false;
-    
+
 }
 
 bool test_2()
@@ -79,7 +79,7 @@ int main()
 	_setmode(_fileno(stdout), _O_U16TEXT);
 	_setmode(_fileno(stdin), _O_U16TEXT);
 	_setmode(_fileno(stderr), _O_U16TEXT);
-	if (test_1()) 
+	if (test_1())
 		wcout << "test_1" << endl;
 	if (test_2())
 		wcout << "test_2" << endl;

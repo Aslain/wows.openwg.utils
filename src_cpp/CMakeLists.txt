@@ -1,15 +1,15 @@
 # Copyright (c) 2017-2019, Mikhail Paulyshka
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
+#
 # 1. Redistributions of source code must retain the above copyright notice, this
 #    list of conditions and the following disclaimer.
 # 2. Redistributions in binary form must reproduce the above copyright notice,
 #    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 # ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -20,7 +20,7 @@
 # ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-# 
+#
 
 cmake_minimum_required(VERSION 3.15)
 project(xvmextensions)
@@ -131,9 +131,9 @@ set(SOURCES_WOTFINDER
     module_wotfinder/wotclient.cpp
     module_wotfinder/wotclient.h
     module_wotfinder/wotfinder.cpp
-    module_wotfinder/wotfinder.h 
+    module_wotfinder/wotfinder.h
     module_wotfinder/wotlauncher.cpp
-    module_wotfinder/wotlauncher.h      
+    module_wotfinder/wotlauncher.h
 )
 source_group("wotfinder" FILES ${SOURCES_WOTFINDER})
 option(BUILD_WOTFINDER "Build Wotfinder" ON)
@@ -151,8 +151,8 @@ option(BUILD_IMAGEDRAW "Build ImageDraw" ON)
 ### Library: xvmextensions ###
 ###############################
 
-add_library(xvmextensions SHARED 
-    ${SOURCES_COMMON} 
+add_library(xvmextensions SHARED
+    ${SOURCES_COMMON}
     ${SOURCES_JSON}
     ${SOURCES_PROCESS}
 	${SOURCES_SPLASHSCREEN}
@@ -226,7 +226,7 @@ else()
     error("Unknown platform")
 endif()
 
- 
+
 set_target_properties(xvmextensions PROPERTIES DEBUG_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}d")
 set_target_properties(xvmextensions PROPERTIES RELEASE_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
 set_target_properties(xvmextensions PROPERTIES RELWITHDEBINFO_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")

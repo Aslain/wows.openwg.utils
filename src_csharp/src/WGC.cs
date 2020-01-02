@@ -74,7 +74,7 @@ namespace XVM.Extensions
 
                 case ProcessorArchitectureType.X64:
                     return _IsInstalled_x86_64();
-                    
+
                 case ProcessorArchitectureType.Arm:
                     return _IsInstalled_ARM_32();
 

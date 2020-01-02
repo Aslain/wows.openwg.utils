@@ -53,7 +53,7 @@ namespace XVM.Extensions
 
         [DllImport(Constants.DllName_X86_64, EntryPoint = "WOT_GetPreferredClientPathW", CharSet = CharSet.Unicode,CallingConvention = CallingConvention.Cdecl)]
         private static extern void _GetPreferredClientPathW_x86_64(StringBuilder buffer, Int32 bufferSize);
-        
+
         [DllImport(Constants.DllName_ARM_32, EntryPoint = "WOT_GetPreferredClientPathW", CharSet = CharSet.Unicode,CallingConvention = CallingConvention.Cdecl)]
         private static extern void _GetPreferredClientPathW_ARM_32(StringBuilder buffer, Int32 bufferSize);
 
@@ -460,7 +460,7 @@ namespace XVM.Extensions
                     return WotClientRegion.Unknown;
             }
         }
-      
+
         public static WotRegionIdRange GetIdsRangeForRegion(WotClientRegion region)
         {
             switch (region)

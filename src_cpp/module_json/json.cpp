@@ -141,7 +141,7 @@ std::pair<std::wstring, std::wstring> getMemberNamesAndValues(Json::Value &node)
 	const wchar_t line_break = 13;
 	std::wstringstream names, values;
 	Json::FastWriter fast_write;
-	
+
 	if (!node.isObject() && !node.isArray())
 	{
 		return std::make_pair(L"", L"");
@@ -174,7 +174,7 @@ std::pair<std::wstring, std::wstring> JsonUtils::GetNamesAndValues(const std::ws
 	Json::Reader reader;
 
 	reader.parse(readFileUtf8(file_name), node);
-	
+
 	std::vector<std::string> tokens = String::Split(String::Trim(_path), '/');
 	try
 	{
@@ -254,7 +254,7 @@ bool SetValue(const std::wstring& file_name, const std::wstring& path_value, Jso
 {
 	Json::Value node;
 	Json::Reader reader;
-	 
+	
 	std::vector<std::string> tokens = String::Split(Encoding::wstring_to_utf8(path_value), '/');
 	try
 	{
