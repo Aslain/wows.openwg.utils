@@ -1,15 +1,15 @@
-/* Copyright (c) 2017, Mikhail Paulyshka
+/* Copyright (c) 2017-2020, Mikhail Paulyshka.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -46,15 +46,15 @@ void WotDetector::FindClients()
     {
         WotDetector::AddClient(WGC::GetClientPreferedPath());
 
-		for (auto& path : WGC::GetClientPaths()) {
-			WotDetector::AddClient(path);
-		}
+        for (auto& path : WGC::GetClientPaths()) {
+            WotDetector::AddClient(path);
+        }
     }
 
     // Legacy
-	for (auto& path : WotLauncher::GetWotPaths()) {
-		WotDetector::AddClient(path);
-	}
+    for (auto& path : WotLauncher::GetWotPaths()) {
+        WotDetector::AddClient(path);
+    }
 
     // DRIVE:\Games\World_of_Tanks*
     std::vector<std::wstring> pathes{L"", L"Games\\", L"Games\\Wargaming.net\\"};
@@ -64,7 +64,7 @@ void WotDetector::FindClients()
     WineStatus wine_status = Wine::GetStatus();
     if(wine_status.running_on)
     {
-		wchar_t* buf = new wchar_t[256]{};
+        wchar_t* buf = new wchar_t[256]{};
         GetEnvironmentVariableW(L"USERNAME", buf, 256);
 
         if (wcscmp(wine_status.system, L"Linux")==0)
@@ -82,7 +82,7 @@ void WotDetector::FindClients()
                 }
             }
         }
-        
+
         if (wcscmp(wine_status.system, L"Darwin")==0)
         {
             // /Volumes/ mounted partitions
@@ -100,28 +100,28 @@ void WotDetector::FindClients()
 
         // WoT OSX edition (Wargaming.net wine wrapper)
         std::wstring wot_osx = std::wstring(L"Z:\\Users\\") + std::wstring(buf) + std::wstring(L"\\Library\\Application Support\\World of Tanks\\Bottles\\worldoftanks\\drive_c\\Games\\World_of_Tanks\\");
-		if (std::filesystem::exists(wot_osx)) {
-			WotDetector::AddClient(wot_osx);
-		}
+        if (std::filesystem::exists(wot_osx)) {
+            WotDetector::AddClient(wot_osx);
+        }
 
         delete[] buf;
     }
 
     for (auto& drive : drives){
         for (auto& path : pathes){
-			try {
-				for (auto& p : std::filesystem::directory_iterator(drive + path)) {
+            try {
+                for (auto& p : std::filesystem::directory_iterator(drive + path)) {
 
-					if (!std::filesystem::is_directory(p)) {
-						continue;
-					}
+                    if (!std::filesystem::is_directory(p)) {
+                        continue;
+                    }
 
-					WotDetector::AddClient(p.path());
-				}
-			}
-			catch (std::filesystem::filesystem_error & ex) {
-				continue;
-			}
+                    WotDetector::AddClient(p.path());
+                }
+            }
+            catch (std::filesystem::filesystem_error & ex) {
+                continue;
+            }
         }
     }
 
@@ -138,16 +138,16 @@ int WotDetector::AddClient(std::wstring directory)
 
     auto exists = [&](const std::wstring &s) {
         return std::find_if(
-            begin(WotDetector::clients), 
-            end(WotDetector::clients), 
-            [&](WotClient &f) { 
+            begin(WotDetector::clients),
+            end(WotDetector::clients),
+            [&](WotClient &f) {
                 std::wstring path_1 = f.GetPath();
                 std::transform(path_1.begin(), path_1.end(), path_1.begin(), ::tolower);
 
                 std::wstring path_2 = s;
                 std::transform(path_2.begin(), path_2.end(), path_2.begin(), ::tolower);
 
-                return path_1 == path_2; 
+                return path_1 == path_2;
             });
     };
 

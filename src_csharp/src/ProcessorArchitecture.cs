@@ -14,8 +14,8 @@ namespace XVM.Extensions
         Unknown = 0xFF
     }
 
-    internal class ProcessorArchitecture { 
-        
+    internal class ProcessorArchitecture {
+
         [DllImport("kernel32.dll")]
         private static extern void GetNativeSystemInfo(ref SYSTEM_INFO lpSystemInfo);
 

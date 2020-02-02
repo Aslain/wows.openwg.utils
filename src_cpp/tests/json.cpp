@@ -1,4 +1,4 @@
-/* Copyright (c) 2017, Mikhail Paulyshka
+/* Copyright (c) 2017-2020, Mikhail Paulyshka.
 * All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@ bool test_1()
         return true;
     else
         return false;
-    
+
 }
 
 bool test_2()
@@ -70,22 +70,22 @@ bool test_3()
 
 bool test_5(std::wstring name)
 {
-	std::wstring path_w = L"battle/mirroredVehicleIcons";
-	return JsonUtils::SetValueBool(name, path_w, false);
+    std::wstring path_w = L"battle/mirroredVehicleIcons";
+    return JsonUtils::SetValueBool(name, path_w, false);
 }
 
 int main()
 {
-	_setmode(_fileno(stdout), _O_U16TEXT);
-	_setmode(_fileno(stdin), _O_U16TEXT);
-	_setmode(_fileno(stderr), _O_U16TEXT);
-	if (test_1()) 
-		wcout << "test_1" << endl;
-	if (test_2())
-		wcout << "test_2" << endl;
-	if (test_3())
-		wcout << "test_3" << endl;
-	_getch();
+    _setmode(_fileno(stdout), _O_U16TEXT);
+    _setmode(_fileno(stdin), _O_U16TEXT);
+    _setmode(_fileno(stderr), _O_U16TEXT);
+    if (test_1())
+        wcout << "test_1" << endl;
+    if (test_2())
+        wcout << "test_2" << endl;
+    if (test_3())
+        wcout << "test_3" << endl;
+    _getch();
 
     return 0;
 }

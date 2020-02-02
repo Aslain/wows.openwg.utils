@@ -1,7 +1,7 @@
 /*
 * Copyright (c) 2005     , Bjarke Viksoe
 * Copyright (c) 2008     , Bradley Grainger
-* Copyright (c) 2017-2019, Mikhail Paulyshka
+* Copyright (c) 2017-2020, Mikhail Paulyshka.
 *
 * All rights reserved.
 *
@@ -41,133 +41,133 @@ const wchar_t windowClassName[] = L"SplashWindow";
 
 void SplashScreen::registerWindowClass()
 {
-	WNDCLASSW windowClass{};
-	windowClass.lpfnWndProc = DefWindowProcW;
-	windowClass.lpszClassName = windowClassName;
-	RegisterClassW(&windowClass);
+    WNDCLASSW windowClass{};
+    windowClass.lpfnWndProc = DefWindowProcW;
+    windowClass.lpszClassName = windowClassName;
+    RegisterClassW(&windowClass);
 }
 
 void SplashScreen::premultiplyBitmapAlpha(HDC hDC, HBITMAP hBmp)
 {
-	BITMAP bm{};
-	GetObject(hBmp, sizeof(bm), &bm);
-	
-	BITMAPINFO* bmi = (BITMAPINFO*)_alloca(sizeof(BITMAPINFOHEADER) + (256 * sizeof(RGBQUAD)));
-	ZeroMemory(bmi, sizeof(BITMAPINFOHEADER) + (256 * sizeof(RGBQUAD)));
-	bmi->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    BITMAP bm{};
+    GetObject(hBmp, sizeof(bm), &bm);
 
-	BOOL bRes = ::GetDIBits(hDC, hBmp, 0, bm.bmHeight, NULL, bmi, DIB_RGB_COLORS);
-	if (!bRes || bmi->bmiHeader.biBitCount != 32) {
-		return;
-	}
+    BITMAPINFO* bmi = (BITMAPINFO*)_alloca(sizeof(BITMAPINFOHEADER) + (256 * sizeof(RGBQUAD)));
+    ZeroMemory(bmi, sizeof(BITMAPINFOHEADER) + (256 * sizeof(RGBQUAD)));
+    bmi->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
 
-	LPBYTE pBitData = (LPBYTE) LocalAlloc(LPTR, bm.bmWidth * bm.bmHeight * sizeof(DWORD));
-	if (pBitData == NULL) {
-		return;
-	}
-	
-	LPBYTE pData = pBitData;
-	GetDIBits(hDC, hBmp, 0, bm.bmHeight, pData, bmi, DIB_RGB_COLORS);
-	for (int y = 0; y < bm.bmHeight; y++) {
-		for (int x = 0; x < bm.bmWidth; x++) {
-			pData[0] = (BYTE)((DWORD)pData[0] * pData[3] / 255);
-			pData[1] = (BYTE)((DWORD)pData[1] * pData[3] / 255);
-			pData[2] = (BYTE)((DWORD)pData[2] * pData[3] / 255);
-			pData += 4;
-		}
-	}
-	SetDIBits(hDC, hBmp, 0, bm.bmHeight, pBitData, bmi, DIB_RGB_COLORS);
-	
-	LocalFree(pBitData);
+    BOOL bRes = ::GetDIBits(hDC, hBmp, 0, bm.bmHeight, NULL, bmi, DIB_RGB_COLORS);
+    if (!bRes || bmi->bmiHeader.biBitCount != 32) {
+        return;
+    }
+
+    LPBYTE pBitData = (LPBYTE) LocalAlloc(LPTR, bm.bmWidth * bm.bmHeight * sizeof(DWORD));
+    if (pBitData == NULL) {
+        return;
+    }
+
+    LPBYTE pData = pBitData;
+    GetDIBits(hDC, hBmp, 0, bm.bmHeight, pData, bmi, DIB_RGB_COLORS);
+    for (int y = 0; y < bm.bmHeight; y++) {
+        for (int x = 0; x < bm.bmWidth; x++) {
+            pData[0] = (BYTE)((DWORD)pData[0] * pData[3] / 255);
+            pData[1] = (BYTE)((DWORD)pData[1] * pData[3] / 255);
+            pData[2] = (BYTE)((DWORD)pData[2] * pData[3] / 255);
+            pData += 4;
+        }
+    }
+    SetDIBits(hDC, hBmp, 0, bm.bmHeight, pBitData, bmi, DIB_RGB_COLORS);
+
+    LocalFree(pBitData);
 }
 
 void SplashScreen::setSplashImage(HWND hwndSplash, HBITMAP hbmpSplash)
 {
-	// get the size of the bitmap
-	BITMAP bm;
-	GetObject(hbmpSplash, sizeof(bm), &bm);
-	SIZE sizeSplash = { bm.bmWidth, bm.bmHeight };
+    // get the size of the bitmap
+    BITMAP bm;
+    GetObject(hbmpSplash, sizeof(bm), &bm);
+    SIZE sizeSplash = { bm.bmWidth, bm.bmHeight };
 
-	// get the primary monitor's info
-	POINT ptZero = { 0 };
-	HMONITOR hmonPrimary = MonitorFromPoint(ptZero, MONITOR_DEFAULTTOPRIMARY);
-	MONITORINFO monitorinfo = { 0 };
-	monitorinfo.cbSize = sizeof(monitorinfo);
-	GetMonitorInfoW(hmonPrimary, &monitorinfo);
+    // get the primary monitor's info
+    POINT ptZero = { 0 };
+    HMONITOR hmonPrimary = MonitorFromPoint(ptZero, MONITOR_DEFAULTTOPRIMARY);
+    MONITORINFO monitorinfo = { 0 };
+    monitorinfo.cbSize = sizeof(monitorinfo);
+    GetMonitorInfoW(hmonPrimary, &monitorinfo);
 
-	// center the splash screen in the middle of the primary work area
-	const RECT& rcWork = monitorinfo.rcWork;
-	POINT ptOrigin{};
-	ptOrigin.x = rcWork.left + (rcWork.right - rcWork.left - sizeSplash.cx) / 2;
-	ptOrigin.y = rcWork.top + (rcWork.bottom - rcWork.top - sizeSplash.cy) / 2;
+    // center the splash screen in the middle of the primary work area
+    const RECT& rcWork = monitorinfo.rcWork;
+    POINT ptOrigin{};
+    ptOrigin.x = rcWork.left + (rcWork.right - rcWork.left - sizeSplash.cx) / 2;
+    ptOrigin.y = rcWork.top + (rcWork.bottom - rcWork.top - sizeSplash.cy) / 2;
 
-	// create a memory DC holding the splash bitmap
-	HDC hdcScreen = GetDC(nullptr);
-	HDC hdcMem = CreateCompatibleDC(hdcScreen);
-	HBITMAP hbmpOld = (HBITMAP)SelectObject(hdcMem, hbmpSplash);
-	premultiplyBitmapAlpha(hdcMem, hbmpSplash);
+    // create a memory DC holding the splash bitmap
+    HDC hdcScreen = GetDC(nullptr);
+    HDC hdcMem = CreateCompatibleDC(hdcScreen);
+    HBITMAP hbmpOld = (HBITMAP)SelectObject(hdcMem, hbmpSplash);
+    premultiplyBitmapAlpha(hdcMem, hbmpSplash);
 
-	// use the source image's alpha channel for blending
-	BLENDFUNCTION blend{};
-	blend.AlphaFormat = AC_SRC_ALPHA;
-	blend.BlendFlags = 0;
-	blend.BlendOp = AC_SRC_OVER;
-	blend.SourceConstantAlpha = 255;
+    // use the source image's alpha channel for blending
+    BLENDFUNCTION blend{};
+    blend.AlphaFormat = AC_SRC_ALPHA;
+    blend.BlendFlags = 0;
+    blend.BlendOp = AC_SRC_OVER;
+    blend.SourceConstantAlpha = 255;
 
-	// paint the window (in the right location) with the alpha-blended bitmap
-	UpdateLayeredWindow(hwndSplash, hdcScreen, &ptOrigin, &sizeSplash, hdcMem, &ptZero, RGB(0,0,0), &blend, ULW_ALPHA);
+    // paint the window (in the right location) with the alpha-blended bitmap
+    UpdateLayeredWindow(hwndSplash, hdcScreen, &ptOrigin, &sizeSplash, hdcMem, &ptZero, RGB(0,0,0), &blend, ULW_ALPHA);
 
-	// delete temporary objects
-	SelectObject(hdcMem, hbmpOld);
-	DeleteDC(hdcMem);
-	ReleaseDC(NULL, hdcScreen);
+    // delete temporary objects
+    SelectObject(hdcMem, hbmpOld);
+    DeleteDC(hdcMem);
+    ReleaseDC(NULL, hdcScreen);
 }
 
 
 
 HBITMAP SplashScreen::loadImage(wchar_t* file_path)
 {
-	int image_width = 0, image_height = 0, channels = 0;
+    int image_width = 0, image_height = 0, channels = 0;
 
-	char buffer[500]{};
-	stbi_convert_wchar_to_utf8(buffer, sizeof(buffer), file_path);
+    char buffer[500]{};
+    stbi_convert_wchar_to_utf8(buffer, sizeof(buffer), file_path);
 
-	unsigned char* data = stbi_load(buffer, &image_width, &image_height, &channels, 0);
-	if (!data) {
-		return nullptr;
-	}
-	
-	HBITMAP hbitmap = CreateBitmap(image_width, image_height, 1, 32, data);
+    unsigned char* data = stbi_load(buffer, &image_width, &image_height, &channels, 0);
+    if (!data) {
+        return nullptr;
+    }
 
-	stbi_image_free(data);
-	return hbitmap;
+    HBITMAP hbitmap = CreateBitmap(image_width, image_height, 1, 32, data);
+
+    stbi_image_free(data);
+    return hbitmap;
 }
 
 HWND SplashScreen::createSplashWindow()
 {
-	HWND hwndOwner = CreateWindowW(windowClassName, NULL, WS_POPUP, 0, 0, 0, 0, NULL, NULL, NULL, NULL);
-	return CreateWindowExW(WS_EX_LAYERED , windowClassName, NULL, WS_POPUP | WS_VISIBLE,	0, 0, 0, 0, hwndOwner, NULL, NULL, NULL);
+    HWND hwndOwner = CreateWindowW(windowClassName, NULL, WS_POPUP, 0, 0, 0, 0, NULL, NULL, NULL, NULL);
+    return CreateWindowExW(WS_EX_LAYERED , windowClassName, NULL, WS_POPUP | WS_VISIBLE,    0, 0, 0, 0, hwndOwner, NULL, NULL, NULL);
 }
 
 bool SplashScreen::ShowSplashScreen(wchar_t* file_path, int seconds)
 {
-	HBITMAP bitmap = loadImage(file_path);
-	if (!bitmap) {
-		return false;
-	}
+    HBITMAP bitmap = loadImage(file_path);
+    if (!bitmap) {
+        return false;
+    }
 
-	registerWindowClass();
+    registerWindowClass();
 
-	HWND hwnd = createSplashWindow();
-	if (!hwnd) {
-		return false;
-	}
+    HWND hwnd = createSplashWindow();
+    if (!hwnd) {
+        return false;
+    }
 
-	setSplashImage(hwnd, bitmap);
+    setSplashImage(hwnd, bitmap);
 
-	std::this_thread::sleep_for(std::chrono::seconds(seconds));
+    std::this_thread::sleep_for(std::chrono::seconds(seconds));
 
-	CloseWindow(hwnd);
+    CloseWindow(hwnd);
 
-	return true;
+    return true;
 }

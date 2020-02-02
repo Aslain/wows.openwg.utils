@@ -1,4 +1,4 @@
-/* Copyright (c) 2017, Mikhail Paulyshka
+/* Copyright (c) 2017-2020, Mikhail Paulyshka.
 * All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -26,6 +26,6 @@
 
 int main()
 {
-	bool result = SPLASHSCREEN_ShowSplashScreenW(L"D:\\Untitled.png", 5);
-	return 0;
+    bool result = SPLASHSCREEN_ShowSplashScreenW(L"D:\\Untitled.png", 5);
+    return 0;
 }

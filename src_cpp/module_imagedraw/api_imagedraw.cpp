@@ -1,4 +1,4 @@
-/* Copyright (c) 2017, Mikhail Paulyshka
+/* Copyright (c) 2017-2020, Mikhail Paulyshka.
 * All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -28,5 +28,5 @@
 
 extern "C" API_CALL_IMAGEDRAW void IMAGEDRAW_PngToBmp(const wchar_t* filename)
 {
-	ImageDraw::PngToBmp(filename);
+    ImageDraw::PngToBmp(filename);
 }

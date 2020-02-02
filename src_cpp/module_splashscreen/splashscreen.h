@@ -1,4 +1,4 @@
-/* Copyright (c) 2017, Mikhail Paulyshka
+/* Copyright (c) 2017-2020, Mikhail Paulyshka.
 * All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -34,9 +34,9 @@ class SplashScreen
 public:
     static bool ShowSplashScreen(wchar_t* file_path, int seconds);
 private:
-	static void registerWindowClass();
-	static void setSplashImage(HWND hwndSplash, HBITMAP hbmpSplash);
-	static HBITMAP loadImage(wchar_t* file_path);
-	static HWND createSplashWindow();
-	static void premultiplyBitmapAlpha(HDC hDC, HBITMAP hBmp);
+    static void registerWindowClass();
+    static void setSplashImage(HWND hwndSplash, HBITMAP hbmpSplash);
+    static HBITMAP loadImage(wchar_t* file_path);
+    static HWND createSplashWindow();
+    static void premultiplyBitmapAlpha(HDC hDC, HBITMAP hBmp);
 };

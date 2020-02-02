@@ -13,7 +13,7 @@ namespace XVM.Extensions
 
         [DllImport(Constants.DllName_X86_64, EntryPoint = "WINE_IsRunningUnder", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool _IsRunningUnder_x86_64();
-        
+
         [DllImport(Constants.DllName_ARM_32, EntryPoint = "WINE_IsRunningUnder", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool _IsRunningUnder_ARM_32();
 

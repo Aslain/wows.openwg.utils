@@ -1,4 +1,4 @@
-/* Copyright (c) 2017, Mikhail Paulyshka
+/* Copyright (c) 2017-2020, Mikhail Paulyshka.
 * All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,6 @@ class ImageDraw
 {
 public:
 
-	static void ImageDraw::PngToBmp(const std::wstring& filename);
+    static void ImageDraw::PngToBmp(const std::wstring& filename);
 
 };

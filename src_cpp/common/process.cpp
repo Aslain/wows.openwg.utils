@@ -1,4 +1,4 @@
-/* Copyright (c) 2017, Mikhail Paulyshka
+/* Copyright (c) 2017-2020, Mikhail Paulyshka.
 * All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -61,7 +61,7 @@ const wchar_t* wcsistr(const wchar_t *wcs1, const wchar_t *wcs2)
 static HRESULT NormalizeNTPath(wchar_t* pszPath, size_t nMax)
 {
     #define NUMCHARS(a) (sizeof(a)/sizeof(*a))
-    
+
     wchar_t* pszSlash = wcschr(&pszPath[1], '\\');
     if (pszSlash) pszSlash = wcschr(pszSlash + 1, '\\');
     if (!pszSlash)
@@ -187,10 +187,10 @@ bool Process::TerminateProcess(wchar_t* processName)
             continue;
 
         HANDLE hProcess = OpenProcess(PROCESS_TERMINATE | PROCESS_CREATE_THREAD | PROCESS_QUERY_INFORMATION | SYNCHRONIZE, FALSE, pe32.th32ProcessID);
-        
+
         if (hProcess == nullptr)
             continue;
-        
+
         //soft exit
         if (EnumWindows(TerminateProcessCallback, pe32.th32ProcessID))
         {

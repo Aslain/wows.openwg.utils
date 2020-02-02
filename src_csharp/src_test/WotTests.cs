@@ -19,7 +19,7 @@ namespace XVM.Extensions.Tests
         public void GetClientsCount_1()
         {
             var clientsCount = Wot.GetClientsCount();
-            
+
             Assert.True(clientsCount>0);
         }
 
@@ -46,7 +46,7 @@ namespace XVM.Extensions.Tests
         public void GetClientPath_1()
         {
             var clientPath = Wot.GetClientPath(0);
-            
+
             Assert.NotNull(clientPath);
             Assert.NotEmpty(clientPath);
             Assert.Contains("World", clientPath);
@@ -103,7 +103,7 @@ namespace XVM.Extensions.Tests
         public void GetClientBranch_1()
         {
             var clientBranch = Wot.GetClientBranch(0);
-            
+
             Assert.NotEqual(WotClientBranch.Unknown, clientBranch);
         }
 

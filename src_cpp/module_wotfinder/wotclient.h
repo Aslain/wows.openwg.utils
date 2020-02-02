@@ -1,15 +1,15 @@
-/* Copyright (c) 2017, Mikhail Paulyshka
+/* Copyright (c) 2017-2020, Mikhail Paulyshka.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -29,55 +29,55 @@
 
 enum ClientBranch
 {
-	WoT_Unknown = 0,
-	WoT_Release = 1,
-	WoT_CommonTest = 2,
-	WoT_SuperTest = 3,
-	WoT_Sandbox = 4,
+    WoT_Unknown = 0,
+    WoT_Release = 1,
+    WoT_CommonTest = 2,
+    WoT_SuperTest = 3,
+    WoT_Sandbox = 4,
 };
 
 enum ClientType
 {
-	WoTType_Unknown = 0,
-	WoTType_SD = 1,
-	WoTType_HD = 2,
+    WoTType_Unknown = 0,
+    WoTType_SD = 1,
+    WoTType_HD = 2,
 };
 
 
 class WotClient {
 public:
-	WotClient();
-	WotClient(const std::filesystem::path& wotDirectory);
-	~WotClient() = default;
+    WotClient();
+    WotClient(const std::filesystem::path& wotDirectory);
+    ~WotClient() = default;
 
-	bool IsValid();
+    bool IsValid();
 
-	std::wstring GetPath();
-	void SetPath(const std::filesystem::path& path);
+    std::wstring GetPath();
+    void SetPath(const std::filesystem::path& path);
 
-	ClientBranch GetClientBranch();
-	std::wstring GetClientExeVersion();
-	std::wstring GetClientVersion();
-	std::wstring GetClientLocale();
-	ClientType GetClientType();
+    ClientBranch GetClientBranch();
+    std::wstring GetClientExeVersion();
+    std::wstring GetClientVersion();
+    std::wstring GetClientLocale();
+    ClientType GetClientType();
 
 private:
-	bool isValid = false;
+    bool isValid = false;
 
-	std::filesystem::path path;
-	
-	ClientBranch clientBranch = ClientBranch::WoT_Unknown;
-	ClientType clientType = ClientType::WoTType_Unknown;
+    std::filesystem::path path;
 
-	std::wstring exeVersion;
-	std::wstring clientVersion;
+    ClientBranch clientBranch = ClientBranch::WoT_Unknown;
+    ClientType clientType = ClientType::WoTType_Unknown;
 
-	std::wstring clientLocale;
+    std::wstring exeVersion;
+    std::wstring clientVersion;
 
-	void updateData();
-	bool updateData_apptype();
-	bool updateData_gameinfo();
-	bool updateData_versionxml();
+    std::wstring clientLocale;
 
-	void clear();
+    void updateData();
+    bool updateData_apptype();
+    bool updateData_gameinfo();
+    bool updateData_versionxml();
+
+    void clear();
 };
