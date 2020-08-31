@@ -132,9 +132,14 @@ HBITMAP SplashScreen::loadImage(wchar_t* file_path)
     char buffer[500]{};
     stbi_convert_wchar_to_utf8(buffer, sizeof(buffer), file_path);
 
-    unsigned char* data = stbi_load(buffer, &image_width, &image_height, &channels, 0);
+    unsigned char* data = stbi_load(buffer, &image_width, &image_height, &channels, 4);
     if (!data) {
         return nullptr;
+    }
+
+    //swap R and B channels
+    for (int idx = 0; idx < image_width * image_height * channels; idx += channels){
+        std::swap(data[idx], data[idx + 2]);
     }
 
     HBITMAP hbitmap = CreateBitmap(image_width, image_height, 1, 32, data);
