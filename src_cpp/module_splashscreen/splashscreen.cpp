@@ -172,7 +172,7 @@ bool SplashScreen::ShowSplashScreen(wchar_t* file_path, int seconds)
 
     std::this_thread::sleep_for(std::chrono::seconds(seconds));
 
-    CloseWindow(hwnd);
+    DestroyWindow(hwnd);
 
     return true;
 }
