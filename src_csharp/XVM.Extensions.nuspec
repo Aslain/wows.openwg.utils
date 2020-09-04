@@ -5,7 +5,7 @@
         <id>XVM.Extensions</id>
 
         <!-- The package version number that is used when resolving dependencies -->
-        <version>1.0.9</version>
+        <version>20.9.5</version>
 
         <!-- Authors contain text that appears directly on the gallery -->
         <authors>Mikhail Paulyshka</authors>
@@ -17,7 +17,7 @@
         <owners>Mixaill</owners>
 
          <!-- Project URL provides a link for the gallery -->
-        <projectUrl>https://bitbucket.org/xvm/xvm.extensions</projectUrl>
+        <projectUrl>https://gitlab.com/xvm/xvm-extensions/xfw.extensionlib</projectUrl>
 
          <!-- License information is displayed on the gallery -->
         <license type="expression">MIT</license>
@@ -50,7 +50,7 @@
         <!-- Dependencies are automatically installed when the package is installed -->
         <dependencies>
             <group>
-                <dependency id="Newtonsoft.Json" version="12.0.2" />
+                <dependency id="Newtonsoft.Json" version="12.0.3" />
             </group>
         </dependencies>
     </metadata>
@@ -58,7 +58,7 @@
     <files>
         <file src="..\~output\csharp\lib\**\XVM.Extensions.*" target="lib/" />
         <file src="..\~output\cpp\bin\**" target="content/" />
-        <file src="src_nuget\*.targets" target="build/" />
+        <file src="*.targets" target="build/" />
     </files>
 
 </package>

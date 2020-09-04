@@ -14,6 +14,7 @@ This project provides several ways to use it features:
 
 | Function                       | C    | C#                   | InnoSetup |
 | ------------------------------ | ---- | -------------------- | --------- |
+| BwXML::Unpack                  | ✅    | ✅                    | ✅         |
 | JSON::ContainsKey              | ✅    | ❌                    | ✅         |
 | JSON::GetValue                 | ✅    | ❌                    | ✅         |
 | JSON::SetValueBool             | ✅    | ❌                    | ✅         |

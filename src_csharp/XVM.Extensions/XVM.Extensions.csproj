@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\..\~output\csharp\lib\netstandard20\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\~output\cpp\bin\xvmextensions.arm_32.dll" Link="xvmextensions.arm_32.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\~output\cpp\bin\xvmextensions.arm_64.dll" Link="xvmextensions.arm_64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\~output\cpp\bin\xvmextensions.x86_32.dll" Link="xvmextensions.x86_32.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\~output\cpp\bin\xvmextensions.x86_64.dll" Link="xvmextensions.x86_64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "XVM.Extensions.Tests": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
