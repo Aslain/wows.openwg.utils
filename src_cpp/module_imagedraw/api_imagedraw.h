@@ -24,16 +24,14 @@
 
 #pragma once
 
-#define API_VERSION_IMAGEDRAW 1
-
-#ifdef BUILD_IMAGEDRAW
-#define API_CALL_IMAGEDRAW __declspec(dllexport)
-#else
-#define API_CALL_IMAGEDRAW __declspec(dllimport)
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-#include <sal.h>
-#include <windows.h>
+#include "common/api_common.h"
 
+XVMEXT_API_CALL void IMAGEDRAW_PngToBmp(_In_ const wchar_t* filename);
 
-extern "C" API_CALL_IMAGEDRAW void IMAGEDRAW_PngToBmp(_In_ const wchar_t* filename);
+#ifdef __cplusplus
+}
+#endif

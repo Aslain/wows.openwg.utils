@@ -24,12 +24,21 @@
 
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <stdint.h>
+
+#include <windows.h>
 #include <sal.h>
 
-#define API_VERSION_COMMON 1
-
-#ifdef BUILD_COMMON
-#define API_CALL_COMMON __declspec(dllexport)
+#ifdef BUILD_XVMEXTENSIONS
+	#define XVMEXT_API_CALL __declspec(dllexport)
 #else
-#define API_CALL_COMMON __declspec(dllimport)
+	#define XVMEXT_API_CALL __declspec(dllimport)
+#endif
+
+#ifdef __cplusplus
+}
 #endif

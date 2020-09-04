@@ -23,11 +23,10 @@
 */
 
 #include "api_wine.h"
-
 #include "wine.h"
 
 
-extern "C" API_CALL_WINE bool WINE_IsRunningUnder()
+XVMEXT_API_CALL bool WINE_IsRunningUnder()
 {
     auto st = Wine::GetStatus();
     return st.running_on;

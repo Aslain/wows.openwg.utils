@@ -24,27 +24,26 @@
 
 #pragma once
 
-#define API_VERSION_JSON 1
-
-#ifdef BUILD_JSON
-#define API_CALL_JSON __declspec(dllexport)
-#else
-#define API_CALL_JSON __declspec(dllimport)
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-#include <sal.h>
+#include "common/api_common.h"
 
+XVMEXT_API_CALL bool __cdecl JSON_ContainsKeyW(_In_ const wchar_t* json, _In_ const wchar_t* path);
 
-extern "C" API_CALL_JSON bool __cdecl JSON_ContainsKeyW(_In_ const wchar_t* json, _In_ const wchar_t* path);
+XVMEXT_API_CALL void __cdecl JSON_GetValueW(_In_ const wchar_t* json, _In_ const wchar_t* path, _Out_ wchar_t* output, _In_ unsigned int output_size);
 
-extern "C" API_CALL_JSON void __cdecl JSON_GetValueW(_In_ const wchar_t* json, _In_ const wchar_t* path, _Out_ wchar_t* output, _In_ unsigned int output_size);
+XVMEXT_API_CALL void __cdecl JSON_SetValueBoolW(_In_ const wchar_t* file_name, _In_ const wchar_t* path, _In_ const bool value);
 
-extern "C" API_CALL_JSON void __cdecl JSON_SetValueBoolW(_In_ const wchar_t* file_name, _In_ const wchar_t* path, _In_ const bool value);
+XVMEXT_API_CALL void __cdecl JSON_SetValueObjW(_In_ const wchar_t* file_name, _In_ const wchar_t* json, _In_ const bool is_add);
 
-extern "C" API_CALL_JSON void __cdecl JSON_SetValueObjW(_In_ const wchar_t* file_name, _In_ const wchar_t* json, _In_ const bool is_add);
+XVMEXT_API_CALL void __cdecl JSON_GetNamesAndValuesW(_In_ const wchar_t* file_name, _In_ const wchar_t* path, _Out_ wchar_t* names, _Out_ wchar_t* values, _In_ unsigned int output_size);
 
-extern "C" API_CALL_JSON void __cdecl JSON_GetNamesAndValuesW(_In_ const wchar_t* file_name, _In_ const wchar_t* path, _Out_ wchar_t* names, _Out_ wchar_t* values, _In_ unsigned int output_size);
+XVMEXT_API_CALL void __cdecl JSON_GetNamesAndValuesW_S(_In_ const wchar_t* json, _Out_ wchar_t* names, _Out_ wchar_t* values, _In_ unsigned int output_size);
 
-extern "C" API_CALL_JSON void __cdecl JSON_GetNamesAndValuesW_S(_In_ const wchar_t* json, _Out_ wchar_t* names, _Out_ wchar_t* values, _In_ unsigned int output_size);
+XVMEXT_API_CALL void __cdecl JSON_GetArrayValueW_S(_In_ const wchar_t* json, _Out_ wchar_t* output, _In_ unsigned int output_size);
 
-extern "C" API_CALL_JSON void __cdecl JSON_GetArrayValueW_S(_In_ const wchar_t* json, _Out_ wchar_t* output, _In_ unsigned int output_size);
+#ifdef __cplusplus
+}
+#endif

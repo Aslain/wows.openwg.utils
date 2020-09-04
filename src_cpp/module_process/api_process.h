@@ -24,19 +24,16 @@
 
 #pragma once
 
-#include <cstdint>
-
-#include <sal.h>
-
-#define API_VERSION_PROCESS 1
-
-#ifdef BUILD_PROCESS
-#define API_CALL_PROCESS __declspec(dllexport)
-#else
-#define API_CALL_PROCESS __declspec(dllimport)
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-extern "C" API_CALL_PROCESS bool __cdecl PROCESS_GetRunningInDirectoryW(_In_ wchar_t* directory_path, _Out_ wchar_t* output_list, int32_t output_list_size);
+#include "common/api_common.h"
 
-extern "C" API_CALL_PROCESS bool __cdecl PROCESS_TerminateProcess(_In_ wchar_t* process_name);
+XVMEXT_API_CALL bool __cdecl PROCESS_GetRunningInDirectoryW(_In_ wchar_t* directory_path, _Out_ wchar_t* output_list, int32_t output_list_size);
 
+XVMEXT_API_CALL bool __cdecl PROCESS_TerminateProcess(_In_ wchar_t* process_name);
+
+#ifdef __cplusplus
+}
+#endif

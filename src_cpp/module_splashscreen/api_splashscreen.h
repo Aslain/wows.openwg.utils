@@ -24,16 +24,14 @@
 
 #pragma once
 
-#include <cstdint>
-
-#include <sal.h>
-
-#define API_VERSION_SPLASHSCREEN 1
-
-#ifdef BUILD_SPLASHSCREEN
-#define API_CALL_SPLASHSCREEN __declspec(dllexport)
-#else
-#define API_CALL_SPLASHSCREEN __declspec(dllimport)
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-extern "C" API_CALL_SPLASHSCREEN bool __cdecl SPLASHSCREEN_ShowSplashScreenW(_In_ wchar_t* file_path, int32_t seconds);
+#include "common/api_common.h"
+
+XVMEXT_API_CALL bool __cdecl SPLASHSCREEN_ShowSplashScreenW(_In_ wchar_t* file_path, int32_t seconds);
+
+#ifdef __cplusplus
+}
+#endif

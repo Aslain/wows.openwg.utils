@@ -1,0 +1,21 @@
+#pragma once
+
+#include "pugixml.hpp"
+
+#include "module_bwxml/BwInputStream.h"
+#include "module_bwxml/BwDataElement.h"
+#include "module_bwxml/BwStringTable.h"
+
+class BwPackedSection {
+public:
+	BwPackedSection() = default;
+	BwPackedSection(BwInputStream& stream);
+	~BwPackedSection() = default;
+
+	bool Read(BwInputStream& stream);
+	void SaveXml(pugi::xml_node&, BwStringTable& stringTable);
+
+private:
+	BwDataElement _data;
+	std::vector<std::pair<uint16_t, BwDataElement>> _children;
+};

@@ -26,7 +26,7 @@
 #include "imagedraw.h"
 
 
-extern "C" API_CALL_IMAGEDRAW void IMAGEDRAW_PngToBmp(const wchar_t* filename)
+extern "C" XVMEXT_API_CALL void IMAGEDRAW_PngToBmp(const wchar_t* filename)
 {
     ImageDraw::PngToBmp(filename);
 }

@@ -24,16 +24,16 @@
 
 #pragma once
 
-#include <cstdint>
-
-#define API_VERSION_WGC 1
-
-#ifdef BUILD_WGC
-#define API_CALL_WGC __declspec(dllexport)
-#else
-#define API_CALL_WGC __declspec(dllimport)
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-extern "C" API_CALL_WGC void __cdecl WGC_GetInstallPathA(char *buffer, int32_t buffer_size);
-extern "C" API_CALL_WGC void __cdecl WGC_GetInstallPathW(wchar_t *buffer, int32_t buffer_size);
-extern "C" API_CALL_WGC bool __cdecl WGC_IsInstalled();
+#include "common/api_common.h"
+
+XVMEXT_API_CALL void __cdecl WGC_GetInstallPathA(char* buffer, int32_t buffer_size);
+XVMEXT_API_CALL void __cdecl WGC_GetInstallPathW(wchar_t* buffer, int32_t buffer_size);
+XVMEXT_API_CALL bool __cdecl WGC_IsInstalled();
+
+#ifdef __cplusplus
+}
+#endif

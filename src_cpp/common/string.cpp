@@ -95,3 +95,53 @@ std::vector<std::wstring> String::Split(const std::wstring & s, const wchar_t de
 
     return elems;
 }
+
+std::wstring String::VecToWstring(const std::vector<uint8_t>& vec)
+{
+	std::wstring result;
+
+	switch (vec.size()) {
+
+	case 1:
+	{
+		int8_t val = 0;
+		memcpy(&val, vec.data(), vec.size());
+		result = std::to_wstring(val);
+		break;
+	}
+	case 2:
+	{
+		int16_t val = 0;
+		memcpy(&val, vec.data(), vec.size());
+		result = std::to_wstring(val);
+		break;
+	}
+	case 3:
+	case 4:
+	{
+		int32_t val = 0;
+		memcpy(&val, vec.data(), vec.size());
+		result = std::to_wstring(val);
+		break;
+	}
+	case 5:
+	case 6:
+	case 7:
+	case 8:
+	{
+		int64_t val = 0;
+		memcpy(&val, vec.data(), vec.size());
+		result = std::to_wstring(val);
+		break;
+	}
+	case 0:
+	default:
+	{
+		result = std::to_wstring(0);
+		break;
+	}
+
+	}
+
+	return result;
+}

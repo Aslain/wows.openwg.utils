@@ -29,14 +29,17 @@
 
 class String {
 public:
-    static std::string & Trim(std::string & str);
-    static std::string & LTrim(std::string & str);
-    static std::string & RTrim(std::string & str);
+    static std::string& Trim(std::string& str);
+    static std::string& LTrim(std::string& str);
+    static std::string& RTrim(std::string& str);
 
-    static std::wstring & Trim(std::wstring & str);
-    static std::wstring & LTrim(std::wstring & str);
-    static std::wstring & RTrim(std::wstring & str);
+    static std::wstring& Trim(std::wstring& str);
+    static std::wstring& LTrim(std::wstring& str);
+    static std::wstring& RTrim(std::wstring& str);
 
-    static std::vector<std::string> Split(const std::string &s, const char delim);
-    static std::vector<std::wstring> Split(const std::wstring &s, const wchar_t delim);
-};
+    static std::vector<std::string> Split(const std::string& s, const char delim);
+    static std::vector<std::wstring> Split(const std::wstring& s, const wchar_t delim);
+
+    static std::wstring VecToWstring(const std::vector<uint8_t>& vec);
+
+};;

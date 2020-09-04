@@ -8,6 +8,12 @@ Source: "{#XVMEXTENSION_DIR}xvmextensions.x86_32.dll"; DestName: xvmextensions.d
 
 [Code]
 
+//BWXML
+//zero on success, negative value on error
+function BWXML_UnpackW(PathPacked: String; PathUnpacked: String): Integer;
+external 'BWXML_UnpackW@files:xvmextensions.dll cdecl';
+
+
 //JSON
 function JSON_ContainsKeyW(JSON: String; Path: String): Boolean;
 external 'JSON_ContainsKeyW@files:xvmextensions.dll cdecl';
@@ -34,12 +40,14 @@ external 'JSON_GetArrayValueW_S@files:xvmextensions.dll cdecl';
 procedure IMAGEDRAW_PngToBmp(FileName: String);
 external 'IMAGEDRAW_PngToBmp@files:xvmextensions.dll cdecl';
 
+
 //PROCESS
 function PROCESS_GetRunningInDirectoryW(DirectoryPth: String; Buffer: String; BufferSize: Integer): Boolean;
 external 'PROCESS_GetRunningInDirectoryW@files:xvmextensions.dll cdecl';
 
 function PROCESS_TerminateProcess(ProcessName: String): Boolean;
 external 'PROCESS_TerminateProcess@files:xvmextensions.dll cdecl';
+
 
 //SPLASHSCREEN
 function SPLASHSCREEN_ShowSplashScreenW(FileName: String; SecondsToShow: Integer): Boolean;

@@ -24,14 +24,14 @@
 
 #pragma once
 
-#define API_VERSION_WINE 1
-
-#ifdef BUILD_WINE
-#define API_CALL_WINE __declspec(dllexport)
-#else
-#define API_CALL_WINE __declspec(dllimport)
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-#include <sal.h>
+#include "common/api_common.h"
 
-extern "C" API_CALL_WINE bool WINE_IsRunningUnder();
+XVMEXT_API_CALL bool WINE_IsRunningUnder();
+
+#ifdef __cplusplus
+}
+#endif
