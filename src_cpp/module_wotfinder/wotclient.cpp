@@ -90,12 +90,12 @@ void WotClient::updateData()
 {
     clear();
 
-    if (!std::filesystem::exists(path / L"WorldOfTanks.exe")){
+    if (!Filesystem::Exists(path / L"WorldOfTanks.exe")){
         return;
     }
 
     exeVersion = Filesystem::GetExeVersion(path /  L"WorldOfTanks.exe");
-    if (exeVersion == L"0.0.0.0" && std::filesystem::exists(path / "win32" / L"WorldOfTanks.exe")) {
+    if (exeVersion == L"0.0.0.0" && Filesystem::Exists(path / "win32" / L"WorldOfTanks.exe")) {
         exeVersion = Filesystem::GetExeVersion(path / "win32" / L"WorldOfTanks.exe");
     }
 
@@ -114,7 +114,7 @@ void WotClient::updateData()
 bool WotClient::updateData_apptype()
 {
     auto apptypexml = path / L"app_type.xml";
-    if (!std::filesystem::exists(apptypexml)) {
+    if (!Filesystem::Exists(apptypexml)) {
         return false;
     }
 
@@ -142,7 +142,7 @@ bool WotClient::updateData_apptype()
 bool WotClient::updateData_gameinfo()
 {
     auto gameinfoxml = path / L"game_info.xml";
-    if (!std::filesystem::exists(gameinfoxml)) {
+    if (!Filesystem::Exists(gameinfoxml)) {
         return false;
     }
 
@@ -163,7 +163,7 @@ bool WotClient::updateData_gameinfo()
 bool WotClient::updateData_versionxml()
 {
     auto versionxml = path / L"version.xml";
-    if (!std::filesystem::exists(versionxml)) {
+    if (!Filesystem::Exists(versionxml)) {
         return false;
     }
 

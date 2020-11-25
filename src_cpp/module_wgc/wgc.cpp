@@ -35,13 +35,13 @@ std::filesystem::path WGC::GetWGCInstallPath()
     auto programDataPath = Filesystem::GetProgramDataPath();
 
     auto wgcPathFile = programDataPath / L"Wargaming.net" / L"GameCenter" / "data" / "wgc_path.dat";
-    if (std::filesystem::exists(wgcPathFile)){
+    if (Filesystem::Exists(wgcPathFile)){
         auto path = std::filesystem::path(Filesystem::GetFileContent(wgcPathFile));
-        if (std::filesystem::exists(path / "wgc.exe")){
+        if (Filesystem::Exists(path / "wgc.exe")){
             return path;
         }
     }
-    else if (std::filesystem::exists(programDataPath / "Wargaming.net" / "GameCenter" / "wgc.exe")){
+    else if (Filesystem::Exists(programDataPath / "Wargaming.net" / "GameCenter" / "wgc.exe")){
         return programDataPath / "Wargaming.net" / "GameCenter";
     }
 
@@ -59,7 +59,7 @@ std::vector<std::filesystem::path> WGC::GetClientPaths()
         for (auto& p : std::filesystem::directory_iterator(programDataPath + L"\\Wargaming.net\\GameCenter\\apps\\wot\\")){
             auto path = std::filesystem::path(Filesystem::GetFileContent(p.path().wstring()));
 
-            if (std::filesystem::exists(path / L"WorldOfTanks.exe")){
+            if (Filesystem::Exists(path / L"WorldOfTanks.exe")){
                 wotPaths.push_back(path);
             }
         }
@@ -73,7 +73,7 @@ std::vector<std::filesystem::path> WGC::GetClientPaths()
 std::filesystem::path WGC::GetClientPreferedPath()
 {
     auto preferencesPath = GetWGCInstallPath() / L"preferences.xml";
-    if (!std::filesystem::exists(preferencesPath)) {
+    if (!Filesystem::Exists(preferencesPath)) {
         return std::filesystem::path();
     }
 

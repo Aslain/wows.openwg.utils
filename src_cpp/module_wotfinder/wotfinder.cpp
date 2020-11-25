@@ -71,7 +71,7 @@ void WotDetector::FindClients()
         {
             // /media/<USERNAME>/ mounted partitions
             std::wstring linux_mounts(std::wstring(L"Z:\\media\\") + std::wstring(buf) + std::wstring(L"\\"));
-            if (std::filesystem::exists(linux_mounts))
+            if (Filesystem::Exists(linux_mounts))
             {
                 for (auto& p : std::filesystem::directory_iterator(linux_mounts))
                 {
@@ -86,7 +86,7 @@ void WotDetector::FindClients()
         if (wcscmp(wine_status.system, L"Darwin")==0)
         {
             // /Volumes/ mounted partitions
-            if (std::filesystem::exists(L"Z:\\Volumes\\"))
+            if (Filesystem::Exists(L"Z:\\Volumes\\"))
             {
                 for (auto& p : std::filesystem::directory_iterator(L"Z:\\Volumes\\"))
                 {
@@ -100,7 +100,7 @@ void WotDetector::FindClients()
 
         // WoT OSX edition (Wargaming.net wine wrapper)
         std::wstring wot_osx = std::wstring(L"Z:\\Users\\") + std::wstring(buf) + std::wstring(L"\\Library\\Application Support\\World of Tanks\\Bottles\\worldoftanks\\drive_c\\Games\\World_of_Tanks\\");
-        if (std::filesystem::exists(wot_osx)) {
+        if (Filesystem::Exists(wot_osx)) {
             WotDetector::AddClient(wot_osx);
         }
 

@@ -35,4 +35,5 @@ public:
     static std::wstring GetFileContent(const std::wstring& filepath);
     static std::filesystem::path GetProgramDataPath();
     static std::vector<std::wstring> GetLogicalDrives();
+    static bool Exists(const std::filesystem::path& path);
 };

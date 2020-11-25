@@ -39,6 +39,18 @@ namespace XVM.Extensions.Tests
 
             var xd = XDocument.Load("assets/engine_config_unpacked.xml");
             Assert.NotNull(xd);
+            Assert.True(xd.Root.HasElements);
+        }
+
+        [Fact]
+        public void Unpack_6()
+        {
+            Assert.True(BwXml.Unpack("assets/engine_config.xml", "assets/engine_config_unpacked.xml"));
+            Assert.True(BwXml.Unpack("assets/engine_config_unpacked.xml", "assets/engine_config_unpacked2.xml"));
+
+            var xd = XDocument.Load("assets/engine_config_unpacked2.xml");
+            Assert.NotNull(xd);
+            Assert.True(xd.Root.HasElements);
         }
     }
 }

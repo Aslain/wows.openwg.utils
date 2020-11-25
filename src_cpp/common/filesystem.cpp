@@ -119,3 +119,15 @@ std::vector<std::wstring> Filesystem::GetLogicalDrives()
 
     return drives;
 }
+
+bool Filesystem::Exists(const std::filesystem::path& path)
+{
+    bool result = false;
+
+    try {
+        result = std::filesystem::exists(path);
+    }
+    catch (const std::filesystem::filesystem_error&){}
+
+    return result;
+}

@@ -24,6 +24,7 @@
 
 #include "wotlauncher.h"
 
+#include "common/filesystem.h"
 #include "common/registry.h"
 #include "common/vector.h"
 
@@ -51,7 +52,7 @@ std::vector<std::filesystem::path> WotLauncher::GetWotPaths() {
 
         if (!path.empty()) {
             auto p = std::filesystem::path(path);
-            if (std::filesystem::exists(p / L"WorldOfTanks.exe")) {
+            if (Filesystem::Exists(p / L"WorldOfTanks.exe")) {
                 paths.push_back(p);
             }
         }

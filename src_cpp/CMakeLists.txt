@@ -219,3 +219,6 @@ add_executable(test_process "tests/process.cpp")
 target_link_libraries(test_process xvmextensions)
 target_include_directories(test_process PRIVATE .)
 
+add_executable(test_wot "tests/wot.cpp")
+target_link_libraries(test_wot xvmextensions)
+target_include_directories(test_wot PRIVATE .)
