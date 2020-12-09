@@ -55,6 +55,7 @@ std::vector<std::filesystem::path> WGC::GetClientPaths()
 
     std::vector<std::filesystem::path> wotPaths;
 
+    //Program data
     try{
         for (auto& p : std::filesystem::directory_iterator(programDataPath + L"\\Wargaming.net\\GameCenter\\apps\\wot\\")){
             auto path = std::filesystem::path(Filesystem::GetFileContent(p.path().wstring()));
@@ -63,6 +64,39 @@ std::vector<std::filesystem::path> WGC::GetClientPaths()
                 wotPaths.push_back(path);
             }
         }
+    }
+    catch (const std::exception&) {}
+
+    //WGC_dir/preferences.xml
+    try {
+        auto preferencesPath = GetWGCInstallPath() / L"preferences.xml";
+        if (Filesystem::Exists(preferencesPath)) {
+            pugi::xml_document doc;
+            if (doc.load_file(preferencesPath.wstring().c_str())) {
+
+                //selected wot game
+                auto wot = doc.select_single_node(L"/protocol/application/games_manager/selectedGames/WOT");
+                if (wot) {
+                    wotPaths.push_back(wot.node().first_child().value());
+                }
+
+                //process
+                auto games = doc.select_single_node(L"/protocol/application/games_manager/games");
+                if (games) {                 
+                    for (auto& game : games.node()) {
+                        auto wd = game.select_single_node(L".//working_dir");
+                        if (!wd) {
+                            continue;
+                        }
+
+                        wotPaths.push_back(wd.node().first_child().value());
+                    }
+                   
+                }
+            }
+        }
+
+
     }
     catch (const std::exception&) {}
 

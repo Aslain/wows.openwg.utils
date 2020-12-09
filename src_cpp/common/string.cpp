@@ -30,42 +30,50 @@
 #include <string>
 #include <sstream>
 
-std::string & String::Trim(std::string & str)
+std::string String::Trim(const std::string & str)
 {
     return LTrim(RTrim(str));
 }
 
-std::string & String::LTrim(std::string & str)
+std::string String::LTrim(const std::string & str)
 {
-    auto it2 = std::find_if(str.begin(), str.end(), [](char ch) { return !std::isspace<char>(ch, std::locale::classic()); });
-    str.erase(str.begin(), it2);
-    return str;
+	std::string result = str;
+
+    auto it2 = std::find_if(result.begin(), result.end(), [](char ch) { return !std::isspace<char>(ch, std::locale::classic()); });
+	result.erase(result.begin(), it2);
+    return result;
 }
 
-std::string & String::RTrim(std::string & str)
+std::string String::RTrim(const std::string & str)
 {
-    auto it1 = std::find_if(str.rbegin(), str.rend(), [](char ch) { return !std::isspace<char>(ch, std::locale::classic()); });
-    str.erase(it1.base(), str.end());
-    return str;
+	std::string result = str;
+
+    auto it1 = std::find_if(result.rbegin(), result.rend(), [](char ch) { return !std::isspace<char>(ch, std::locale::classic()); });
+	result.erase(it1.base(), result.end());
+    return result;
 }
 
-std::wstring & String::Trim(std::wstring & str)
+std::wstring String::Trim(const std::wstring & str)
 {
     return LTrim(RTrim(str));
 }
 
-std::wstring & String::LTrim(std::wstring & str)
+std::wstring String::LTrim(const std::wstring & str)
 {
-    auto it2 = std::find_if(str.begin(), str.end(), [](wchar_t ch) { return !std::isspace<wchar_t>(ch, std::locale::classic()); });
-    str.erase(str.begin(), it2);
-    return str;
+	std::wstring result = str;
+
+    auto it2 = std::find_if(result.begin(), result.end(), [](wchar_t ch) { return !std::isspace<wchar_t>(ch, std::locale::classic()); });
+	result.erase(result.begin(), it2);
+    return result;
 }
 
-std::wstring & String::RTrim(std::wstring & str)
+std::wstring String::RTrim(const std::wstring & str)
 {
-    auto it1 = std::find_if(str.rbegin(), str.rend(), [](wchar_t ch) { return !std::isspace<wchar_t>(ch, std::locale::classic()); });
-    str.erase(it1.base(), str.end());
-    return str;
+	std::wstring result = str;
+
+    auto it1 = std::find_if(result.rbegin(), result.rend(), [](wchar_t ch) { return !std::isspace<wchar_t>(ch, std::locale::classic()); });
+	result.erase(it1.base(), result.end());
+    return result;
 }
 
 std::vector<std::string> String::Split(const std::string & s, const char delim)
@@ -94,6 +102,44 @@ std::vector<std::wstring> String::Split(const std::wstring & s, const wchar_t de
     }
 
     return elems;
+}
+
+std::wstring String::Replace(const std::wstring& where, const std::wstring& from, const std::wstring& to)
+{
+	if (!where.size() || !from.size()) {
+		return std::wstring(where);
+	}
+
+	std::wstring result = where;
+
+	size_t index = 0;
+	while (true) {
+		index = result.find(from, index);
+		if (index == std::wstring::npos) {
+			break;
+		}
+
+		result.replace(index, from.size(), to);
+
+		index += from.size();
+	}
+
+	return result;
+}
+
+std::wstring String::Substring(const std::wstring& where, size_t from, size_t to)
+{
+	if (from == to) {
+		return std::wstring();
+	}
+	if (from == std::wstring::npos || from >= where.size()) {
+		return std::wstring();
+	}
+	if (where.empty()) {
+		return std::wstring();
+	}
+
+	return where.substr(from, to);
 }
 
 std::wstring String::VecToWstring(const std::vector<uint8_t>& vec)

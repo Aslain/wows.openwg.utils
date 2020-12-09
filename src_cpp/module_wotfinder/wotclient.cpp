@@ -90,13 +90,22 @@ void WotClient::updateData()
 {
     clear();
 
-    if (!Filesystem::Exists(path / L"WorldOfTanks.exe")){
-        return;
+    bool exe_found = false;
+    if (Filesystem::Exists(path / "win64" / L"WorldOfTanks.exe")) {
+        exeVersion = Filesystem::GetExeVersion(path / "win64" / L"WorldOfTanks.exe");
+        exe_found = true;
+    }
+    else if (Filesystem::Exists(path / "win32" / L"WorldOfTanks.exe")) {
+        exeVersion = Filesystem::GetExeVersion(path / "win32" / L"WorldOfTanks.exe");
+        exe_found = true;
+    }
+    else if (Filesystem::Exists(path / L"WorldOfTanks.exe")) {
+        exeVersion = Filesystem::GetExeVersion(path / L"WorldOfTanks.exe");
+        exe_found = true;
     }
 
-    exeVersion = Filesystem::GetExeVersion(path /  L"WorldOfTanks.exe");
-    if (exeVersion == L"0.0.0.0" && Filesystem::Exists(path / "win32" / L"WorldOfTanks.exe")) {
-        exeVersion = Filesystem::GetExeVersion(path / "win32" / L"WorldOfTanks.exe");
+    if (!exe_found) {
+        return;
     }
 
     if (!updateData_versionxml()){
@@ -178,12 +187,14 @@ bool WotClient::updateData_versionxml()
         return false;
     }
 
+    //get client version
+    clientVersion = version.node().first_child().value();
+    clientVersion = String::Trim(clientVersion);
+    clientVersion = String::Replace(clientVersion, L"v.", L"");
 
-    std::wstring clientver = version.node().first_child().value();
-    clientver.replace(clientver.find(L" v."), std::wstring(L" v.").length(), L"");
-    clientVersion = clientver.substr(0, clientver.find(L' '));
-    std::wstring type = clientver.substr(clientver.find(L' ') + 1);
-    type = type.substr(0, type.find(L'#'));
+    //parse client type
+    std::wstring type = String::Trim(String::Substring(clientVersion, clientVersion.find(L' ') + 1));
+    type = String::Substring(type, 0, type.find(L'#'));
     type = String::Trim(type);
 
     if (type.empty())

@@ -69,7 +69,7 @@ private:
     ClientBranch clientBranch = ClientBranch::WoT_Unknown;
     ClientType clientType = ClientType::WoTType_Unknown;
 
-    std::wstring exeVersion;
+    std::wstring exeVersion = L"";
     std::wstring clientVersion;
 
     std::wstring clientLocale;
