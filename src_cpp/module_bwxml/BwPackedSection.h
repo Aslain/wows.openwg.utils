@@ -8,14 +8,14 @@
 
 class BwPackedSection {
 public:
-	BwPackedSection() = default;
-	BwPackedSection(BwInputStream& stream);
-	~BwPackedSection() = default;
+    BwPackedSection() = default;
+    BwPackedSection(BwInputStream& stream);
+    ~BwPackedSection() = default;
 
-	bool Read(BwInputStream& stream);
-	void SaveXml(pugi::xml_node&, BwStringTable& stringTable);
+    bool Read(BwInputStream& stream);
+    void SaveXml(pugi::xml_node&, BwStringTable& stringTable);
 
 private:
-	BwDataElement _data;
-	std::vector<std::pair<uint16_t, BwDataElement>> _children;
+    BwDataElement _data;
+    std::vector<std::pair<uint16_t, BwDataElement>> _children;
 };

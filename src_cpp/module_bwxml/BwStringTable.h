@@ -8,33 +8,33 @@
 
 class BwStringTable {
 public:
-	BwStringTable() = default;
+    BwStringTable() = default;
 
-	std::string Get(uint32_t idx)
-	{
-		return _data[idx];
-	}
+    std::string Get(uint32_t idx)
+    {
+        return _data[idx];
+    }
 
-	std::wstring GetW(uint32_t idx)
-	{
-		return Encoding::utf8_to_wstring(Get(idx));
-	}
+    std::wstring GetW(uint32_t idx)
+    {
+        return Encoding::utf8_to_wstring(Get(idx));
+    }
 
-	bool Read(BwInputStream& stream) {
-		_data.clear();
+    bool Read(BwInputStream& stream) {
+        _data.clear();
 
-		while (true) {
-			std::string str = stream.GetString();
-			if (str.size() == 0) {
-				break;
-			}
+        while (true) {
+            std::string str = stream.GetString();
+            if (str.size() == 0) {
+                break;
+            }
 
-			_data.push_back(str);
-		}
+            _data.push_back(str);
+        }
 
-		return true;
-	}
+        return true;
+    }
 
 private:
-	std::vector<std::string> _data;
+    std::vector<std::string> _data;
 };

@@ -82,7 +82,7 @@ std::vector<std::filesystem::path> WGC::GetClientPaths()
 
                 //process
                 auto games = doc.select_single_node(L"/protocol/application/games_manager/games");
-                if (games) {                 
+                if (games) {
                     for (auto& game : games.node()) {
                         auto wd = game.select_single_node(L".//working_dir");
                         if (!wd) {
@@ -91,7 +91,7 @@ std::vector<std::filesystem::path> WGC::GetClientPaths()
 
                         wotPaths.push_back(wd.node().first_child().value());
                     }
-                   
+
                 }
             }
         }

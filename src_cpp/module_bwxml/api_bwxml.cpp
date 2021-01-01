@@ -3,22 +3,22 @@
 
 XVMEXT_API_CALL int32_t BWXML_UnpackW(const wchar_t* xml_in, const wchar_t* xml_out)
 {
-	if (xml_in == nullptr) {
-		return -1;
-	}
+    if (xml_in == nullptr) {
+        return -1;
+    }
 
-	if (xml_out == nullptr) {
-		return -2;
-	}
+    if (xml_out == nullptr) {
+        return -2;
+    }
 
-	BwXml bwxml;
-	if (!bwxml.Read(xml_in)) {
-		return -3;
-	}
+    BwXml bwxml;
+    if (!bwxml.Read(xml_in)) {
+        return -3;
+    }
 
-	if (!bwxml.SaveXml(xml_out)) {
-		return -4;
-	}
+    if (!bwxml.SaveXml(xml_out)) {
+        return -4;
+    }
 
-	return 0;
+    return 0;
 }

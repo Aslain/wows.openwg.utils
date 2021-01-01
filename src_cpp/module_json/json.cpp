@@ -254,7 +254,7 @@ bool SetValue(const std::wstring& file_name, const std::wstring& path_value, Jso
 {
     Json::Value node;
     Json::Reader reader;
-    
+
     std::vector<std::string> tokens = String::Split(Encoding::wstring_to_utf8(path_value), '/');
     try
     {
