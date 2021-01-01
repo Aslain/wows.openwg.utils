@@ -34,7 +34,7 @@ BEGIN
             VALUE "FileDescription", "InnoSetup extensions library"
             VALUE "FileVersion", "20.12.09.1"
             VALUE "InternalName", "innosetupextensions"
-            VALUE "LegalCopyright", "Mikhail Paulyshka, 2017-2020. MIT license"
+            VALUE "LegalCopyright", "Mikhail Paulyshka, 2017-2021. MIT license"
             VALUE "OriginalFilename", "innosetupextensions.dll"
             VALUE "PrivateBuild", "0"
             VALUE "ProductName", "InnoSetup extensions"
@@ -54,17 +54,17 @@ END
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"

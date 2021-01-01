@@ -1,4 +1,4 @@
-/* Copyright (c) 2017-2020, Mikhail Paulyshka.
+/* Copyright (c) 2017-2021, Mikhail Paulyshka.
 * All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -34,9 +34,9 @@ extern "C" {
 #include <sal.h>
 
 #ifdef BUILD_XVMEXTENSIONS
-	#define XVMEXT_API_CALL __declspec(dllexport)
+    #define XVMEXT_API_CALL __declspec(dllexport)
 #else
-	#define XVMEXT_API_CALL __declspec(dllimport)
+    #define XVMEXT_API_CALL __declspec(dllimport)
 #endif
 
 #ifdef __cplusplus

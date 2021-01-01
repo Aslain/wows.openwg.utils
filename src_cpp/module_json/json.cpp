@@ -1,4 +1,4 @@
-/* Copyright (c) 2017-2020, Mikhail Paulyshka.
+/* Copyright (c) 2017-2021, Mikhail Paulyshka.
 * All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -254,7 +254,7 @@ bool SetValue(const std::wstring& file_name, const std::wstring& path_value, Jso
 {
     Json::Value node;
     Json::Reader reader;
-    
+
     std::vector<std::string> tokens = String::Split(Encoding::wstring_to_utf8(path_value), '/');
     try
     {
