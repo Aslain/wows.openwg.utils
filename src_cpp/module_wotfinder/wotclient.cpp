@@ -194,11 +194,14 @@ bool WotClient::updateData_versionxml()
     if (clientVersion.find(L'#') != std::wstring::npos) {
         clientVersion = String::Substring(clientVersion, 0, clientVersion.find(L'#'));
     }
-    clientVersion = String::Trim(clientVersion);
+    this->clientVersion = String::Trim(clientVersion);
 
-    //parse client type
-    std::wstring type = String::Trim(String::Substring(clientVersion, clientVersion.find(L' ') + 1));
-    type = String::Trim(type);
+    //get client type
+    std::wstring type;
+    auto version_tokens = String::Split(clientVersion, L' ', 2);
+    if (version_tokens.size() == 2) {
+        type = String::Trim(version_tokens[1]);
+    }
 
     if (type.empty())
     {

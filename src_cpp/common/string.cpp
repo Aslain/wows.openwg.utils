@@ -104,6 +104,26 @@ std::vector<std::wstring> String::Split(const std::wstring & s, const wchar_t de
     return elems;
 }
 
+std::vector<std::wstring> String::Split(const std::wstring& s, const wchar_t delim, size_t limit)
+{
+    std::vector<std::wstring> elems;
+    std::wstringstream ss(s);
+    std::wstring item;
+
+    size_t idx = 1;
+    while (idx < limit && std::getline(ss, item, delim))
+    {
+        *(std::back_inserter(elems)++) = item;
+        idx++;
+    }
+
+    if (std::getline(ss, item)) {
+        *(std::back_inserter(elems)++) = item;
+    }
+
+    return elems;
+}
+
 std::wstring String::Replace(const std::wstring& where, const std::wstring& from, const std::wstring& to)
 {
     if (!where.size() || !from.size()) {

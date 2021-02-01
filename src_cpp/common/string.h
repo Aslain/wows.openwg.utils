@@ -39,6 +39,7 @@ public:
 
     static std::vector<std::string> Split(const std::string& s, const char delim);
     static std::vector<std::wstring> Split(const std::wstring& s, const wchar_t delim);
+    static std::vector<std::wstring> Split(const std::wstring& s, const wchar_t delim, size_t limit);
 
     static std::wstring Replace(const std::wstring& where, const std::wstring& from, const std::wstring& to);
 
