@@ -110,7 +110,13 @@ void WotDetector::FindClients()
     for (auto& drive : drives){
         for (auto& path : pathes){
             try {
-                for (auto& p : std::filesystem::directory_iterator(drive + path)) {
+                auto drive_path = drive + path;
+
+                if (!std::filesystem::exists(drive_path)) {
+                    continue;
+                }
+
+                for (auto& p : std::filesystem::directory_iterator(drive_path)) {
 
                     if (!std::filesystem::is_directory(p)) {
                         continue;
@@ -120,6 +126,9 @@ void WotDetector::FindClients()
                 }
             }
             catch (std::filesystem::filesystem_error & ex) {
+                continue;
+            }
+            catch (std::system_error & ex) {
                 continue;
             }
         }
