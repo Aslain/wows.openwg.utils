@@ -1,9 +1,9 @@
 #ifndef XVMEXTENSION_DIR
-#define XVMEXTENSION_DIR "{#SourcePath}\"
+#define XVMEXTENSION_DIR SourcePath
 #endif
 
 [Files]
-Source: "{#XVMEXTENSION_DIR}xvmextensions.x86_32.dll"; DestName: xvmextensions.dll; Flags: dontcopy;
+Source: "{#XVMEXTENSION_DIR}\xvmextensions.x86_32.dll"; DestName: xvmextensions.dll; Flags: dontcopy;
 
 
 [Code]
