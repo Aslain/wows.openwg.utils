@@ -35,6 +35,6 @@ public:
     static std::vector<WotClient> clients;
 
     static void FindClients();
-    static int AddClient(std::wstring directory);
+    static int AddClient(std::wstring directory,WgcFlavour flavour = WgcFlavour::Unknown);
     static bool IsInitialized();
 };

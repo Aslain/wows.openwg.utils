@@ -42,9 +42,10 @@ WotClient::WotClient()
 {
 }
 
-WotClient::WotClient(const std::filesystem::path& wotDirectory)
+WotClient::WotClient(const std::filesystem::path& wotDirectory, WgcFlavour flavour)
 {
     SetPath(wotDirectory);
+    _wgcFlavour = flavour;
 }
 
 
@@ -243,4 +244,8 @@ void WotClient::clear()
     clientBranch = ClientBranch::WoT_Unknown;
     exeVersion.clear();
     clientVersion.clear();
+}
+
+WgcFlavour WotClient::GetClientWgcFlavour() {
+    return _wgcFlavour;
 }

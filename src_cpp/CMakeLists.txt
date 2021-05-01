@@ -84,71 +84,50 @@ target_sources(xvmextensions PRIVATE
     common/string.h
     common/vector.cpp
     common/vector.h
-)
 
-target_sources(xvmextensions PRIVATE
     module_bwxml/api_bwxml.cpp
     module_bwxml/api_bwxml.h
-
     module_bwxml/BwDataDescriptor.h
-
     module_bwxml/BwDataElement.cpp
     module_bwxml/BwDataElement.h
-
     module_bwxml/BwInputStream.h
-
     module_bwxml/BwPackedSection.cpp
     module_bwxml/BwPackedSection.h
-
     module_bwxml/BwStringTable.h
-
     module_bwxml/BwXml.cpp
     module_bwxml/BwXml.h
-)
 
-target_sources(xvmextensions PRIVATE
     module_json/api_json.cpp
     module_json/api_json.h
     module_json/json.cpp
     module_json/json.h
-)
 
-target_sources(xvmextensions PRIVATE
     module_imagedraw/api_imagedraw.cpp
     module_imagedraw/api_imagedraw.h
     module_imagedraw/imagedraw.cpp
     module_imagedraw/imagedraw.h
-)
 
-target_sources(xvmextensions PRIVATE
     module_process/api_process.cpp
     module_process/api_process.h
     module_process/process.cpp
     module_process/process.h
-)
 
-target_sources(xvmextensions PRIVATE
     module_splashscreen/api_splashscreen.cpp
     module_splashscreen/api_splashscreen.h
     module_splashscreen/splashscreen.cpp
     module_splashscreen/splashscreen.h
-)
 
-target_sources(xvmextensions PRIVATE
-    module_wgc/api_wgc.cpp
-    module_wgc/api_wgc.h
-    module_wgc/wgc.cpp
-    module_wgc/wgc.h
-)
+    module_wgc/wgc_client.h
+    module_wgc/wgc_client.cpp
+    module_wgc/wgc_flavour.h
+    module_wgc/wgc_finder.h
+    module_wgc/wgc_finder.cpp
 
-target_sources(xvmextensions PRIVATE
     module_wine/api_wine.cpp
     module_wine/api_wine.h
     module_wine/wine.cpp
     module_wine/wine.h
-)
 
-target_sources(xvmextensions PRIVATE
     module_wotfinder/api_wotfinder.cpp
     module_wotfinder/api_wotfinder.h
     module_wotfinder/wotclient.cpp
@@ -176,20 +155,16 @@ set_target_properties(xvmextensions PROPERTIES PREFIX "")
 set_target_properties(xvmextensions PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 #detect platform
-if(CMAKE_GENERATOR_PLATFORM STREQUAL "ARM")
-    set(XVMEXT_PLAT "arm")
-    set(XVMEXT_BIT "32")
-elseif(CMAKE_GENERATOR_PLATFORM STREQUAL "ARM64")
-    set(XVMEXT_PLAT "arm")
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set(XVMEXT_BIT "64")
-elseif(CMAKE_GENERATOR_PLATFORM STREQUAL "Win32")
-    set(XVMEXT_PLAT "x86")
+elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
     set(XVMEXT_BIT "32")
-elseif(CMAKE_GENERATOR_PLATFORM STREQUAL "x64")
-    set(XVMEXT_PLAT "x86")
-    set(XVMEXT_BIT "64")
+endif()
+
+if(CMAKE_GENERATOR_PLATFORM STREQUAL "ARM" OR CMAKE_GENERATOR_PLATFORM STREQUAL "ARM64")
+    set(XVMEXT_PLAT "arm")
 else()
-    error("Unknown platform")
+    set(XVMEXT_PLAT "x86")
 endif()
 
 

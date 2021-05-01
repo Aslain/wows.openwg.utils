@@ -338,3 +338,19 @@ int32_t WOT_GetClientType(int32_t index)
         return -1;
     }
 }
+
+int32_t WOT_GetClientWgcFlavour(int32_t index){
+    if (!WotDetector::IsInitialized())
+    {
+        WotDetector::FindClients();
+    }
+
+    if (WotDetector::clients.size() > index)
+    {
+        return static_cast<int32_t>(WotDetector::clients[index].GetClientWgcFlavour());
+    }
+    else
+    {
+        return -1;
+    }
+}

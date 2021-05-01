@@ -53,15 +53,6 @@ external 'PROCESS_TerminateProcess@files:xvmextensions.dll cdecl';
 function SPLASHSCREEN_ShowSplashScreenW(FileName: String; SecondsToShow: Integer): Boolean;
 external 'SPLASHSCREEN_ShowSplashScreenW@files:xvmextensions.dll cdecl';
 
-
-//WGC
-procedure WGC_GetInstallPathW(Buffer: String; BufferSize: Integer);
-external 'WGC_GetInstallPathW@files:xvmextensions.dll cdecl';
-
-function WGC_IsInstalled(): Boolean;
-external 'WGC_IsInstalled@files:xvmextensions.dll cdecl';
-
-
 //Wine
 function WINE_IsRunningUnder(): Boolean;
 external 'WINE_IsRunningUnder@files:xvmextensions.dll cdecl';
@@ -82,6 +73,9 @@ external 'WOT_GetClientBranch@files:xvmextensions.dll cdecl';
 
 function WOT_GetClientType(ClientIndex: Integer): Integer;
 external 'WOT_GetClientType@files:xvmextensions.dll cdecl';
+
+function WOT_GetClientWgcFlavour(ClientIndex: Integer): Integer;
+external 'WOT_GetClientWgcFlavour@files:xvmextensions.dll cdecl';
 
 procedure WOT_GetClientLocaleW(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
 external 'WOT_GetClientLocaleW@files:xvmextensions.dll cdecl';

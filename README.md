@@ -26,14 +26,13 @@ This project provides several ways to use it features:
 | Process::GetRunningInDirectory | ✅    | ✅                    | ✅         |
 | Process::TerminateProcess      | ✅    | ✅                    | ✅         |
 | SplashScreen::ShowSplashScreen | ✅    | ✅                    | ✅         |
-| WGC::GetInstallPath            | ✅    | ✅                    | ✅         |
-| WGC::IsInstalled               | ✅    | ✅                    | ✅         |
 | Wine::IsRunningUnder           | 🐍    | 🐍                    | 🐍         |
 | WOT::AddClient                 | ✅    | ❌                    | ✅         |
 | WOT::GetPreferredClientPath    | ✅    | ✅                    | ✅         |
 | WOT::GetClientsCount           | ✅    | ✅                    | ✅         |
 | WOT::GetClientBranch           | ✅    | ✅                    | ✅         |
 | WOT::GetClientType             | ✅    | ✅                    | ✅         |
+| WOT::GetClientWgcFlavour       | ✅    | ❌                    | ✅         |
 | WOT::GetClientLocale           | ✅    | ✅                    | ✅         |
 | WOT::GetClientPath             | ✅    | ✅                    | ✅         |
 | WOT::GetClientVersion          | ✅    | ✅                    | ✅         |

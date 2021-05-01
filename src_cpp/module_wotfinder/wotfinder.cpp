@@ -22,6 +22,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <array>
 #include <algorithm>
 #include <filesystem>
 #include <iostream>
@@ -32,7 +33,7 @@
 
 #include "common/filesystem.h"
 #include "module_wine/wine.h"
-#include "module_wgc/wgc.h"
+#include "module_wgc/wgc_finder.h"
 #include "wotlauncher.h"
 
 bool WotDetector::isInitialized = false;
@@ -41,13 +42,12 @@ std::vector<WotClient> WotDetector::clients;
 void WotDetector::FindClients()
 {
     // WGC
-    auto wgcPath = WGC::GetWGCInstallPath();
-    if (!wgcPath.empty())
-    {
-        WotDetector::AddClient(WGC::GetClientPreferedPath());
+    auto wgc_clients = WgcFinder::GetWgcClients();
+    for(auto& wgc_client: wgc_clients){
+        WotDetector::AddClient(wgc_client.GetClientPreferredPath(), wgc_client.GetFlavour());
 
-        for (auto& path : WGC::GetClientPaths()) {
-            WotDetector::AddClient(path);
+        for (auto& path : wgc_client.GetClientPaths()) {
+            WotDetector::AddClient(path, wgc_client.GetFlavour());
         }
     }
 
@@ -64,13 +64,13 @@ void WotDetector::FindClients()
     WineStatus wine_status = Wine::GetStatus();
     if(wine_status.running_on)
     {
-        wchar_t* buf = new wchar_t[256]{};
-        GetEnvironmentVariableW(L"USERNAME", buf, 256);
+        std::array<wchar_t, 256> buf;
+        GetEnvironmentVariableW(L"USERNAME", buf.data(), 256);
 
         if (wcscmp(wine_status.system, L"Linux")==0)
         {
             // /media/<USERNAME>/ mounted partitions
-            std::wstring linux_mounts(std::wstring(L"Z:\\media\\") + std::wstring(buf) + std::wstring(L"\\"));
+            std::wstring linux_mounts(std::wstring(L"Z:\\media\\") + std::wstring(buf.data()) + std::wstring(L"\\"));
             if (Filesystem::Exists(linux_mounts))
             {
                 for (auto& p : std::filesystem::directory_iterator(linux_mounts))
@@ -99,12 +99,10 @@ void WotDetector::FindClients()
         }
 
         // WoT OSX edition (Wargaming.net wine wrapper)
-        std::wstring wot_osx = std::wstring(L"Z:\\Users\\") + std::wstring(buf) + std::wstring(L"\\Library\\Application Support\\World of Tanks\\Bottles\\worldoftanks\\drive_c\\Games\\World_of_Tanks\\");
+        std::wstring wot_osx = std::wstring(L"Z:\\Users\\") + std::wstring(buf.data()) + std::wstring(L"\\Library\\Application Support\\World of Tanks\\Bottles\\worldoftanks\\drive_c\\Games\\World_of_Tanks\\");
         if (Filesystem::Exists(wot_osx)) {
             WotDetector::AddClient(wot_osx);
         }
-
-        delete[] buf;
     }
 
     for (auto& drive : drives){
@@ -137,7 +135,7 @@ void WotDetector::FindClients()
     WotDetector::isInitialized = true;
 }
 
-int WotDetector::AddClient(std::wstring directory)
+int WotDetector::AddClient(std::wstring directory, WgcFlavour flavour)
 {
     if (directory.empty())
         return -1;
@@ -166,7 +164,7 @@ int WotDetector::AddClient(std::wstring directory)
         return std::distance(WotDetector::clients.begin(), dir_it);
 
 
-    WotClient client(directory);
+    WotClient client(directory, flavour);
     if (client.IsValid())
     {
         WotDetector::clients.push_back(client);

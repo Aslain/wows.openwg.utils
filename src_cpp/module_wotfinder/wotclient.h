@@ -27,6 +27,8 @@
 #include <filesystem>
 #include <string>
 
+#include "module_wgc/wgc_flavour.h"
+
 enum ClientBranch
 {
     WoT_Unknown = 0,
@@ -47,7 +49,7 @@ enum ClientType
 class WotClient {
 public:
     WotClient();
-    WotClient(const std::filesystem::path& wotDirectory);
+    WotClient(const std::filesystem::path& wotDirectory, WgcFlavour flavour = WgcFlavour::Unknown);
     ~WotClient() = default;
 
     bool IsValid();
@@ -60,7 +62,15 @@ public:
     std::wstring GetClientVersion();
     std::wstring GetClientLocale();
     ClientType GetClientType();
+    WgcFlavour GetClientWgcFlavour();
 
+private:
+    void updateData();
+    bool updateData_apptype();
+    bool updateData_gameinfo();
+    bool updateData_versionxml();
+
+    void clear();
 private:
     bool isValid = false;
 
@@ -68,16 +78,10 @@ private:
 
     ClientBranch clientBranch = ClientBranch::WoT_Unknown;
     ClientType clientType = ClientType::WoTType_Unknown;
+    WgcFlavour _wgcFlavour = WgcFlavour::Unknown;
 
-    std::wstring exeVersion = L"";
+    std::wstring exeVersion;
     std::wstring clientVersion;
 
     std::wstring clientLocale;
-
-    void updateData();
-    bool updateData_apptype();
-    bool updateData_gameinfo();
-    bool updateData_versionxml();
-
-    void clear();
 };

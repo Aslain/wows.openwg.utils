@@ -4,6 +4,7 @@ syntax: glob
 .vscode/
 .vs/
 
+cmake-build-*/
 build/
 ~build/
 output/

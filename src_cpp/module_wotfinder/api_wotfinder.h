@@ -58,6 +58,9 @@ XVMEXT_API_CALL int32_t WOT_GetClientBranch(int32_t index);
 // -1- error, 0-unknown, 1-sd , 2-hd
 XVMEXT_API_CALL int32_t WOT_GetClientType(int32_t index);
 
+// -1- error, 0-unknown, 1-wg , 2-360, 3-steam
+XVMEXT_API_CALL int32_t WOT_GetClientWgcFlavour(int32_t index);
+
 #ifdef __cplusplus
 }
 #endif

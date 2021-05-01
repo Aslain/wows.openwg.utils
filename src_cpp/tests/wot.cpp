@@ -36,7 +36,7 @@ int main()
         std::wcout << L"Client Path  : " << buffer << std::endl;
 
         std::wcout << L"Client Type  : " << WOT_GetClientType(i) << std::endl;
-
+        std::wcout << L"Client WGC F : " << WOT_GetClientWgcFlavour(i) << std::endl;
         WOT_GetClientVersionW(buffer, std::size(buffer), i);
         std::wcout << L"Client Ver   : " << buffer << std::endl;
 
