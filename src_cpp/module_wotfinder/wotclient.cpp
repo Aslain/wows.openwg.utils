@@ -202,6 +202,7 @@ bool WotClient::updateData_versionxml()
     if (version_tokens.size() == 2) {
         type = String::Trim(version_tokens[1]);
     }
+    this->clientVersion = version_tokens[0];
 
     if (type.empty())
     {
