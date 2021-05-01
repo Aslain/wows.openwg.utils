@@ -14,8 +14,8 @@ LANGUAGE LANG_BELARUSIAN, SUBLANG_DEFAULT
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 21,03,12,1
- PRODUCTVERSION 21,03,12,1
+ FILEVERSION 21,05,01,1
+ PRODUCTVERSION 21,05,01,1
  FILEFLAGSMASK 0x0L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -32,13 +32,13 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Mikhail Paulyshka"
             VALUE "FileDescription", "InnoSetup extensions library"
-            VALUE "FileVersion", "21.03.12.1"
+            VALUE "FileVersion", "21.05.01.1"
             VALUE "InternalName", "innosetupextensions"
             VALUE "LegalCopyright", "Mikhail Paulyshka, 2017-2021. MIT license"
             VALUE "OriginalFilename", "innosetupextensions.dll"
             VALUE "PrivateBuild", "0"
             VALUE "ProductName", "InnoSetup extensions"
-            VALUE "ProductVersion", "21.03.12.1"
+            VALUE "ProductVersion", "21.05.01.1"
         END
     END
     BLOCK "VarFileInfo"
