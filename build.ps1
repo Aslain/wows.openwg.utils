@@ -35,7 +35,7 @@ function Build-CppProject($Toolset, $Architecture) {
     Pop-Location
 }
 
-Build-CppProject -Toolset v141_xp -Architecture Win32
-Build-CppProject -Toolset v141_xp -Architecture x64
+Build-CppProject -Toolset v142 -Architecture Win32
+Build-CppProject -Toolset v142 -Architecture x64
 Build-CppProject -Toolset v142 -Architecture ARM
 Build-CppProject -Toolset v142 -Architecture ARM64
