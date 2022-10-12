@@ -7,6 +7,13 @@
 #include "wgc_flavour.h"
 #include "wgc_client.h"
 
+struct WGCInfo {
+    std::wstring prefix;
+    WgcFlavour flavour;
+    std::wstring path_filename;
+    std::wstring exe_filename;
+};
+
 class WgcFinder {
 public:
     WgcFinder() = delete;
@@ -15,5 +22,5 @@ public:
     static std::vector<WgcClient> GetWgcClients();
 
 private:
-    static std::vector<std::pair<std::wstring, WgcFlavour>> _programdata_suffixes;
+    static std::vector<WGCInfo> _wgcs;
 };

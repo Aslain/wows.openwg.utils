@@ -7,5 +7,6 @@ enum class WgcFlavour: int32_t {
     WG       = 1,
     China360 = 2,
     Steam    = 3,
+    Lesta    = 4,
 
 };
