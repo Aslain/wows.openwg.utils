@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Newtonsoft.Json.Linq;
 
-namespace XVM.Extensions
+namespace OpenWG.Utils
 {
     public class XVM
     {

@@ -264,7 +264,9 @@ bool SetValue(const std::wstring& file_name, const std::wstring& path_value, Jso
         {
             return false;
         }
-        c_node(count, index, node, tokens, Json::Value(value));
+
+        auto val = Json::Value(value);
+        c_node(count, index, node, tokens, val);
     }
     catch (Json::LogicError&)
     {
@@ -276,7 +278,8 @@ bool SetValue(const std::wstring& file_name, const std::wstring& path_value, Jso
 
 bool JsonUtils::SetValueBool(const std::wstring& file_name, const std::wstring& path_value, const bool value)
 {
-    if (!SetValue(file_name, path_value, Json::Value(value)))
+    auto val = Json::Value(value);
+    if (!SetValue(file_name, path_value, val))
     {
         return false;
     }

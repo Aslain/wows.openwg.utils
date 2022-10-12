@@ -28,7 +28,8 @@ bool BwXml::SaveXml(const wchar_t* output_filename)
 
     _root_section.SaveXml(node, _string_table);
 
-    doc.save(std::ofstream(output_filename));
+    auto stream = std::ofstream(output_filename);
+    doc.save(stream);
     return true;
 }
 

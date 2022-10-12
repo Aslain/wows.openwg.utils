@@ -3,7 +3,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace XVM.Extensions
+namespace OpenWG.Utils
 {
     public enum WotClientBranch
     {

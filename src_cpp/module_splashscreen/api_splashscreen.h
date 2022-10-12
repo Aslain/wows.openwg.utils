@@ -30,7 +30,7 @@ extern "C" {
 
 #include "common/api_common.h"
 
-XVMEXT_API_CALL bool __cdecl SPLASHSCREEN_ShowSplashScreenW(_In_ wchar_t* file_path, int32_t seconds);
+XVMEXT_API_CALL bool __cdecl SPLASHSCREEN_ShowSplashScreenW(_In_ const wchar_t* file_path, int32_t seconds);
 
 #ifdef __cplusplus
 }

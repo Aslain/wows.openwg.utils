@@ -22,10 +22,10 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-cmake_minimum_required(VERSION 3.16)
-project(xvmextensions)
+cmake_minimum_required(VERSION 3.23)
+project(openwg.utils)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -63,12 +63,12 @@ add_library(stb INTERFACE)
 target_include_directories(stb INTERFACE 3rdparty/stb)
 
 ##############################
-### Library: xvmextensions ###
+### Library: openwg.utils ###
 ##############################
 
-add_library(xvmextensions SHARED)
+add_library(openwg.utils SHARED)
 
-target_sources(xvmextensions PRIVATE
+target_sources(openwg.utils PRIVATE
     dllmain.cpp
     dllmain.rc
 
@@ -139,20 +139,20 @@ target_sources(xvmextensions PRIVATE
 )
 
 
-target_include_directories(xvmextensions PRIVATE .)
+target_include_directories(openwg.utils PRIVATE .)
 
-target_link_libraries(xvmextensions PRIVATE "Version" "Kernel32" "Psapi" "Shell32" "Advapi32" "Gdi32")
-target_link_libraries(xvmextensions PUBLIC jsoncpp)
-target_link_libraries(xvmextensions PUBLIC pugixml)
-target_link_libraries(xvmextensions PUBLIC lodepng)
-target_link_libraries(xvmextensions PUBLIC stb)
+target_link_libraries(openwg.utils PRIVATE "Version" "Kernel32" "Psapi" "Shell32" "Advapi32" "Gdi32")
+target_link_libraries(openwg.utils PUBLIC jsoncpp)
+target_link_libraries(openwg.utils PUBLIC pugixml)
+target_link_libraries(openwg.utils PUBLIC lodepng)
+target_link_libraries(openwg.utils PUBLIC stb)
 
-target_compile_definitions(xvmextensions PRIVATE "-DBUILD_XVMEXTENSIONS")
-target_compile_definitions(xvmextensions PRIVATE "-D_CRT_SECURE_NO_WARNINGS")
-target_compile_definitions(xvmextensions PRIVATE "-D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING")
+target_compile_definitions(openwg.utils PRIVATE "-DBUILD_OPENWGUTILS")
+target_compile_definitions(openwg.utils PRIVATE "-D_CRT_SECURE_NO_WARNINGS")
+target_compile_definitions(openwg.utils PRIVATE "-D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING")
 
-set_target_properties(xvmextensions PROPERTIES PREFIX "")
-set_target_properties(xvmextensions PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+set_target_properties(openwg.utils PROPERTIES PREFIX "")
+set_target_properties(openwg.utils PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 #detect platform
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -168,13 +168,13 @@ else()
 endif()
 
 
-set_target_properties(xvmextensions PROPERTIES DEBUG_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}d")
-set_target_properties(xvmextensions PROPERTIES RELEASE_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
-set_target_properties(xvmextensions PROPERTIES RELWITHDEBINFO_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
-set_target_properties(xvmextensions PROPERTIES MINSIZEREL_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
+set_target_properties(openwg.utils PROPERTIES DEBUG_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}d")
+set_target_properties(openwg.utils PROPERTIES RELEASE_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
+set_target_properties(openwg.utils PROPERTIES RELWITHDEBINFO_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
+set_target_properties(openwg.utils PROPERTIES MINSIZEREL_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
 
 install(
-    TARGETS xvmextensions
+    TARGETS openwg.utils
     RUNTIME DESTINATION bin
 )
 
@@ -183,17 +183,17 @@ install(
 ###############################
 
 add_executable(test_bwxml "tests/bwxml.cpp")
-target_link_libraries(test_bwxml xvmextensions)
+target_link_libraries(test_bwxml openwg.utils)
 target_include_directories(test_bwxml PRIVATE .)
 
 #add_executable(test_json "tests/json.cpp")
-#target_link_libraries(test_json xvmextensions)
+#target_link_libraries(test_json openwg.utils)
 #target_include_directories(test_json PRIVATE .)
 
 add_executable(test_process "tests/process.cpp")
-target_link_libraries(test_process xvmextensions)
+target_link_libraries(test_process openwg.utils)
 target_include_directories(test_process PRIVATE .)
 
 add_executable(test_wot "tests/wot.cpp")
-target_link_libraries(test_wot xvmextensions)
+target_link_libraries(test_wot openwg.utils)
 target_include_directories(test_wot PRIVATE .)

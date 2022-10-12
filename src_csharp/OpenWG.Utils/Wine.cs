@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace XVM.Extensions
+namespace OpenWG.Utils
 {
     public class Wine
     {

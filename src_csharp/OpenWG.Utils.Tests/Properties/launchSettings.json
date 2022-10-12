@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "XVM.Extensions.Tests": {
+    "OpenWG.Utils.Tests": {
       "commandName": "Project",
       "nativeDebugging": true
     }

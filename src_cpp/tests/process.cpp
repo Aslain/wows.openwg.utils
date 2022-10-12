@@ -26,6 +26,7 @@
 
 int main()
 {
-    bool result = SPLASHSCREEN_ShowSplashScreenW(L"D:\\Untitled.png", 5);
+    auto path = L"D:\\Untitled.png";
+    bool result = SPLASHSCREEN_ShowSplashScreenW(path, 5);
     return 0;
 }

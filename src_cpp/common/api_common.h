@@ -33,7 +33,7 @@ extern "C" {
 #include <windows.h>
 #include <sal.h>
 
-#ifdef BUILD_XVMEXTENSIONS
+#ifdef BUILD_OPENWGUTILS
     #define XVMEXT_API_CALL __declspec(dllexport)
 #else
     #define XVMEXT_API_CALL __declspec(dllimport)

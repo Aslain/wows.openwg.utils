@@ -48,7 +48,7 @@ public:
 
     static bool SetValueBool(const std::wstring& file_name, const std::wstring& path, const bool value);
 
-    static bool JsonUtils::SetValueObj(const std::wstring& file_name, const std::wstring& json, bool is_add);
+    static bool SetValueObj(const std::wstring& file_name, const std::wstring& json, bool is_add);
 
     static std::pair<std::wstring, std::wstring> GetNamesAndValues(const std::wstring& file_name, const std::wstring& path);
     static std::pair<std::wstring, std::wstring> GetNamesAndValues(const std::wstring& json);

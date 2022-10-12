@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace XVM.Extensions
+namespace OpenWG.Utils
 {
     /// <summary>Indicates the processor ProcessorArchitectureType. </summary>
     public enum ProcessorArchitectureType : short

@@ -4,7 +4,7 @@ using System.Text;
 using System.Xml.Linq;
 using Xunit;
 
-namespace XVM.Extensions.Tests
+namespace OpenWG.Utils.Tests
 {
     public class BwXmlTests
     {

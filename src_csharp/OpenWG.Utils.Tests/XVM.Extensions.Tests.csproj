@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\XVM.Extensions\XVM.Extensions.csproj" />
+    <ProjectReference Include="..\OpenWG.Utils\OpenWG.Utils.csproj" />
   </ItemGroup>
 
   <ItemGroup>

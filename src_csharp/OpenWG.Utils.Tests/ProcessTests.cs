@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using Xunit;
 
-namespace XVM.Extensions.Tests
+namespace OpenWG.Utils.Tests
 {
     public class ProcessTests
     {

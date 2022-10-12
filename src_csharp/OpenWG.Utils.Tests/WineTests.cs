@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace XVM.Extensions.Tests
+namespace OpenWG.Utils.Tests
 {
     public class WineTests
     {

@@ -125,7 +125,7 @@ void SplashScreen::setSplashImage(HWND hwndSplash, HBITMAP hbmpSplash)
 
 
 
-HBITMAP SplashScreen::loadImage(wchar_t* file_path)
+HBITMAP SplashScreen::loadImage(const wchar_t* file_path)
 {
     int image_width = 0, image_height = 0, channels = 0;
 
@@ -154,7 +154,7 @@ HWND SplashScreen::createSplashWindow()
     return CreateWindowExW(WS_EX_LAYERED , windowClassName, NULL, WS_POPUP | WS_VISIBLE,    0, 0, 0, 0, hwndOwner, NULL, NULL, NULL);
 }
 
-bool SplashScreen::ShowSplashScreen(wchar_t* file_path, int seconds)
+bool SplashScreen::ShowSplashScreen(const wchar_t* file_path, int seconds)
 {
     HBITMAP bitmap = loadImage(file_path);
     if (!bitmap) {

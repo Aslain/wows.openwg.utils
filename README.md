@@ -1,6 +1,4 @@
-# XVM.Extensions
-
-[![Build status](https://ci.appveyor.com/api/projects/status/4am9m44gggbcnr8f?svg=true)](https://ci.appveyor.com/project/MikhailPaulyshka/xfw-extensionlib)
+# OpenWG.Utils.Installer
 
 A set of tools that help in the development of modpacks and other WoT-related applications.
 
@@ -39,6 +37,3 @@ This project provides several ways to use it features:
 | WOT::GetClientExeVersion       | ✅    | ✅                    | ✅         |
 | WOT::GetIdsRangeForRegion      | ❌    | ✅                    | ❌         |
 | WOT::GetRegionFromString       | ❌    | ✅                    | ❌         |
-| XVM::GetLatestVersion          | ❌    | 🐍<sup>.NET 4.5</sup> | ❌         |
-| XVM::GetVersion                | ❌    | 🐍<sup>.NET 4.5</sup> | ❌         |
-

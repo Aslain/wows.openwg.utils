@@ -32,6 +32,6 @@ class ImageDraw
 {
 public:
 
-    static void ImageDraw::PngToBmp(const std::wstring& filename);
+    static void PngToBmp(const std::wstring& filename);
 
 };
