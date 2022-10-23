@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -9,22 +9,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="..\..\~output\cpp\bin\xvmextensions.arm_32.dll" Link="xvmextensions.arm_32.dll">
+    <Content Include="..\..\~output\cpp\bin\openwg.utils.arm_32.dll" Link="openwg.utils.arm_32.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\~output\cpp\bin\xvmextensions.arm_64.dll" Link="xvmextensions.arm_64.dll">
+    <Content Include="..\..\~output\cpp\bin\openwg.utils.arm_64.dll" Link="openwg.utils.arm_64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\~output\cpp\bin\xvmextensions.x86_32.dll" Link="xvmextensions.x86_32.dll">
+    <Content Include="..\..\~output\cpp\bin\openwg.utils.x86_32.dll" Link="openwg.utils.x86_32.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\~output\cpp\bin\xvmextensions.x86_64.dll" Link="xvmextensions.x86_64.dll">
+    <Content Include="..\..\~output\cpp\bin\openwg.utils.x86_64.dll" Link="openwg.utils.x86_64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
 </Project>
