@@ -1,4 +1,7 @@
-﻿using System.Threading;
+﻿// SPDX-License-Identifier: MIT
+// Copyright (c) 2017-2022 OpenWG.Utils Contributors
+
+using System.Threading;
 using Xunit;
 
 namespace OpenWG.Utils.Tests

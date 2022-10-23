@@ -1,4 +1,7 @@
-﻿using System;
+﻿// SPDX-License-Identifier: MIT
+// Copyright (c) 2017-2022 OpenWG.Utils Contributors
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Linq;

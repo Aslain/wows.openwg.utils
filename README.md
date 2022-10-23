@@ -1,4 +1,4 @@
-# OpenWG.Utils.Installer
+# OpenWG.Utils
 
 A set of tools that help in the development of modpacks and other WoT-related applications.
 

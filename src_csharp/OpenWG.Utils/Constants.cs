@@ -1,4 +1,7 @@
-﻿namespace OpenWG.Utils
+﻿// SPDX-License-Identifier: MIT
+// Copyright (c) 2017-2022 OpenWG.Utils Contributors
+
+namespace OpenWG.Utils
 {
     static class Constants
     {

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2017-2022 OpenWG.Utils Contributors
+
 #include "pugixml.hpp"
 
 #include "module_bwxml/BwXml.h"

@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2019-2021 XVM Extensions.
+Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
