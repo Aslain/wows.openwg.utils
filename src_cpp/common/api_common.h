@@ -7,10 +7,20 @@
 extern "C" {
 #endif
 
+#include <stdint.h>
+
 #ifdef BUILD_OPENWGUTILS
-    #define XVMEXT_API_CALL __declspec(dllexport)
+#define XVMEXT_API_CALL __declspec(dllexport)
 #else
-    #define XVMEXT_API_CALL __declspec(dllimport)
+#define XVMEXT_API_CALL __declspec(dllimport)
+#endif
+
+#ifndef _In_
+#define _In_
+#endif
+
+#ifndef _Out_
+#define _Out_
 #endif
 
 #ifdef __cplusplus
