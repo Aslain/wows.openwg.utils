@@ -2,20 +2,48 @@
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
 #include <algorithm>
-#include <map>
 
 #include <Windows.h>
 #include <TlHelp32.h>
 #include <Psapi.h>
 
+#include "common/filesystem.h"
 #include "common/string.h"
 #include "module_process/process_module.h"
 
 
 namespace OpenWG::Utils::Process {
 
-    std::map<std::filesystem::path, DWORD> GetProcessList() {
-        std::map<std::filesystem::path, DWORD> result{};
+    std::wstring NormalizeNTPath(const wchar_t* str)
+    {
+        if(!str){
+            return {};
+        }
+
+        std::wstring result{str};
+
+        for (wchar_t drive_letter = L'A'; drive_letter <= L'Z'; drive_letter++)
+        {
+            wchar_t driver_letter_str[3]{};
+            driver_letter_str[0] = drive_letter;
+            driver_letter_str[1] = L':';
+
+            wchar_t nt_drive_path[256]{};
+
+            auto size = QueryDosDeviceW(driver_letter_str, nt_drive_path, std::size(nt_drive_path));
+            if(size){
+                if(result.starts_with(nt_drive_path)){
+                    result = result.replace(0, size-2, driver_letter_str);
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    std::map<std::filesystem::path, uint32_t> GetProcessList() {
+        std::map<std::filesystem::path, uint32_t> result{};
 
         HANDLE handle_snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
         if (handle_snapshot != INVALID_HANDLE_VALUE) {
@@ -32,7 +60,8 @@ namespace OpenWG::Utils::Process {
 
                     wchar_t pName[path_maxsize]{};
                     if (GetProcessImageFileNameW(hProcess, pName, sizeof(pName))) {
-                        result.emplace(std::filesystem::path(pName).lexically_normal(), process_entry.th32ProcessID);
+                        auto path = std::filesystem::path(NormalizeNTPath(pName)).lexically_normal();
+                        result.emplace(path, process_entry.th32ProcessID);
                     }
 
                     CloseHandle(hProcess);
@@ -52,8 +81,7 @@ namespace OpenWG::Utils::Process {
         auto dir_norm = directoryName.lexically_normal();
 
         for (const auto &process: GetProcessList()) {
-            auto rel = std::filesystem::relative(process.first, dir_norm);
-            if (!rel.empty() && rel.native()[0] != L'0') {
+            if (Common::Filesystem::IsSubpath(process.first, dir_norm)) {
                 result.emplace_back(process.first);
             }
         }
@@ -77,7 +105,7 @@ namespace OpenWG::Utils::Process {
         }
     }
 
-    bool TerminateProcess(DWORD processID) {
+    bool TerminateProcess(uint32_t processID) {
         bool result{false};
 
         HANDLE hProcess = OpenProcess(

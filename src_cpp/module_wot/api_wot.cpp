@@ -112,6 +112,33 @@ int32_t WOT_LauncherSetDefault(int32_t launcher_flavour){
     return WOT_LauncherRescan();
 }
 
+
+int32_t WOT_ClientIsStarted(int32_t index) {
+    int32_t result = -1;
+
+    launchers_init();
+
+    if (index < g_clients.size() && g_clients[index]) {
+        result = g_clients[index]->IsStarted();
+    }
+
+    return result;
+}
+
+
+int32_t WOT_ClientTerminate(int32_t index){
+    int32_t result = -1;
+
+    launchers_init();
+
+    if (index < g_clients.size() && g_clients[index]) {
+        result = g_clients[index]->Terminate();
+    }
+
+    return result;
+}
+
+
 int32_t WOT_GetClientsCount() {
     launchers_init();
     return static_cast<int32_t>(g_clients.size());
@@ -236,3 +263,4 @@ void WOT_GetClientExeVersionW(wchar_t *buffer, int32_t buffer_size, int32_t inde
         }
     }
 }
+

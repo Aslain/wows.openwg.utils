@@ -130,6 +130,16 @@ add_executable(test_process "tests/process.cpp")
 target_link_libraries(test_process openwg.utils)
 target_include_directories(test_process PRIVATE .)
 
-add_executable(test_wot "tests/wot.cpp")
-target_link_libraries(test_wot openwg.utils)
-target_include_directories(test_wot PRIVATE .)
+add_executable(demo_wot "tests/wot.cpp")
+target_link_libraries(demo_wot openwg.utils)
+target_include_directories(demo_wot PRIVATE .)
+
+set_target_properties(demo_wot PROPERTIES DEBUG_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}d")
+set_target_properties(demo_wot PROPERTIES RELEASE_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
+set_target_properties(demo_wot PROPERTIES RELWITHDEBINFO_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
+set_target_properties(demo_wot PROPERTIES MINSIZEREL_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
+
+install(
+    TARGETS demo_wot
+    RUNTIME DESTINATION bin
+)

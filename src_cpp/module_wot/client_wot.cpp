@@ -2,11 +2,12 @@
 
 #include "common/filesystem.h"
 #include "common/string.h"
+#include "module_process/process_module.h"
 #include "module_wot/client_wot.h"
 
 namespace OpenWG::Utils::WoT {
 
-    ClientWoT::ClientWoT(std::filesystem::path path, LauncherFlavour launcherFlavour) : m_path(std::move(path)),
+    ClientWoT::ClientWoT(std::filesystem::path path, LauncherFlavour launcherFlavour) : m_path(path.lexically_normal()),
                                                                                         m_launcherFlavour(
                                                                                                 launcherFlavour) {
 
@@ -17,7 +18,7 @@ namespace OpenWG::Utils::WoT {
         return Common::Filesystem::Exists(m_path / "app_type.xml") &&
                Common::Filesystem::Exists(m_path / "version.xml") &&
                Common::Filesystem::Exists(m_path / "game_info.xml") &&
-               Common::Filesystem::Exists(m_path / "WorldOfTanks.exe");
+               Common::Filesystem::Exists(m_path / m_exename);
     }
 
     ClientBranch ClientWoT::GetBranch() {
@@ -128,22 +129,52 @@ namespace OpenWG::Utils::WoT {
     }
 
     std::optional<std::wstring> ClientWoT::GetVersionExe() {
-        auto path = m_path / "win64" / L"WorldOfTanks.exe";
+        auto path = m_path / "win64" / m_exename;
         if (Common::Filesystem::Exists(path)) {
             return {Common::Filesystem::GetExeVersion(path)};
         }
 
-        path = m_path / "win32" / L"WorldOfTanks.exe";
+        path = m_path / "win32" / m_exename;
         if (Common::Filesystem::Exists(path)) {
             return {Common::Filesystem::GetExeVersion(path)};
         }
 
-        path = m_path / L"WorldOfTanks.exe";
+        path = m_path / m_exename;
         if (Common::Filesystem::Exists(path)) {
             return {Common::Filesystem::GetExeVersion(path)};
         }
 
         return std::nullopt;
+    }
+
+
+    bool ClientWoT::IsStarted() {
+        bool result{false};
+        for (auto &process: Process::GetProcessList()) {
+            if (Common::Filesystem::IsSubpath(process.first, GetPath())) {
+                auto process_name = Common::String::ToLower(process.first.filename().wstring());
+                if(process_name == Common::String::ToLower(m_exename)) {
+                    result = true;
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    bool ClientWoT::Terminate() {
+        bool result{false};
+        for (auto &process: Process::GetProcessList()) {
+            if (Common::Filesystem::IsSubpath(process.first, GetPath())) {
+                auto process_name = Common::String::ToLower(process.first.filename().wstring());
+                if(process_name == Common::String::ToLower(m_exename)) {
+                    result = Process::TerminateProcess(process.second);
+                }
+            }
+        }
+
+        return result;
     }
 
     //

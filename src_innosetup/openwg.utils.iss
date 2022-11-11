@@ -262,6 +262,38 @@ begin
 end;
 
 
+// WOT/ClientIsStarted
+function WOT_ClientIsStarted_I(ClientIndex: Integer): Integer;
+external 'WOT_ClientIsStarted@files:openwg.utils.dll cdecl setuponly';
+
+function WOT_ClientIsStarted_U(ClientIndex: Integer): Integer;
+external 'WOT_ClientIsStarted@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function WOT_ClientIsStarted(ClientIndex: Integer): Integer;
+begin
+    if IsUninstaller() then
+        Result := WOT_ClientIsStarted_U(ClientIndex)
+    else
+        Result := WOT_ClientIsStarted_I(ClientIndex)
+end;
+
+
+// WOT/ClientTerminate
+function WOT_ClientTerminate_I(ClientIndex: Integer): Integer;
+external 'WOT_ClientTerminate@files:openwg.utils.dll cdecl setuponly';
+
+function WOT_ClientTerminate_U(ClientIndex: Integer): Integer;
+external 'WOT_ClientTerminate@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function WOT_ClientTerminate(ClientIndex: Integer): Integer;
+begin
+    if IsUninstaller() then
+        Result := WOT_ClientTerminate_U(ClientIndex)
+    else
+        Result := WOT_ClientTerminate_I(ClientIndex)
+end;
+
+
 // WOT/GetClientsCount
 function WOT_GetClientsCount_I(): Integer;
 external 'WOT_GetClientsCount@files:openwg.utils.dll cdecl setuponly';

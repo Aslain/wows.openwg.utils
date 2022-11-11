@@ -39,3 +39,7 @@ Build-CppProject -Toolset v143 -Architecture Win32
 Build-CppProject -Toolset v143 -Architecture x64
 Build-CppProject -Toolset v143 -Architecture ARM
 Build-CppProject -Toolset v143 -Architecture ARM64
+
+
+New-Item -ItemType Directory -Path ~output/inno -ErrorAction SilentlyContinue
+Copy-Item -Path src_innosetup/openwg.utils.iss ~output/inno

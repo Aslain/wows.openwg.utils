@@ -30,11 +30,18 @@ namespace OpenWG::Utils::WoT {
 
         std::optional<std::wstring> GetVersionExe() override;
 
+        bool IsStarted() override;
+
+        bool Terminate() override;
+
     private:
         std::optional<std::wstring> getVersionClientRaw();
 
     private:
         std::filesystem::path m_path{};
         LauncherFlavour m_launcherFlavour{Launcher_Flavour_Unknown};
+
+    private:
+        static constexpr auto m_exename = L"WorldOfTanks.exe";
     };
 }

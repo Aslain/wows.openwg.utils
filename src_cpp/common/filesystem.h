@@ -19,5 +19,7 @@ namespace OpenWG::Utils::Common {
         std::vector<std::wstring> GetLogicalDrives();
 
         bool Exists(const std::filesystem::path &path);
+
+        bool IsSubpath(const std::filesystem::path &path, const std::filesystem::path &base);
     }
 }

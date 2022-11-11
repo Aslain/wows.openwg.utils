@@ -29,5 +29,9 @@ namespace OpenWG::Utils::WoT {
 
         virtual std::optional<std::wstring> GetVersionExe() = 0;
 
+        virtual bool IsStarted() = 0;
+
+        virtual bool Terminate() = 0;
+
     };
 }
