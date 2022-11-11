@@ -90,7 +90,7 @@ namespace OpenWG::Utils::WoT {
                 }
 
                 // add
-                auto launcher = getLauncher(info_default.value());
+                auto launcher = getLauncher(info);
                 if (launcher) {
                     result.push_back(launcher);
                 }
