@@ -178,5 +178,11 @@ namespace OpenWG::Utils::Common {
 
             return result;
         }
+
+        std::wstring ToLower(const std::wstring &str) {
+            auto result{str};
+            transform(result.begin(), result.end(), result.begin(), ::towlower);
+            return result;
+        }
     }
 }

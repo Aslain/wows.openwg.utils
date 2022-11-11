@@ -33,5 +33,7 @@ namespace OpenWG::Utils::Common {
 
         std::wstring VecToWstring(const std::vector<uint8_t> &vec);
 
+        std::wstring ToLower(const std::wstring& str);
+
     }
 }

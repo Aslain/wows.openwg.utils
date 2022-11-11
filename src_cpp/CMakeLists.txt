@@ -83,6 +83,7 @@ target_link_libraries(openwg.utils PUBLIC lodepng)
 target_link_libraries(openwg.utils PUBLIC stb)
 
 target_compile_definitions(openwg.utils PRIVATE "-DBUILD_OPENWGUTILS")
+target_compile_definitions(openwg.utils PRIVATE "-DNOMINMAX")
 target_compile_definitions(openwg.utils PRIVATE "-D_CRT_SECURE_NO_WARNINGS")
 target_compile_definitions(openwg.utils PRIVATE "-D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING")
 

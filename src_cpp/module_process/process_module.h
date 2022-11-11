@@ -3,13 +3,20 @@
 
 #pragma once
 
-#include <string>
+#include <filesystem>
+#include <limits>
 #include <vector>
+#include <string>
 
-class Process
-{
-public:
-    static std::vector<std::wstring> GetRunningProcessesInDirectory(wchar_t* directoryPath);
+namespace OpenWG::Utils::Process {
 
-    static bool TerminateProcess(wchar_t* processName);
+    constexpr auto path_maxsize = std::numeric_limits<int16_t>::max();
+
+    std::map<std::filesystem::path, DWORD> GetProcessList();
+
+    std::vector<std::filesystem::path> GetRunningProcessesInDirectory(const std::filesystem::path& directoryPath);
+
+    bool TerminateProcess(DWORD processID);
+
+    bool TerminateProcess(const std::wstring& processName);
 };
