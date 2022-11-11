@@ -6,6 +6,8 @@
 #include "common/encoding.h"
 #include "common/string.h"
 
+using namespace OpenWG::Utils::Common;
+
 using std::wcout;
 using std::endl;
 
@@ -39,7 +41,7 @@ bool JsonUtils::ContainsKey(const std::wstring& json, const std::wstring& path)
         return false;
     }
 
-    std::vector<std::string> tokens = String::Split(Encoding::wstring_to_utf8(path), '/');
+    std::vector<std::string> tokens = OpenWG::Utils::Common::String::Split(Encoding::wstring_to_utf8(path), '/');
     try
     {
         for (unsigned int i = 0; i < tokens.size(); i++)
@@ -71,7 +73,7 @@ std::wstring JsonUtils::GetValue(const std::wstring& json, const std::wstring& p
         return std::wstring();
     }
 
-    std::vector<std::string> tokens = String::Split(Encoding::wstring_to_utf8(path), '/');
+    std::vector<std::string> tokens = OpenWG::Utils::Common::String::Split(Encoding::wstring_to_utf8(path), '/');
     try
     {
         for (unsigned int i = 0; i < tokens.size(); i++)

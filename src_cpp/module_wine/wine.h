@@ -3,16 +3,14 @@
 
 #pragma once
 
-struct WineStatus
-{
-    bool running_on = false;
-    wchar_t* build = nullptr;
-    wchar_t* system = nullptr;
-    wchar_t* release = nullptr;
-};
+namespace OpenWG::Utils::Wine {
 
-class Wine
-{
-public:
-    static WineStatus GetStatus();
-};
+    struct WineStatus {
+        bool running_on = false;
+        wchar_t *build = nullptr;
+        wchar_t *system = nullptr;
+        wchar_t *release = nullptr;
+    };
+
+    [[nodiscard]] WineStatus GetStatus();
+}

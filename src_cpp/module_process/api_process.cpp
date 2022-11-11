@@ -3,7 +3,7 @@
 
 #include "api_process.h"
 
-#include "process.h"
+#include "process_module.h"
 
 bool PROCESS_GetRunningInDirectoryW(wchar_t * directory_path, wchar_t * output_list, int32_t output_list_size)
 {

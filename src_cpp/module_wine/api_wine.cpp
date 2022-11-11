@@ -7,6 +7,6 @@
 
 XVMEXT_API_CALL bool WINE_IsRunningUnder()
 {
-    auto st = Wine::GetStatus();
+    auto st = OpenWG::Utils::Wine::GetStatus();
     return st.running_on;
 }

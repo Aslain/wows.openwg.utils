@@ -10,6 +10,8 @@
 #include "module_bwxml/BwDataElement.h"
 #include "module_bwxml/BwPackedSection.h"
 
+using namespace OpenWG::Utils::Common;
+
 BwDataElement::~BwDataElement()
 {
 }
@@ -23,7 +25,7 @@ BwDataElement::BwDataElement(BwInputStream& stream, BwDataDescriptor typeoff, in
     switch (_type)
     {
         case BwDataType::TYPE_DATA_SECTION: {
-            Vector::PtrToVec(_data, new BwPackedSection(stream));
+            OpenWG::Utils::Common::Vector::PtrToVec(_data, new BwPackedSection(stream));
             break;
         }
         default:
@@ -55,7 +57,7 @@ void BwDataElement::SaveXml(pugi::xml_node& node, BwStringTable& stringTable)
         }
 
         case BwDataType::TYPE_FLOAT: {
-            assert(false, "Unsupported");
+            assert(false);
             break;
         }
 
@@ -76,7 +78,7 @@ void BwDataElement::SaveXml(pugi::xml_node& node, BwStringTable& stringTable)
         case BwDataType::TYPE_ENCRYPTED_BLOB:
         case BwDataType::TYPE_ERROR:
         default: {
-            assert(false, "Unsupported");
+            assert(false);
             break;
         }
     }

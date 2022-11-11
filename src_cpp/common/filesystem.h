@@ -7,12 +7,17 @@
 #include <string>
 #include <vector>
 
-class Filesystem
-{
-public:
-    static std::wstring GetExeVersion(const std::wstring& filepath);
-    static std::wstring GetFileContent(const std::wstring& filepath);
-    static std::filesystem::path GetProgramDataPath();
-    static std::vector<std::wstring> GetLogicalDrives();
-    static bool Exists(const std::filesystem::path& path);
-};
+namespace OpenWG::Utils::Common {
+    namespace Filesystem {
+
+        std::wstring GetExeVersion(const std::wstring &filepath);
+
+        std::wstring GetFileContent(const std::wstring &filepath);
+
+        std::filesystem::path GetProgramDataPath();
+
+        std::vector<std::wstring> GetLogicalDrives();
+
+        bool Exists(const std::filesystem::path &path);
+    }
+}

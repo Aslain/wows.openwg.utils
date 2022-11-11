@@ -6,25 +6,32 @@
 #include <string>
 #include <vector>
 
-class String {
-public:
-    static std::string Trim(const std::string& str);
-    static std::string LTrim(const std::string& str);
-    static std::string RTrim(const std::string& str);
+namespace OpenWG::Utils::Common {
+    namespace String {
 
-    static std::wstring Trim(const std::wstring& str);
-    static std::wstring LTrim(const std::wstring& str);
-    static std::wstring RTrim(const std::wstring& str);
+        std::string Trim(const std::string &str);
 
-    static std::vector<std::string> Split(const std::string& s, const char delim);
-    static std::vector<std::wstring> Split(const std::wstring& s, const wchar_t delim);
-    static std::vector<std::wstring> Split(const std::wstring& s, const wchar_t delim, size_t limit);
+        std::string LTrim(const std::string &str);
 
-    static std::wstring Replace(const std::wstring& where, const std::wstring& from, const std::wstring& to);
+        std::string RTrim(const std::string &str);
 
-    static std::wstring Substring(const std::wstring& where, size_t from, size_t to = std::wstring::npos);
+        std::wstring Trim(const std::wstring &str);
 
+        std::wstring LTrim(const std::wstring &str);
 
-    static std::wstring VecToWstring(const std::vector<uint8_t>& vec);
+        std::wstring RTrim(const std::wstring &str);
 
-};;
+        std::vector<std::string> Split(const std::string &s, char delim);
+
+        std::vector<std::wstring> Split(const std::wstring &s, wchar_t delim);
+
+        std::vector<std::wstring> Split(const std::wstring &s, wchar_t delim, size_t limit);
+
+        std::wstring Replace(const std::wstring &where, const std::wstring &from, const std::wstring &to);
+
+        std::wstring Substring(const std::wstring &where, size_t from, size_t to = std::wstring::npos);
+
+        std::wstring VecToWstring(const std::vector<uint8_t> &vec);
+
+    }
+}

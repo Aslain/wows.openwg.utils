@@ -47,74 +47,30 @@ target_include_directories(stb INTERFACE 3rdparty/stb)
 
 add_library(openwg.utils SHARED)
 
+file(GLOB srcs CONFIGURE_DEPENDS
+        "common/*.cpp"
+        "common/*.h"
+        "module_bwxml/*.cpp"
+        "module_bwxml/*.h"
+        "module_imagedraw/*.cpp"
+        "module_imagedraw/*.h"
+        "module_json/*.cpp"
+        "module_json/*.h"
+        "module_process/*.cpp"
+        "module_process/*.h"
+        "module_splashscreen/*.cpp"
+        "module_splashscreen/*.h"
+        "module_wine/*.cpp"
+        "module_wine/*.h"
+        "module_wot/*.cpp"
+        "module_wot/*.h"
+)
+
+
 target_sources(openwg.utils PRIVATE
     dllmain.cpp
     dllmain.rc
-
-    common/api_common.cpp
-    common/api_common.h
-    common/encoding.cpp
-    common/encoding.h
-    common/filesystem.cpp
-    common/filesystem.h
-    common/registry.cpp
-    common/registry.h
-    common/string.cpp
-    common/string.h
-    common/vector.cpp
-    common/vector.h
-
-    module_bwxml/api_bwxml.cpp
-    module_bwxml/api_bwxml.h
-    module_bwxml/BwDataDescriptor.h
-    module_bwxml/BwDataElement.cpp
-    module_bwxml/BwDataElement.h
-    module_bwxml/BwInputStream.h
-    module_bwxml/BwPackedSection.cpp
-    module_bwxml/BwPackedSection.h
-    module_bwxml/BwStringTable.h
-    module_bwxml/BwXml.cpp
-    module_bwxml/BwXml.h
-
-    module_json/api_json.cpp
-    module_json/api_json.h
-    module_json/json.cpp
-    module_json/json.h
-
-    module_imagedraw/api_imagedraw.cpp
-    module_imagedraw/api_imagedraw.h
-    module_imagedraw/imagedraw.cpp
-    module_imagedraw/imagedraw.h
-
-    module_process/api_process.cpp
-    module_process/api_process.h
-    module_process/process.cpp
-    module_process/process.h
-
-    module_splashscreen/api_splashscreen.cpp
-    module_splashscreen/api_splashscreen.h
-    module_splashscreen/splashscreen.cpp
-    module_splashscreen/splashscreen.h
-
-    module_wgc/wgc_client.h
-    module_wgc/wgc_client.cpp
-    module_wgc/wgc_flavour.h
-    module_wgc/wgc_finder.h
-    module_wgc/wgc_finder.cpp
-
-    module_wine/api_wine.cpp
-    module_wine/api_wine.h
-    module_wine/wine.cpp
-    module_wine/wine.h
-
-    module_wotfinder/api_wotfinder.cpp
-    module_wotfinder/api_wotfinder.h
-    module_wotfinder/wotclient.cpp
-    module_wotfinder/wotclient.h
-    module_wotfinder/wotfinder.cpp
-    module_wotfinder/wotfinder.h
-    module_wotfinder/wotlauncher.cpp
-    module_wotfinder/wotlauncher.h
+    ${srcs}
 )
 
 
