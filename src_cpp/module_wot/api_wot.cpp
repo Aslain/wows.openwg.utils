@@ -61,7 +61,7 @@ void launchers_init() {
 // API
 //
 
-int32_t WOT_AddClientW(wchar_t *path) {
+int32_t WOT_AddClientW(const wchar_t *path) {
     int32_t result{-1};
 
     launchers_init();
