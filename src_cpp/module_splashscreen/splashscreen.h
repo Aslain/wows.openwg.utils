@@ -3,19 +3,35 @@
 
 #pragma once
 
+#include <filesystem>
 #include <string>
 #include <vector>
 
 #include <Windows.h>
 
-class SplashScreen
-{
-public:
-    static bool ShowSplashScreen(const wchar_t* file_path, int seconds);
-private:
-    static void registerWindowClass();
-    static void setSplashImage(HWND hwndSplash, HBITMAP hbmpSplash);
-    static HBITMAP loadImage(const wchar_t* file_path);
-    static HWND createSplashWindow();
-    static void premultiplyBitmapAlpha(HDC hDC, HBITMAP hBmp);
-};
+namespace OpenWG::Utils::Splashscreen {
+
+    class SplashScreen {
+    public:
+        SplashScreen();
+
+        bool Load(const std::filesystem::path &path);
+
+        bool Show(int seconds);
+
+    private:
+
+        bool registerClass();
+
+        bool createWindow();
+
+        bool setBitmap();
+
+    private:
+        HBITMAP m_bitmap{};
+        HWND m_window{};
+
+    private:
+        static constexpr const wchar_t* m_className = L"SplashScreenWindow";
+    };
+}

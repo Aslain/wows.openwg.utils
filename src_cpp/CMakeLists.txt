@@ -138,11 +138,11 @@ target_include_directories(test_bwxml PRIVATE .)
 #target_link_libraries(test_json openwg.utils)
 #target_include_directories(test_json PRIVATE .)
 
-add_executable(test_process "tests/process.cpp")
-target_link_libraries(test_process openwg.utils)
-target_include_directories(test_process PRIVATE .)
+add_executable(test_splashscreen "tests/splashscreen.cpp")
+target_link_libraries(test_splashscreen openwg.utils)
+target_include_directories(test_splashscreen PRIVATE .)
 
-add_executable(demo_wot "tests/wot.cpp")
+add_executable(demo_wot "tests/splashscreen.cpp")
 target_link_libraries(demo_wot openwg.utils)
 target_include_directories(demo_wot PRIVATE .)
 

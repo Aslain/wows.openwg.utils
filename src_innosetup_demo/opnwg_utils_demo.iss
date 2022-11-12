@@ -51,6 +51,7 @@ Name: "test_component"; Description: "Test Component"; Types: full compact custo
 
 
 [Files]
+Source: "splashscreen.png"; Flags: dontcopy noencryption
 Source: "test.txt"; DestDir: "{app}"
 Source: "test_component.txt"; DestDir: "{app}"; Components: test_component
 
@@ -72,6 +73,13 @@ ru.open_website=Открыть сайт
 
 var
   WotList: TNewComboBox;
+
+function InitializeSetup: Boolean;
+begin
+    ExtractTemporaryFile('splashscreen.png');
+    SPLASHSCREEN_ShowSplashScreenW('splashscreen.png', 4);
+    Result := True;
+end;
 
 procedure InitializeWizard();
 begin
