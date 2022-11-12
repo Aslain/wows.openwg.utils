@@ -1,4 +1,4 @@
-﻿// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
 #define APP_WEBSITE    "https://gitlab.com/openwg/openwg.utils"
@@ -46,17 +46,13 @@ Filename: {#APP_WEBSITE}; Description: "{cm:open_website}"; Flags: postinstall n
 
 
 [Components]
-Name: "filecheck"; Description: "Filecheck"; Types: full compact custom;
+Name: "filecheck"      ; Description: "Filecheck"    ; Types: full compact custom;
 
-Name: "test"          ; Description: "Test"              ; Types: full compact custom;
-Name: "test/lesta"    ; Description: "Test / Lesta"      ; Types: full compact custom;
-Name: "test/wg"       ; Description: "Test / WG"         ; Types: full compact custom;
-
-Name: "sub_lesta"    ; Description: "SubTest (Lesta)"      ; Types: full compact custom;
-Name: "sub_lesta/sub"; Description: "SubTest (Lesta) / Sub"; Types: full compact custom;
-
-Name: "sub_wg"       ; Description: "SubTest (WG)"         ; Types: full compact custom;
-Name: "sub_wg/sub"   ; Description: "SubTest (WG) / Sub"   ; Types: full compact custom;
+Name: "test"           ; Description: "Test"         ; Types: full compact custom;
+Name: "test/lesta"     ; Description: "Test / Lesta" ; Types: full compact custom;
+Name: "test/lesta/sub" ; Description: "Sub"          ; Types: full compact custom
+Name: "test/wg"        ; Description: "Test / WG"    ; Types: full compact custom;
+Name: "test/wg/sub"    ; Description: "Sub"          ; Types: full compact custom;
 
 
 [Files]
@@ -66,15 +62,11 @@ Source: "filecheck.txt"       ; DestDir: "{app}/tests/filecheck"; Components: fi
 Source: "filecheck_lesta.txt" ; DestDir: "{app}/tests/filecheck"; Components: filecheck; Check: Check_IsLesta
 Source: "filecheck_wg.txt"    ; DestDir: "{app}/tests/filecheck"; Components: filecheck; Check: not Check_IsLesta
 
-Source: "test.txt"            ; DestDir: "{app}/tests/comptest"; Components: test
-Source: "test_lesta.txt"      ; DestDir: "{app}/tests/comptest"; Components: test/lesta
-Source: "test_wg.txt"         ; DestDir: "{app}/tests/comptest"; Components: test/wg
-
-Source: "sub_lesta.txt"       ; DestDir: "{app}/tests/subtest"; Components: sub_lesta
-Source: "sub_lesta_sub.txt"   ; DestDir: "{app}/tests/subtest"; Components: sub_lesta/sub
-Source: "sub_wg.txt"          ; DestDir: "{app}/tests/subtest"; Components: sub_wg
-Source: "sub_wg_sub.txt"      ; DestDir: "{app}/tests/subtest"; Components: sub_wg/sub
-
+Source: "test.txt"            ; DestDir: "{app}/tests/test"; Components: test
+Source: "test_lesta.txt"      ; DestDir: "{app}/tests/test"; Components: test/lesta
+Source: "test_lesta_sub.txt"  ; DestDir: "{app}/tests/test"; Components: test/lesta/sub
+Source: "test_wg.txt"         ; DestDir: "{app}/tests/test"; Components: test/wg
+Source: "test_wg_sub.txt"     ; DestDir: "{app}/tests/test"; Components: test/wg/sub
 
 
 [Languages]
