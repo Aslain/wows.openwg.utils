@@ -142,7 +142,7 @@ add_executable(test_splashscreen "tests/splashscreen.cpp")
 target_link_libraries(test_splashscreen openwg.utils)
 target_include_directories(test_splashscreen PRIVATE .)
 
-add_executable(demo_wot "tests/splashscreen.cpp")
+add_executable(demo_wot "tests/wot.cpp")
 target_link_libraries(demo_wot openwg.utils)
 target_include_directories(demo_wot PRIVATE .)
 
