@@ -1,4 +1,4 @@
-﻿// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
 // directory with OpenWG.Utils installation files, relative to the main .iss file
@@ -535,6 +535,13 @@ begin
          2: Insert(ExpandConstant('{cm:openwg_branch_ct}'), Str, Pos(#0, Str));
          3: Insert(ExpandConstant('{cm:openwg_branch_st}'), Str, Pos(#0, Str));
          4: Insert(ExpandConstant('{cm:openwg_branch_sb}'), Str, Pos(#0, Str));
+      end;
+
+      if WOT_GetClientBranch(Index) = 1 then
+      begin
+        Insert('/', Str, Pos(#0, Str))
+        WOT_GetClientRealmW(Buffer, 1024, Index);
+        Insert(Buffer, Str, Pos(#0, Str));  
       end;
 
       Insert('] - ', Str, Pos(#0, Str));

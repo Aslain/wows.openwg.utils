@@ -2,7 +2,7 @@
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
 #define APP_WEBSITE    "https://gitlab.com/openwg/openwg.utils"
-#define APP_VERSION    "2022.11.12.3"
+#define APP_VERSION    "2022.11.12.4"
 #define APP_DIR_UNINST "openwg_utils\uninst"
 
 #define OPENWGUTILS_DIR_SRC    "..\bin"
@@ -99,7 +99,7 @@ var
 function InitializeSetup: Boolean;
 begin
     ExtractTemporaryFile('splashscreen.png');
-    SPLASHSCREEN_ShowSplashScreenW('splashscreen.png', 4);
+    SPLASHSCREEN_ShowSplashScreenW('splashscreen.png', 3);
     Result := True;
 end;
 
