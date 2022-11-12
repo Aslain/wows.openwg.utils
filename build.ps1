@@ -25,12 +25,12 @@
 Push-Location $PSScriptRoot
 $root = (Get-Location).Path -replace "\\","/"
 
-Remove-Item -Path ./build/ -Force -Recurse -ErrorAction SilentlyContinue
+Remove-Item -Path ./~output/ -Force -Recurse -ErrorAction SilentlyContinue
 
 function Build-CppProject($Toolset, $Architecture) {
-    New-Item -ItemType Directory -Path ./~build/$Architecture/ | Out-Null
+    New-Item -ItemType Directory -Path ./~build/$Architecture/ -ErrorAction SilentlyContinue
     Push-Location ./~build/$Architecture/ -ErrorAction Stop
-    cmake -T $Toolset -A $Architecture $root/src_cpp/ -DCMAKE_INSTALL_PREFIX="$root/~output/cpp/"
+    cmake -T $Toolset -A $Architecture $root/src_cpp/ -DCMAKE_INSTALL_PREFIX="$root/~output/"
     cmake --build . --config Release --target Install
     Pop-Location
 }
@@ -41,5 +41,10 @@ Build-CppProject -Toolset v143 -Architecture ARM
 Build-CppProject -Toolset v143 -Architecture ARM64
 
 
-New-Item -ItemType Directory -Path ~output/inno -ErrorAction SilentlyContinue
-Copy-Item -Path src_innosetup/openwg.utils.iss ~output/inno
+New-Item -ItemType Directory -Path ~output/innosetup -ErrorAction SilentlyContinue
+New-Item -ItemType Directory -Path ~output/innosetup_demo -ErrorAction SilentlyContinue
+
+Copy-Item -Path src_innosetup/openwg.utils.iss -Destination ~output/innosetup
+Copy-Item -Path src_innosetup_demo/* -Destination ~output/innosetup_demo
+
+iscc  ~output/innosetup_demo/opnwg_utils_demo.iss

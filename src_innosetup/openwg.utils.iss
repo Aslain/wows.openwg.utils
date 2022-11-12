@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
 // directory with OpenWG.Utils installation files, relative to the main .iss file
@@ -16,7 +16,27 @@
 Source: "{#OPENWGUTILS_DIR_SRC}\openwg.utils.x86_32.dll"; DestName: openwg.utils.dll; Flags: ignoreversion dontcopy noencryption;
 Source: "{#OPENWGUTILS_DIR_SRC}\openwg.utils.x86_32.dll"; DestDir: {app}\{#OPENWGUTILS_DIR_UNINST}; DestName: openwg.utils.dll; Flags: ignoreversion noencryption;
 
+[CustomMessages]
+en.openwg_browse=Browse
+ru.openwg_browse=Обзор
+en.openwg_client_not_found=Client was not found in a specified directory
+ru.openwg_client_not_found=Клиент не был найден в указанной директории
+en.openwg_unknown=Unknown
+ru.openwg_unknown=Неизвестно
+en.openwg_branch_release=Release
+ru.openwg_branch_release=Релиз
+en.openwg_branch_ct=Common Test
+ru.openwg_branch_ct=Общий тест
+en.openwg_branch_st=Super Test
+ru.openwg_branch_st=Супертест
+en.openwg_branch_sb=Sandbox
+ru.openwg_branch_sb=Песочница
+
 [Code]
+
+//
+// DLL
+//
 
 // BWXML/UnpackW
 function BWXML_UnpackW_I(PathPacked: String; PathUnpacked: String): Integer;
@@ -435,4 +455,151 @@ begin
         WOT_GetClientExeVersionW_U(Buffer, BufferSize, ClientIndex)
     else
         WOT_GetClientExeVersionW_I(Buffer, BufferSize, ClientIndex)
+end;
+
+
+
+//
+// HELPERS
+//
+
+function STRING_Split(const Value: string; Delimiter: Char): TStringList;
+var
+    S: string;
+begin
+    S := Value;
+    StringChangeEx(S, Delimiter, #13#10, True);
+    Result := TStringList.Create()
+    Result.Text := S;
+end;
+
+
+function PROCESS_GetRunningProcesses(szPath: string): TStringList;
+var
+    Buffer: String;
+    ExtResult: Boolean;
+begin
+    SetLength(Buffer, 1024);
+    ExtResult:=PROCESS_GetRunningInDirectoryW(szPath, Buffer, 1024);
+    if ExtResult = True then
+    begin
+        Buffer:=Copy(Buffer,0,Pos(#0, Buffer));
+        Result:=STRING_Split(Buffer,';');
+        Exit;
+    end;
+    Result:=TStringList.Create();
+end;
+
+
+
+//
+// WoT List
+//
+
+procedure WotList_Update(List: TNewComboBox);
+var
+  Buffer: String;
+  ClientsCount, Index, ListIndex: Integer;
+  Str: String;
+begin
+  SetLength(Buffer, 1024);
+
+  ListIndex := List.ItemIndex;
+  ClientsCount := WOT_GetClientsCount();
+
+  List.Items.Clear();
+
+  if ClientsCount > 0 then
+  begin
+    for Index := 0 to ClientsCount - 1 do
+    begin
+      WOT_GetClientVersionW(Buffer, 1024, Index);
+      Str := Copy(Buffer, 0, Pos(#0, Buffer));
+
+      Insert(' [', Str, Pos(#0, Str));
+
+      case WOT_GetClientLauncherFlavour(Index) of
+         0: Insert(ExpandConstant('{cm:openwg_unknown'), Str, Pos(#0, Str));
+         1: Insert('WG', Str, Pos(#0, Str));
+         2: Insert('360', Str, Pos(#0, Str));
+         3: Insert('Steam', Str, Pos(#0, Str));
+         4: Insert('Lesta', Str, Pos(#0, Str));
+         5: Insert('Standalone', Str, Pos(#0, Str));  
+      end;
+
+      Insert('/', Str, Pos(#0, Str))
+
+      case WOT_GetClientBranch(Index) of
+         0: Insert(ExpandConstant('{cm:openwg_unknown}'), Str, Pos(#0, Str));
+         1: Insert(ExpandConstant('{cm:openwg_branch_release}'), Str, Pos(#0, Str));
+         2: Insert(ExpandConstant('{cm:openwg_branch_ct}'), Str, Pos(#0, Str));
+         3: Insert(ExpandConstant('{cm:openwg_branch_st}'), Str, Pos(#0, Str));
+         4: Insert(ExpandConstant('{cm:openwg_branch_sb}'), Str, Pos(#0, Str));
+      end;
+
+      Insert('] - ', Str, Pos(#0, Str));
+
+      WOT_GetClientPathW(Buffer, 1024, Index);
+      Insert(Buffer, Str, Pos(#0, Str));
+
+      List.Items.Add(Str);
+    end;
+  end;
+
+  List.Items.Add(ExpandConstant('{cm:openwg_browse}'));
+  List.ItemIndex := ListIndex;
+end;
+
+procedure WotList_AddClient(List: TNewComboBox; ClientPath: String);
+var
+  Index: Integer;
+begin
+  if Length(ClientPath) = 0 then
+  begin
+    List.ItemIndex := -1;
+    Exit;
+  end;
+
+  Index := WOT_AddClientW(ClientPath);
+  if Index >= 0 then
+  begin
+    WotList_Update(List);
+    List.ItemIndex := Index;
+  end else
+  begin
+    MsgBox(ExpandConstant('{cm:openwg_client_not_found}'), mbError, MB_OK);
+    List.ItemIndex := -1;
+  end;
+end;
+
+procedure WotList_OnChange(Sender: TObject);
+var
+  Buffer: String;
+  Combobox: TNewComboBox;
+begin
+  SetLength(Buffer, 1024);
+
+  if Sender is TNewComboBox then
+  begin
+    Combobox := Sender as TNewComboBox; 
+    
+    if Combobox.Text = ExpandConstant('{cm:openwg_browse}') then
+    begin
+      WizardForm.DirBrowseButton.OnClick(nil);
+      WotList_AddClient(Combobox, WizardForm.DirEdit.Text);
+    end;
+
+    WOT_GetClientPathW(Buffer, 1024, Combobox.ItemIndex);
+    WizardForm.DirEdit.Text := Buffer;
+  end;
+end;
+
+function WotList_Create(parent: TWinControl; pos_left, pos_top, pos_width, pos_height: Integer):TNewComboBox;
+begin;
+  Result := TNewComboBox.Create(WizardForm);
+  Result.Parent := parent;
+  Result.Style := csDropDownList;
+  Result.OnChange := @WotList_OnChange;
+  Result.SetBounds(pos_left,pos_top,pos_left + pos_width,pos_height);
+  WotList_Update(Result);
 end;
