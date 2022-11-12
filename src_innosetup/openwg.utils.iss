@@ -276,9 +276,9 @@ external 'WOT_LauncherSetDefault@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dl
 function WOT_LauncherSetDefault(LauncherFlavour: Integer): Integer;
 begin
     if IsUninstaller() then
-        Result := WOT_LauncherGetPreferredClient_U(LauncherFlavour)
+        Result := WOT_LauncherSetDefault_U(LauncherFlavour)
     else
-        Result := WOT_LauncherGetPreferredClient_I(LauncherFlavour)
+        Result := WOT_LauncherSetDefault_I(LauncherFlavour)
 end;
 
 
