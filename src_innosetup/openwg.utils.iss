@@ -550,6 +550,7 @@ begin
   List.ItemIndex := ListIndex;
 end;
 
+
 procedure WotList_AddClient(List: TNewComboBox; ClientPath: String);
 var
   Index: Integer;
@@ -571,6 +572,7 @@ begin
     List.ItemIndex := -1;
   end;
 end;
+
 
 procedure WotList_OnChange(Sender: TObject);
 var
@@ -594,6 +596,7 @@ begin
   end;
 end;
 
+
 function WotList_Create(parent: TWinControl; pos_left, pos_top, pos_width, pos_height: Integer):TNewComboBox;
 begin;
   Result := TNewComboBox.Create(WizardForm);
@@ -602,4 +605,10 @@ begin;
   Result.OnChange := @WotList_OnChange;
   Result.SetBounds(pos_left,pos_top,pos_left + pos_width,pos_height);
   WotList_Update(Result);
+end;
+
+
+function WotList_Selected_Lesta(List: TNewComboBox): Boolean;
+begin;
+  Result := WOT_GetClientLauncherFlavour(List.ItemIndex) = 4;
 end;
