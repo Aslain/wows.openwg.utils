@@ -114,6 +114,18 @@ install(
     RUNTIME DESTINATION bin
 )
 
+install(
+    FILES
+        module_bwxml/api_bwxml.h
+        module_imagedraw/api_imagedraw.h
+        module_json/api_json.h
+        module_process/api_process.h
+        module_splashscreen/api_splashscreen.h
+        module_wine/api_wine.h
+        module_wot/api_wot.h
+    DESTINATION include
+)
+
 ###############################
 ###       Test: JSON        ###
 ###############################

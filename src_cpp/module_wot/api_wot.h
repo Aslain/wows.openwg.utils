@@ -70,15 +70,15 @@ XVMEXT_API_CALL int32_t WOT_LauncherSetDefault(int32_t launcher_flavour);
 
 /**
  * Checks that client is started
- * @param index client index
- * @return 1 in case of started client, 0 if client was not launched, -1 if client does not exists or error occurred
+ * @param index client index, negative value to check all the registered clients
+ * @return 1 if at least one client is started, 0 if client was not launched, -1 if client does not exists or error occurred
  */
 XVMEXT_API_CALL int32_t WOT_ClientIsStarted(int32_t index);
 
 /**
  * Terminate client
- * @param index client index
- * @return 1 if client was terminated, 0 if client was not terminated, -1 if client does not exists or error occurred
+ * @param index client index, negative value to terminate all the registered clients
+ * @return 1 if at least one client was terminated, 0 if clients was not terminated, -1 if client does not exists or error occurred
  */
 XVMEXT_API_CALL int32_t WOT_ClientTerminate(int32_t index);
 

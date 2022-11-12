@@ -102,12 +102,14 @@ int32_t WOT_LauncherGetPreferredClient(int32_t launcher_type) {
     return result;
 }
 
+
 int32_t WOT_LauncherRescan() {
     g_launchers.clear();
     return WOT_GetClientsCount();
 }
 
-int32_t WOT_LauncherSetDefault(int32_t launcher_flavour){
+
+int32_t WOT_LauncherSetDefault(int32_t launcher_flavour) {
     g_launcher_default = static_cast<LauncherFlavour>(launcher_flavour);
     return WOT_LauncherRescan();
 }
@@ -118,6 +120,12 @@ int32_t WOT_ClientIsStarted(int32_t index) {
 
     launchers_init();
 
+    if (index < 0) {
+        result = 0;
+        for (auto &client: g_clients) {
+            result = result || client->IsStarted();
+        }
+    }
     if (index < g_clients.size() && g_clients[index]) {
         result = g_clients[index]->IsStarted();
     }
@@ -126,12 +134,17 @@ int32_t WOT_ClientIsStarted(int32_t index) {
 }
 
 
-int32_t WOT_ClientTerminate(int32_t index){
+int32_t WOT_ClientTerminate(int32_t index) {
     int32_t result = -1;
 
     launchers_init();
 
-    if (index < g_clients.size() && g_clients[index]) {
+    if (index < 0) {
+        result = 0;
+        for (auto &client: g_clients) {
+            result = result || client->Terminate();
+        }
+    } else if (index < g_clients.size() && g_clients[index]) {
         result = g_clients[index]->Terminate();
     }
 
@@ -150,7 +163,7 @@ int32_t WOT_GetClientBranch(int32_t index) {
 
     launchers_init();
 
-    if (index < g_clients.size() && g_clients[index]) {
+    if (index >= 0 && index < g_clients.size() && g_clients[index]) {
         result = g_clients[index]->GetBranch();
     }
 
@@ -163,7 +176,7 @@ int32_t WOT_GetClientLauncherFlavour(int32_t index) {
 
     launchers_init();
 
-    if (index < g_clients.size() && g_clients[index]) {
+    if (index >= 0 && index < g_clients.size() && g_clients[index]) {
         result = g_clients[index]->GetLauncherFlavour();
     }
 
@@ -174,7 +187,7 @@ int32_t WOT_GetClientLauncherFlavour(int32_t index) {
 void WOT_GetClientLocaleW(wchar_t *buffer, int32_t buffer_size, int32_t index) {
     launchers_init();
 
-    if (buffer == nullptr || buffer_size <= 0) {
+    if (buffer == nullptr || buffer_size <= 0 || index < 0) {
         return;
     }
 
@@ -191,7 +204,7 @@ void WOT_GetClientLocaleW(wchar_t *buffer, int32_t buffer_size, int32_t index) {
 void WOT_GetClientPathW(wchar_t *buffer, int32_t buffer_size, int32_t index) {
     launchers_init();
 
-    if (buffer == nullptr || buffer_size <= 0) {
+    if (buffer == nullptr || buffer_size <= 0 || index < 0) {
         return;
     }
 
@@ -201,10 +214,11 @@ void WOT_GetClientPathW(wchar_t *buffer, int32_t buffer_size, int32_t index) {
     }
 }
 
+
 void WOT_GetClientRealmW(wchar_t *buffer, int32_t buffer_size, int32_t index) {
     launchers_init();
 
-    if (buffer == nullptr || buffer_size <= 0) {
+    if (buffer == nullptr || buffer_size <= 0 || index < 0) {
         return;
     }
 
@@ -223,7 +237,7 @@ int32_t WOT_GetClientType(int32_t index) {
 
     launchers_init();
 
-    if (index < g_clients.size() && g_clients[index]) {
+    if (index >= 0 && index < g_clients.size() && g_clients[index]) {
         result = g_clients[index]->GetType();
     }
 
@@ -234,7 +248,7 @@ int32_t WOT_GetClientType(int32_t index) {
 void WOT_GetClientVersionW(wchar_t *buffer, int32_t buffer_size, int32_t index) {
     launchers_init();
 
-    if (buffer == nullptr || buffer_size <= 0) {
+    if (buffer == nullptr || buffer_size <= 0 || index < 0) {
         return;
     }
 
@@ -251,7 +265,7 @@ void WOT_GetClientVersionW(wchar_t *buffer, int32_t buffer_size, int32_t index) 
 void WOT_GetClientExeVersionW(wchar_t *buffer, int32_t buffer_size, int32_t index) {
     launchers_init();
 
-    if (buffer == nullptr || buffer_size <= 0) {
+    if (buffer == nullptr || buffer_size <= 0 || index < 0) {
         return;
     }
 
@@ -263,4 +277,3 @@ void WOT_GetClientExeVersionW(wchar_t *buffer, int32_t buffer_size, int32_t inde
         }
     }
 }
-
