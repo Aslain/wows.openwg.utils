@@ -1,4 +1,4 @@
-﻿// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
 // directory with OpenWG.Utils installation files, relative to the main .iss file
@@ -10,7 +10,6 @@
 #ifndef OPENWGUTILS_DIR_UNINST
 #define OPENWGUTILS_DIR_UNINST "."
 #endif
-
 
 [Files]
 Source: "{#OPENWGUTILS_DIR_SRC}\openwg.utils.x86_32.dll"; DestName: openwg.utils.dll; Flags: ignoreversion dontcopy noencryption;
@@ -33,6 +32,22 @@ en.openwg_branch_sb=Sandbox
 ru.openwg_branch_sb=Песочница
 
 [Code]
+
+//
+// Typedefs
+//
+
+type
+  GameClient = Record
+    Index: Integer;
+    LauncherFlavour: Integer;
+    Branch: Integer;
+    Realm: String;
+    Version: String;
+    Path: String;
+  end;
+
+
 
 //
 // DLL
@@ -463,6 +478,61 @@ end;
 // HELPERS
 //
 
+function CLIENT_GetRecord(Index: Integer): GameClient;
+var
+  Buffer: String;
+
+begin
+  SetLength(Buffer, 1024);
+
+  Result.Index := Index;
+
+  Result.LauncherFlavour := WOT_GetClientLauncherFlavour(Index);
+
+  Result.Branch := WOT_GetClientBranch(Index);
+
+  WOT_GetClientRealmW(Buffer, 1024, Index);
+  Result.Realm := Copy(Buffer, 1, Pos(#0, Buffer));
+
+  WOT_GetClientVersionW(Buffer, 1024, Index);
+  Result.Version := Copy(Buffer, 1, Pos(#0, Buffer));
+
+  WOT_GetClientPathW(Buffer, 1024, Index);
+  Result.Path := Copy(Buffer, 1, Pos(#0, Buffer));
+end;
+
+
+function CLIENT_FormatString(Client: GameClient): String;
+begin
+  Result := Client.Version;
+
+  Insert(' [', Result, Pos(#0, Result));
+  case Client.LauncherFlavour of
+     0: Insert(ExpandConstant('{cm:openwg_unknown'), Result, Pos(#0, Result));
+     1: Insert('WG', Result, Pos(#0, Result));
+     2: Insert('360', Result, Pos(#0, Result));
+     3: Insert('Steam', Result, Pos(#0, Result));
+     4: Insert('Lesta', Result, Pos(#0, Result));
+     5: Insert('Standalone', Result, Pos(#0, Result));
+  end;
+
+  case Client.Branch of
+     0: Insert(ExpandConstant('/{cm:openwg_unknown}'), Result, Pos(#0, Result));
+     1: begin
+          //Insert(ExpandConstant('/{cm:openwg_branch_release}'), Result, Pos(#0, Result));
+          if Client.LauncherFlavour = 1 then
+            Insert('/' + Client.Realm, Result, Pos(#0, Result));
+        end;
+     2: Insert(ExpandConstant('/{cm:openwg_branch_ct}'), Result, Pos(#0, Result));
+     3: Insert(ExpandConstant('/{cm:openwg_branch_st}'), Result, Pos(#0, Result));
+     4: Insert(ExpandConstant('/{cm:openwg_branch_sb}'), Result, Pos(#0, Result));
+  end;
+
+  Insert('] - ', Result, Pos(#0, Result));
+  Insert(Client.Path, Result, Pos(#0, Result));
+end;
+
+
 function STRING_Split(const Value: string; Delimiter: Char): TStringList;
 var
     S: string;
@@ -501,6 +571,7 @@ var
   Buffer: String;
   ClientsCount, Index, ListIndex: Integer;
   Str: String;
+  Client: GameClient;
 begin
   SetLength(Buffer, 1024);
 
@@ -513,42 +584,8 @@ begin
   begin
     for Index := 0 to ClientsCount - 1 do
     begin
-      WOT_GetClientVersionW(Buffer, 1024, Index);
-      Str := Copy(Buffer, 0, Pos(#0, Buffer));
-
-      Insert(' [', Str, Pos(#0, Str));
-
-      case WOT_GetClientLauncherFlavour(Index) of
-         0: Insert(ExpandConstant('{cm:openwg_unknown'), Str, Pos(#0, Str));
-         1: Insert('WG', Str, Pos(#0, Str));
-         2: Insert('360', Str, Pos(#0, Str));
-         3: Insert('Steam', Str, Pos(#0, Str));
-         4: Insert('Lesta', Str, Pos(#0, Str));
-         5: Insert('Standalone', Str, Pos(#0, Str));  
-      end;
-
-      Insert('/', Str, Pos(#0, Str))
-
-      case WOT_GetClientBranch(Index) of
-         0: Insert(ExpandConstant('{cm:openwg_unknown}'), Str, Pos(#0, Str));
-         1: Insert(ExpandConstant('{cm:openwg_branch_release}'), Str, Pos(#0, Str));
-         2: Insert(ExpandConstant('{cm:openwg_branch_ct}'), Str, Pos(#0, Str));
-         3: Insert(ExpandConstant('{cm:openwg_branch_st}'), Str, Pos(#0, Str));
-         4: Insert(ExpandConstant('{cm:openwg_branch_sb}'), Str, Pos(#0, Str));
-      end;
-
-      if WOT_GetClientBranch(Index) = 1 then
-      begin
-        Insert('/', Str, Pos(#0, Str))
-        WOT_GetClientRealmW(Buffer, 1024, Index);
-        Insert(Buffer, Str, Pos(#0, Str));  
-      end;
-
-      Insert('] - ', Str, Pos(#0, Str));
-
-      WOT_GetClientPathW(Buffer, 1024, Index);
-      Insert(Buffer, Str, Pos(#0, Str));
-
+      Client := CLIENT_GetRecord(Index);
+      Str := CLIENT_FormatString(Client);
       List.Items.Add(Str);
     end;
   end;
