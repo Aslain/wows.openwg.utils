@@ -57,6 +57,7 @@ Name: "test/wg/sub"    ; Description: "Sub"          ; Types: full compact custo
 
 [Files]
 Source: "splashscreen.png"; Flags: dontcopy noencryption
+Source: "splashscreen_uninst.png"; DestDir: "{app}/{#APP_DIR_UNINST}"; Flags: noencryption
 
 Source: "filecheck.txt"       ; DestDir: "{app}/tests/filecheck"; Components: filecheck
 Source: "filecheck_lesta.txt" ; DestDir: "{app}/tests/filecheck"; Components: filecheck; Check: Check_IsLesta
@@ -98,9 +99,16 @@ var
 
 function InitializeSetup: Boolean;
 begin
-    ExtractTemporaryFile('splashscreen.png');
-    SPLASHSCREEN_ShowSplashScreenW('splashscreen.png', 3);
-    Result := True;
+  ExtractTemporaryFile('splashscreen.png');
+  SPLASHSCREEN_ShowSplashScreenW('splashscreen.png', 3);
+  Result := True;
+end;
+
+
+function InitializeUninstall: Boolean;
+begin
+  SPLASHSCREEN_ShowSplashScreenW(ExpandConstant('{app}\{#APP_DIR_UNINST}\splashscreen_uninst.png'), 3);
+  Result := True;
 end;
 
 
