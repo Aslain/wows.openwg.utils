@@ -1,3 +1,5 @@
+#include <regex>
+
 #include <pugixml.hpp>
 
 #include "common/filesystem.h"
@@ -62,8 +64,7 @@ namespace OpenWG::Utils::WoT {
         return m_versionExe;
     }
 
-
-    bool ClientWoT::IsStarted() {
+    bool ClientWoT::IsStarted() const {
         bool result{false};
         for (auto &process: Process::GetProcessList()) {
             if (Common::Filesystem::IsSubpath(process.first, GetPath())) {
@@ -76,6 +77,12 @@ namespace OpenWG::Utils::WoT {
         }
 
         return result;
+    }
+
+    bool ClientWoT::IsVersionMatch(const std::wstring &pattern) const {
+        std::wregex regex(pattern);
+        std::wsmatch match;
+        return std::regex_match(m_versionClient.begin(), m_versionClient.end(), match, regex);
     }
 
     bool ClientWoT::Terminate() {
@@ -177,7 +184,7 @@ namespace OpenWG::Utils::WoT {
             pugi::xml_document doc;
             if (doc.load_file(pathsxml.wstring().c_str())) {
                 auto nodes = doc.select_nodes(L"/root/Paths/Path");
-                for(auto node: nodes) {
+                for (auto node: nodes) {
                     std::wstring path = node.node().first_child().value();
                     path = Common::String::Replace(path, L"/", L"\\");
                     path = Common::String::Replace(path, L".\\", L"");

@@ -141,6 +141,17 @@ int32_t WOT_ClientIsStarted(int32_t index) {
     return result;
 }
 
+int32_t WOT_ClientIsVersionMatch(int32_t index, const wchar_t* pattern){
+    int32_t result = -1;
+
+    launchers_init();
+
+    if (index < g_clients.size() && g_clients[index]) {
+        result = g_clients[index]->IsVersionMatch(pattern);
+    }
+
+    return result;
+}
 
 int32_t WOT_ClientTerminate(int32_t index) {
     int32_t result = -1;

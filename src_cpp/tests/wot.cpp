@@ -65,9 +65,13 @@ int main() {
 
     wchar_t buffer[1024]{};
 
+    std::wstring version_pattern{L"1.18.1.*"};
+
     //WOT_LauncherSetDefault(Launcher_Flavour_Standalone);
 
-    std::wcout << L"WoT clients count   : " << WOT_GetClientsCount() << std::endl;
+    std::wcout << L"WoT version pattern              :" << version_pattern << std::endl;
+
+    std::wcout << L"WoT clients count                : " << WOT_GetClientsCount() << std::endl;
 
     std::wcout << L"WoT preferred client (Unknown)   : " << WOT_LauncherGetPreferredClient(Launcher_Flavour_Unknown)
                << std::endl;
@@ -115,6 +119,8 @@ int main() {
 
         std::wcout << L"Client Started      : " << WOT_ClientIsStarted(i) << std::endl;
         std::wcout << L"Client Terminated   : " << WOT_ClientTerminate(i) << std::endl;
+
+        std::wcout << L"Version match       : " << WOT_ClientIsVersionMatch(i, version_pattern.c_str()) << std::endl;
 
         std::wcout << std::endl;
     }

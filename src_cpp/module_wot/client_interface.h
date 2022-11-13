@@ -32,7 +32,9 @@ namespace OpenWG::Utils::WoT {
 
         [[nodiscard]] virtual std::wstring GetVersionExe() const = 0;
 
-        [[nodiscard]] virtual bool IsStarted() = 0;
+        [[nodiscard]] virtual bool IsStarted() const = 0;
+
+        [[nodiscard]] virtual bool IsVersionMatch(const std::wstring& pattern) const = 0;
 
         virtual bool Terminate() = 0;
 

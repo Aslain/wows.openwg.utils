@@ -33,7 +33,9 @@ namespace OpenWG::Utils::WoT {
 
         [[nodiscard]] std::wstring GetVersionExe() const override;
 
-        bool IsStarted() override;
+        [[nodiscard]] bool IsStarted() const override;
+
+        [[nodiscard]] bool IsVersionMatch(const std::wstring& pattern) const override;
 
         bool Terminate() override;
 

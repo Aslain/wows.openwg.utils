@@ -76,6 +76,14 @@ XVMEXT_API_CALL int32_t WOT_LauncherSetDefault(int32_t launcher_flavour);
 XVMEXT_API_CALL int32_t WOT_ClientIsStarted(int32_t index);
 
 /**
+ * Checks that client version is match to the given pattern
+ * @param index client index
+ * @param pattern pattern to test, regex in ECMAScript syntax
+ * @return 1 in case of matched pattern, 0 is not matched, -1 in case of error
+ */
+XVMEXT_API_CALL int32_t WOT_ClientIsVersionMatch(int32_t index, const wchar_t* pattern);
+
+/**
  * Terminate client
  * @param index client index, negative value to terminate all the registered clients
  * @return 1 if at least one client was terminated, 0 if clients was not terminated, -1 if client does not exists or error occurred
