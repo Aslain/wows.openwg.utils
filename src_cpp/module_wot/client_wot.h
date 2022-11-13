@@ -1,6 +1,5 @@
 #pragma once
 
-#include <optional>
 #include <string>
 
 #include "module_wot/api_wot.h"
@@ -12,34 +11,57 @@ namespace OpenWG::Utils::WoT {
         ClientWoT(std::filesystem::path path, LauncherFlavour launcherFlavour);
 
     public:
-        bool IsValid() override;
+        [[nodiscard]] bool IsValid() const override;
 
-        ClientBranch GetBranch() override;
+        [[nodiscard]] ClientBranch GetBranch() const override;
 
-        LauncherFlavour GetLauncherFlavour() override;
+        [[nodiscard]] LauncherFlavour GetLauncherFlavour() const override;
 
-        std::optional<std::wstring> GetLocale() override;
+        [[nodiscard]] std::wstring GetLocale() const override;
 
-        std::filesystem::path GetPath() override;
+        [[nodiscard]] std::filesystem::path GetPath() const override;
 
-        std::optional<std::wstring> GetRealm() override;
+        [[nodiscard]] std::wstring GetPathMods() const override;
 
-        ClientType GetType() override;
+        [[nodiscard]] std::wstring GetPathResmods() const override;
 
-        std::optional<std::wstring> GetVersionClient() override;
+        [[nodiscard]] std::wstring GetRealm() const override;
 
-        std::optional<std::wstring> GetVersionExe() override;
+        [[nodiscard]] ClientType GetType() const override;
+
+        [[nodiscard]] std::wstring GetVersionClient() const override;
+
+        [[nodiscard]] std::wstring GetVersionExe() const override;
 
         bool IsStarted() override;
 
         bool Terminate() override;
 
     private:
-        std::optional<std::wstring> getVersionClientRaw();
+        void rescan();
+
+        void rescanAppType();
+
+        void rescanExe();
+
+        void rescanPaths();
+
+        void rescanGameInfo();
+
+        void rescanVersion();
+
 
     private:
-        std::filesystem::path m_path{};
+        ClientBranch m_branch{ClientBranch::WoT_Branch_Unknown};
         LauncherFlavour m_launcherFlavour{Launcher_Flavour_Unknown};
+        std::wstring m_locale{};
+        std::filesystem::path m_path{};
+        std::wstring m_path_mods{};
+        std::wstring m_path_resmods{};
+        std::wstring m_realm{};
+        ClientType m_type{ClientType::WoT_Type_Unknown};
+        std::wstring m_versionClient{};
+        std::wstring m_versionExe{};
 
     private:
         static constexpr auto m_exename = L"WorldOfTanks.exe";

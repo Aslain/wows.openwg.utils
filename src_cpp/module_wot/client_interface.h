@@ -1,7 +1,6 @@
 #pragma once
 
 #include <filesystem>
-#include <optional>
 #include <string>
 
 #include "api_wot.h"
@@ -11,25 +10,29 @@ namespace OpenWG::Utils::WoT {
     public:
         virtual ~ClientInterface() = default;
 
-        virtual bool IsValid() = 0;
+        [[nodiscard]] virtual bool IsValid() const = 0;
 
-        virtual ClientBranch GetBranch() = 0;
+        [[nodiscard]] virtual ClientBranch GetBranch() const = 0;
 
-        virtual LauncherFlavour GetLauncherFlavour() = 0;
+        [[nodiscard]] virtual LauncherFlavour GetLauncherFlavour() const = 0;
 
-        virtual std::optional<std::wstring> GetLocale() = 0;
+        [[nodiscard]] virtual std::wstring GetLocale() const = 0;
 
-        virtual std::filesystem::path GetPath() = 0;
+        [[nodiscard]] virtual std::filesystem::path GetPath() const = 0;
 
-        virtual std::optional<std::wstring> GetRealm() = 0;
+        [[nodiscard]] virtual std::wstring GetPathMods() const = 0;
 
-        virtual ClientType GetType() = 0;
+        [[nodiscard]] virtual std::wstring GetPathResmods() const = 0;
 
-        virtual std::optional<std::wstring> GetVersionClient() = 0;
+        [[nodiscard]] virtual std::wstring GetRealm() const = 0;
 
-        virtual std::optional<std::wstring> GetVersionExe() = 0;
+        [[nodiscard]] virtual ClientType GetType() const = 0;
 
-        virtual bool IsStarted() = 0;
+        [[nodiscard]] virtual std::wstring GetVersionClient() const = 0;
+
+        [[nodiscard]] virtual std::wstring GetVersionExe() const = 0;
+
+        [[nodiscard]] virtual bool IsStarted() = 0;
 
         virtual bool Terminate() = 0;
 

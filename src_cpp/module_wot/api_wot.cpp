@@ -68,14 +68,14 @@ int32_t WOT_AddClientW(const wchar_t *path) {
     if (path) {
         auto path_normalized = std::filesystem::path(path).lexically_normal();
 
-        for(int32_t idx = 0; idx< g_clients.size(); idx++){
-            if(g_clients[idx] && g_clients[idx]->GetPath() == path_normalized){
+        for (int32_t idx = 0; idx < g_clients.size(); idx++) {
+            if (g_clients[idx] && g_clients[idx]->GetPath() == path_normalized) {
                 result = idx;
                 break;
             }
         }
 
-        if(result<0){
+        if (result < 0) {
             for (auto &launcher: g_launchers) {
                 if (!launcher || launcher->GetFlavour() != Launcher_Flavour_Standalone) {
                     continue;
@@ -201,10 +201,7 @@ void WOT_GetClientLocaleW(wchar_t *buffer, int32_t buffer_size, int32_t index) {
 
     buffer[0] = '\0';
     if (index < g_clients.size() && g_clients[index]) {
-        auto locale = g_clients[index]->GetLocale();
-        if (locale.has_value()) {
-            wcscpy_s(buffer, buffer_size, locale->c_str());
-        }
+        wcscpy_s(buffer, buffer_size, g_clients[index]->GetLocale().c_str());
     }
 }
 
@@ -223,6 +220,34 @@ void WOT_GetClientPathW(wchar_t *buffer, int32_t buffer_size, int32_t index) {
 }
 
 
+void WOT_GetClientPathModsW(wchar_t *buffer, int32_t buffer_size, int32_t index) {
+    launchers_init();
+
+    if (buffer == nullptr || buffer_size <= 0 || index < 0) {
+        return;
+    }
+
+    buffer[0] = '\0';
+    if (index < g_clients.size() && g_clients[index]) {
+        wcscpy_s(buffer, buffer_size, g_clients[index]->GetPathMods().c_str());
+    }
+}
+
+
+void WOT_GetClientPathResmodsW(wchar_t *buffer, int32_t buffer_size, int32_t index) {
+    launchers_init();
+
+    if (buffer == nullptr || buffer_size <= 0 || index < 0) {
+        return;
+    }
+
+    buffer[0] = '\0';
+    if (index < g_clients.size() && g_clients[index]) {
+        wcscpy_s(buffer, buffer_size, g_clients[index]->GetPathResmods().c_str());
+    }
+}
+
+
 void WOT_GetClientRealmW(wchar_t *buffer, int32_t buffer_size, int32_t index) {
     launchers_init();
 
@@ -232,10 +257,7 @@ void WOT_GetClientRealmW(wchar_t *buffer, int32_t buffer_size, int32_t index) {
 
     buffer[0] = '\0';
     if (index < g_clients.size() && g_clients[index]) {
-        auto realm = g_clients[index]->GetRealm();
-        if (realm.has_value()) {
-            wcscpy_s(buffer, buffer_size, realm->c_str());
-        }
+        wcscpy_s(buffer, buffer_size, g_clients[index]->GetRealm().c_str());
     }
 }
 
@@ -262,10 +284,7 @@ void WOT_GetClientVersionW(wchar_t *buffer, int32_t buffer_size, int32_t index) 
 
     buffer[0] = '\0';
     if (index < g_clients.size() && g_clients[index]) {
-        auto version = g_clients[index]->GetVersionClient();
-        if (version.has_value()) {
-            wcscpy_s(buffer, buffer_size, version->c_str());
-        }
+        wcscpy_s(buffer, buffer_size, g_clients[index]->GetVersionClient().c_str());
     }
 }
 
@@ -279,9 +298,6 @@ void WOT_GetClientExeVersionW(wchar_t *buffer, int32_t buffer_size, int32_t inde
 
     buffer[0] = '\0';
     if (index < g_clients.size() && g_clients[index]) {
-        auto version = g_clients[index]->GetVersionExe();
-        if (version.has_value()) {
-            wcscpy_s(buffer, buffer_size, version->c_str());
-        }
+        wcscpy_s(buffer, buffer_size, g_clients[index]->GetVersionExe().c_str());
     }
 }

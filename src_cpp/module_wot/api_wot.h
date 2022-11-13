@@ -118,6 +118,23 @@ XVMEXT_API_CALL void WOT_GetClientLocaleW(wchar_t *buffer, int32_t buffer_size, 
  */
 XVMEXT_API_CALL void WOT_GetClientPathW(wchar_t *buffer, int32_t buffer_size, int32_t index);
 
+/**
+ * Get path to the client mods folder (including version part)
+ * @param buffer buffer to save path, relative to the client root
+ * @param buffer_size size of string buffer in wchars
+ * @param index client index
+ */
+XVMEXT_API_CALL void WOT_GetClientPathModsW(wchar_t *buffer, int32_t buffer_size, int32_t index);
+
+
+/**
+ * Get path to the client res_mods folder (including version part)
+ * @param buffer buffer to save path, relative to the client root
+ * @param buffer_size size of string buffer in wchars
+ * @param index client index
+ */
+XVMEXT_API_CALL void WOT_GetClientPathResmodsW(wchar_t *buffer, int32_t buffer_size, int32_t index);
+
 
 /**
  * Get the realm of the client
