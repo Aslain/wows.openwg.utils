@@ -7,7 +7,7 @@
 #include "launcher_interface.h"
 
 namespace OpenWG::Utils::WoT {
-    class LauncherStandalone : public LauncherInterface{
+    class LauncherStandalone : public LauncherInterface {
     public:
         LauncherStandalone() = default;
 
@@ -17,8 +17,7 @@ namespace OpenWG::Utils::WoT {
 
         size_t Rescan() override;
 
-    public:
-        bool AddClient(const std::filesystem::path& path);
+        bool AddClient(const std::filesystem::path &path) override;
 
     private:
         std::vector<std::wstring> getDrives();

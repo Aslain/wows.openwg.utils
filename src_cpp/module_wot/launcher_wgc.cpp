@@ -13,6 +13,10 @@ namespace OpenWG::Utils::WoT {
 
     }
 
+    bool LauncherWgc::AddClient(const std::filesystem::path &path) {
+        return false;
+    }
+
     std::vector<std::shared_ptr<ClientInterface>> LauncherWgc::GetClients() {
         return m_clients;
     }
@@ -23,7 +27,7 @@ namespace OpenWG::Utils::WoT {
 
     size_t LauncherWgc::Rescan() {
         m_clients.clear();
-        for(auto& client_path : getClientPaths()) {
+        for (auto &client_path: getClientPaths()) {
             if (!Common::Filesystem::Exists(client_path)) {
                 continue;
             }
@@ -57,7 +61,7 @@ namespace OpenWG::Utils::WoT {
                     auto wot = doc.select_node(L"/protocol/application/games_manager/selectedGames/WOT");
                     if (wot) {
                         std::filesystem::path path = wot.node().first_child().value();
-                        if(!Common::Vector::Contains(result, path)){
+                        if (!Common::Vector::Contains(result, path)) {
                             result.emplace_back(path);
                         }
                     }
@@ -72,7 +76,7 @@ namespace OpenWG::Utils::WoT {
                             }
 
                             std::filesystem::path path = workdir.node().first_child().value();
-                            if(!Common::Vector::Contains(result, path)){
+                            if (!Common::Vector::Contains(result, path)) {
                                 result.emplace_back(path);
                             }
                         }
@@ -91,7 +95,7 @@ namespace OpenWG::Utils::WoT {
 
                 for (auto &appinfo_file: std::filesystem::directory_iterator(appinfo_folder)) {
                     std::filesystem::path path = Common::Filesystem::GetFileContent(appinfo_file.path().wstring());
-                    if(!Common::Vector::Contains(result, path)){
+                    if (!Common::Vector::Contains(result, path)) {
                         result.emplace_back(path);
                     }
                 }

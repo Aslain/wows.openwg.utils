@@ -6,9 +6,11 @@
 #include "client_interface.h"
 
 namespace OpenWG::Utils::WoT {
-    class LauncherWgc : public LauncherInterface{
+    class LauncherWgc : public LauncherInterface {
     public:
-        LauncherWgc(const LauncherInfo& info, std::filesystem::path path_programdata, std::filesystem::path path_wgc);
+        LauncherWgc(const LauncherInfo &info, std::filesystem::path path_programdata, std::filesystem::path path_wgc);
+
+        bool AddClient(const std::filesystem::path &path) override;
 
         [[nodiscard]]  std::vector<std::shared_ptr<ClientInterface>> GetClients() override;
 
@@ -18,6 +20,7 @@ namespace OpenWG::Utils::WoT {
 
     private:
         std::vector<std::filesystem::path> getClientPaths();
+
         std::filesystem::path getPreferredPath();
 
     private:

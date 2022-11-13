@@ -65,18 +65,26 @@ int32_t WOT_AddClientW(const wchar_t *path) {
     int32_t result{-1};
 
     launchers_init();
-
     if (path) {
-        for (auto &launcher: g_launchers) {
-            if (!launcher || launcher->GetFlavour() != Launcher_Flavour_Standalone) {
-                continue;
-            }
+        auto path_normalized = std::filesystem::path(path).lexically_normal();
 
-            auto standalone_launcher = std::dynamic_pointer_cast<LauncherStandalone>(launcher);
-            if (standalone_launcher) {
-                if (standalone_launcher->AddClient(path)) {
-                    g_clients.push_back(standalone_launcher->GetClients().back());
+        for(int32_t idx = 0; idx< g_clients.size(); idx++){
+            if(g_clients[idx] && g_clients[idx]->GetPath() == path_normalized){
+                result = idx;
+                break;
+            }
+        }
+
+        if(result<0){
+            for (auto &launcher: g_launchers) {
+                if (!launcher || launcher->GetFlavour() != Launcher_Flavour_Standalone) {
+                    continue;
+                }
+
+                if (launcher->AddClient(path)) {
+                    g_clients.push_back(launcher->GetClients().back());
                     result = g_clients.size() - 1;
+                    break;
                 }
             }
         }

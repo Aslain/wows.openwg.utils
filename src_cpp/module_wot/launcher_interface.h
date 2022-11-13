@@ -45,7 +45,9 @@ namespace OpenWG::Utils::WoT {
     public:
         virtual ~LauncherInterface() = default;
 
-        [[nodiscard]] virtual std::vector<std::shared_ptr<ClientInterface>> GetClients()  = 0;
+        virtual bool AddClient(const std::filesystem::path &path) = 0;
+
+        [[nodiscard]] virtual std::vector<std::shared_ptr<ClientInterface>> GetClients() = 0;
 
         [[nodiscard]] virtual LauncherFlavour GetFlavour() const = 0;
 
