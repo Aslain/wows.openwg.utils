@@ -1,9 +1,11 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
 #define APP_WEBSITE    "https://gitlab.com/openwg/openwg.utils"
-#define APP_VERSION    "2022.11.12.4"
+#define APP_VERSION    "2022.11.13.1"
 #define APP_DIR_UNINST "openwg_utils\uninst"
+
+#define WOT_VERSION_PATTERN "1.18.1.*"
 
 #define OPENWGUTILS_DIR_SRC    "..\bin"
 #define OPENWGUTILS_DIR_UNINST APP_DIR_UNINST
@@ -59,11 +61,12 @@ Name: "test/wg/sub"    ; Description: "Sub"          ; Types: full compact custo
 Source: "assets/splashscreen.png"; Flags: dontcopy noencryption
 Source: "assets/splashscreen_uninst.png"; DestDir: "{app}/{#APP_DIR_UNINST}"; Flags: noencryption
 
-Source: "cur_ver/*.txt"            ; DestDir: "{app}"
+Source: "cur_ver/mods.txt"         ; DestDir: "{app}/{code:PH_Folder_Mods}/"
+Source: "cur_ver/res_mods.txt"     ; DestDir: "{app}/{code:PH_Folder_Resmods}/"
 
 Source: "test/filecheck.txt"       ; DestDir: "{app}/mods/openwg_test"; Components: filecheck
-Source: "test/filecheck_lesta.txt" ; DestDir: "{app}/mods/openwg_test"; Components: filecheck; Check: Check_IsLesta
-Source: "test/filecheck_wg.txt"    ; DestDir: "{app}/mods/openwg_test"; Components: filecheck; Check: not Check_IsLesta
+Source: "test/filecheck_lesta.txt" ; DestDir: "{app}/mods/openwg_test"; Components: filecheck; Check: CHECK_IsLesta
+Source: "test/filecheck_wg.txt"    ; DestDir: "{app}/mods/openwg_test"; Components: filecheck; Check: not CHECK_IsLesta
 Source: "test/test.txt"            ; DestDir: "{app}/mods/openwg_test"; Components: test
 Source: "test/test_lesta.txt"      ; DestDir: "{app}/mods/openwg_test"; Components: test/lesta
 Source: "test/test_lesta_sub.txt"  ; DestDir: "{app}/mods/openwg_test"; Components: test/lesta/sub
@@ -80,6 +83,8 @@ Name: "ru"; MessagesFile: "compiler:Languages/Russian.isl";
 [CustomMessages]
 en.open_website=Open Website
 ru.open_website=Открыть сайт
+en.version_not_match=The select client is not supported.%n%nThis installer support WoT v{#WOT_VERSION_PATTERN}
+ru.version_not_match=Выбранный клиент не поддерживается.%n%nЭтот установщик поддерживает только WoT v{#WOT_VERSION_PATTERN}
 
 
 
@@ -91,6 +96,35 @@ ru.open_website=Открыть сайт
 
 var
   WotList: TNewComboBox;
+
+
+//
+// Checks
+//
+
+function CHECK_IsLesta(): Boolean;
+var
+  Flavour: Integer;
+begin
+  Flavour := WotList_Selected_Record(WotList).LauncherFlavour
+  Result := Flavour = 4;
+end;
+
+
+
+//
+// Placeholders
+//
+
+function PH_Folder_Mods(s: String): String;
+begin
+  Result := WotList_Selected_Record(WotList).PathMods;
+end;
+
+function PH_Folder_Resmods(s: String): String;
+begin
+  Result := WotList_Selected_Record(WotList).PathResmods;
+end;
 
 
 
@@ -149,7 +183,7 @@ var
   IsLesta: Boolean;
   ItemCaption: String;
 begin
-  IsLesta := WotList_Selected_Lesta(WotList);
+  IsLesta := CHECK_IsLesta();
 
   for Index := 0 to WizardForm.ComponentsList.Items.Count - 1 do
   begin
@@ -165,14 +199,9 @@ end;
 
 procedure CurPageChanged(CurPage: Integer);
 begin
-  if (CurPage = wpSelectDir) then
-  begin
-    CurPageChanged_wpSelectDir();
-  end;
-
-  if (CurPage = wpSelectComponents) then
-  begin
-    CurPageChanged_wpSelectComponents();
+  case CurPage of
+    wpSelectDir: CurPageChanged_wpSelectDir();
+    wpSelectComponents: CurPageChanged_wpSelectComponents();
   end
 end;
 
@@ -184,9 +213,9 @@ end;
 
 function NextButtonClick_wpSelectDir(): Boolean;
 begin
-  if not FileExists(ExpandConstant('{app}\WorldOfTanks.exe')) then
+  if not WotList_Selected_VersionMatch(WotList, '{#WOT_VERSION_PATTERN}') then
   begin
-    MsgBox(ExpandConstant('{cm:wotNotFound}'), mbError, MB_OK);
+    MsgBox(ExpandConstant('{cm:version_not_match}'), mbError, MB_OK);
     Result := False;
     Exit;
   end;
@@ -197,18 +226,8 @@ function NextButtonClick(CurPage: Integer): Boolean;
 begin
   Result := True;
 
-  if (CurPage = wpSelectDir) then
-  begin
-    Result := NextButtonClick_wpSelectDir();
+  case CurPage of
+    wpSelectDir: Result := NextButtonClick_wpSelectDir();
   end;
 end;
 
-
-//
-// Checks
-//
-
-function Check_IsLesta(): Boolean;
-begin
-  Result := WotList_Selected_Lesta(WotList);
-end;

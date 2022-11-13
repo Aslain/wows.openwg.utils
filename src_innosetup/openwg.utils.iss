@@ -343,6 +343,21 @@ begin
 end;
 
 
+function WOT_ClientIsVersionMatch_I(ClientIndex: Integer; VersionPattern: String): Integer;
+external 'WOT_ClientIsVersionMatch@files:openwg.utils.dll cdecl setuponly';
+
+function WOT_ClientIsVersionMatch_U(ClientIndex: Integer; VersionPattern: String): Integer;
+external 'WOT_ClientIsVersionMatch@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function WOT_ClientIsVersionMatch(ClientIndex: Integer; VersionPattern: String): Boolean;
+begin
+    if IsUninstaller() then
+        Result := WOT_ClientIsVersionMatch_U(ClientIndex, VersionPattern) = 1
+    else
+        Result := WOT_ClientIsVersionMatch_I(ClientIndex, VersionPattern) = 1
+end;
+
+
 // WOT/ClientTerminate
 function WOT_ClientTerminate_I(ClientIndex: Integer): Integer;
 external 'WOT_ClientTerminate@files:openwg.utils.dll cdecl setuponly';
@@ -724,4 +739,10 @@ end;
 function WotList_Selected_Record(List: TNewComboBox): ClientRecord;
 begin;
   Result := CLIENT_GetRecord(List.ItemIndex);
+end;
+
+
+function WotList_Selected_VersionMatch(List: TNewComboBox; VersionPattern: String): Boolean;
+begin;
+  Result := WOT_ClientIsVersionMatch(List.ItemIndex, VersionPattern);
 end;
