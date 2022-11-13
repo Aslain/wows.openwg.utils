@@ -38,7 +38,7 @@ ru.openwg_branch_sb=Песочница
 //
 
 type
-  GameClient = Record
+  ClientRecord = Record
     Index: Integer;
     LauncherFlavour: Integer;
     Branch: Integer;
@@ -133,24 +133,52 @@ begin
 end;
 
 
+// JSON/GetNamesAndValuesW
 procedure JSON_GetNamesAndValuesW_I(FileFullName: String; Path: String; BufNames: String; BufValues: String; BufferSize: Integer);
 external 'JSON_GetNamesAndValuesW@files:openwg.utils.dll cdecl setuponly';
 
 procedure JSON_GetNamesAndValuesW_U(FileFullName: String; Path: String; BufNames: String; BufValues: String; BufferSize: Integer);
 external 'JSON_GetNamesAndValuesW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
 
+procedure JSON_GetNamesAndValuesW(FileFullName: String; Path: String; BufNames: String; BufValues: String; BufferSize: Integer);
+begin
+    if IsUninstaller() then
+        JSON_GetNamesAndValuesW_U(FileFullName, Path, BufNames, BufValues, BufferSize)
+    else
+        JSON_GetNamesAndValuesW_I(FileFullName, Path, BufNames, BufValues, BufferSize)
+end;
+
+
+// JSON/GetNamesAndValuesW_S
 procedure JSON_GetNamesAndValuesW_S_I(StrJSON: String; BufNames: String; BufValues: String; BufferSize: Integer);
 external 'JSON_GetNamesAndValuesW_S@files:openwg.utils.dll cdecl setuponly';
 
 procedure JSON_GetNamesAndValuesW_S_U(StrJSON: String; BufNames: String; BufValues: String; BufferSize: Integer);
 external 'JSON_GetNamesAndValuesW_S@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
 
+procedure JSON_GetNamesAndValuesW_S(StrJSON: String; BufNames: String; BufValues: String; BufferSize: Integer);
+begin
+    if IsUninstaller() then
+        JSON_GetNamesAndValuesW_S_U(StrJSON, BufNames, BufValues, BufferSize)
+    else
+        JSON_GetNamesAndValuesW_S_I(StrJSON, BufNames, BufValues, BufferSize)
+end;
+
+
+// JSON/GetArrayValueW_S_I
 procedure JSON_GetArrayValueW_S_I(StrJSON: String; BufValues: String; BufferSize: Integer);
 external 'JSON_GetArrayValueW_S@files:openwg.utils.dll cdecl setuponly';
 
 procedure JSON_GetArrayValueW_S_U(StrJSON: String; BufValues: String; BufferSize: Integer);
 external 'JSON_GetArrayValueW_S@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
 
+procedure JSON_GetArrayValueW_S(StrJSON: String; BufValues: String; BufferSize: Integer);
+begin
+    if IsUninstaller() then
+        JSON_GetArrayValueW_S_U(StrJSON, BufValues, BufferSize)
+    else
+        JSON_GetArrayValueW_S_I(StrJSON, BufValues, BufferSize)
+end;
 
 
 // IMAGEDRAW/PngToBmp
@@ -478,7 +506,7 @@ end;
 // HELPERS
 //
 
-function CLIENT_GetRecord(Index: Integer): GameClient;
+function CLIENT_GetRecord(Index: Integer): ClientRecord;
 var
   Buffer: String;
 
@@ -502,7 +530,7 @@ begin
 end;
 
 
-function CLIENT_FormatString(Client: GameClient): String;
+function CLIENT_FormatString(Client: ClientRecord): String;
 begin
   Result := Client.Version;
 
@@ -571,7 +599,7 @@ var
   Buffer: String;
   ClientsCount, Index, ListIndex: Integer;
   Str: String;
-  Client: GameClient;
+  Client: ClientRecord;
 begin
   SetLength(Buffer, 1024);
 
@@ -649,6 +677,12 @@ begin;
   Result.OnChange := @WotList_OnChange;
   Result.SetBounds(pos_left,pos_top,pos_left + pos_width,pos_height);
   WotList_Update(Result);
+end;
+
+
+function WotList_Selected_Record(List: TNewComboBox): ClientRecord;
+begin;
+  Result := CLIENT_GetRecord(List.ItemIndex);
 end;
 
 
