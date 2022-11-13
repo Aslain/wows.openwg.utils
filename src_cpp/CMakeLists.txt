@@ -4,6 +4,8 @@
 cmake_minimum_required(VERSION 3.23)
 project(openwg.utils)
 
+include(cmake/CPM.cmake)
+
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -19,14 +21,15 @@ set_target_properties(jsoncpp PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<
 target_include_directories(jsoncpp PUBLIC 3rdparty/jsoncpp/include)
 
 # PugiXML
-add_library(pugixml STATIC
-  3rdparty/pugixml/src/pugiconfig.hpp
-  3rdparty/pugixml/src/pugixml.cpp
-  3rdparty/pugixml/src/pugixml.hpp
+CPMAddPackage(
+  NAME pugixml
+  GITHUB_REPOSITORY zeux/pugixml
+  VERSION 1.13
+  OPTIONS
+    "BUILD_SHARED_LIBS OFF"
+    "PUGIXML_WCHAR_MODE ON"
+    "PUGIXML_STATIC_CRT ON"
 )
-set_target_properties(pugixml PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-target_compile_definitions(pugixml PUBLIC "-DPUGIXML_WCHAR_MODE")
-target_include_directories(pugixml PUBLIC 3rdparty/pugixml/src)
 
 
 # LodePNG
@@ -78,7 +81,7 @@ target_include_directories(openwg.utils PRIVATE .)
 
 target_link_libraries(openwg.utils PRIVATE "Version" "Kernel32" "Psapi" "Shell32" "Advapi32" "Gdi32")
 target_link_libraries(openwg.utils PUBLIC jsoncpp)
-target_link_libraries(openwg.utils PUBLIC pugixml)
+target_link_libraries(openwg.utils PUBLIC pugixml::pugixml)
 target_link_libraries(openwg.utils PUBLIC lodepng)
 target_link_libraries(openwg.utils PUBLIC stb)
 
