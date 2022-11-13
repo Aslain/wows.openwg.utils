@@ -125,5 +125,5 @@ int main() {
         std::wcout << std::endl;
     }
 
-   // std::wcin.get();
+    std::wcin.get();
 }

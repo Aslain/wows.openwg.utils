@@ -195,12 +195,12 @@ namespace OpenWG::Utils::WoT {
                 auto nodes = doc.select_nodes(L"/root/Paths/Path");
                 for (auto node: nodes) {
                     std::wstring path = node.node().first_child().value();
-                    path = Common::String::Replace(path, L"/", L"\\");
-                    path = Common::String::Replace(path, L".\\", L"");
+                    path = Common::String::Replace(path, L"\\", L"/");
+                    path = Common::String::Replace(path, L"./", L"");
 
-                    if (m_path_resmods.empty() && path.starts_with(L"res_mods\\")) {
+                    if (m_path_resmods.empty() && path.starts_with(L"res_mods/")) {
                         m_path_resmods = path;
-                    } else if (m_path_mods.empty() && path.starts_with(L"mods\\")) {
+                    } else if (m_path_mods.empty() && path.starts_with(L"mods/")) {
                         m_path_mods = path;
                     }
                 }

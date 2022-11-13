@@ -569,51 +569,50 @@ begin
   Result.Branch := WOT_GetClientBranch(Index);
 
   WOT_GetClientRealmW(Buffer, 1024, Index);
-  Result.Realm := Copy(Buffer, 1, Pos(#0, Buffer));
+  Result.Realm := Copy(Buffer, 1, Pos(#0, Buffer)-1);
 
   WOT_GetClientVersionW(Buffer, 1024, Index);
-  Result.Version := Copy(Buffer, 1, Pos(#0, Buffer));
+  Result.Version := Copy(Buffer, 1, Pos(#0, Buffer)-1);
 
   WOT_GetClientPathW(Buffer, 1024, Index);
-  Result.Path := Copy(Buffer, 1, Pos(#0, Buffer));
+  Result.Path := Copy(Buffer, 1, Pos(#0, Buffer)-1);
 
   WOT_GetClientPathModsW(Buffer, 1024, Index);
-  Result.PathMods := Copy(Buffer, 1, Pos(#0, Buffer));
+  Result.PathMods := Copy(Buffer, 1, Pos(#0, Buffer)-1);
 
   WOT_GetClientPathResmodsW(Buffer, 1024, Index);
-  Result.PathResmods := Copy(Buffer, 1, Pos(#0, Buffer));
+  Result.PathResmods := Copy(Buffer, 1, Pos(#0, Buffer)-1);
 end;
 
 
 function CLIENT_FormatString(Client: ClientRecord): String;
 begin
   Result := Client.Version;
+  Result := Result + ' [';
 
-  Insert(' [', Result, Pos(#0, Result));
   case Client.LauncherFlavour of
-     0: Insert(ExpandConstant('{cm:openwg_unknown'), Result, Pos(#0, Result));
-     1: Insert('WG', Result, Pos(#0, Result));
-     2: Insert('360', Result, Pos(#0, Result));
-     3: Insert('Steam', Result, Pos(#0, Result));
-     4: Insert('Lesta', Result, Pos(#0, Result));
-     5: Insert('Standalone', Result, Pos(#0, Result));
+     0: Result := Result + ExpandConstant('{cm:openwg_unknown');
+     1: Result := Result + 'WG';
+     2: Result := Result + '360';
+     3: Result := Result + 'Steam';
+     4: Result := Result + 'Lesta';
+     5: Result := Result + 'Standalone';
   end;
 
   case Client.Branch of
-     0: Insert(ExpandConstant('/{cm:openwg_unknown}'), Result, Pos(#0, Result));
+     0: Result := Result + ExpandConstant('/{cm:openwg_unknown}');
      1: begin
           if Client.LauncherFlavour = 1 then
           begin
-            Insert('/' + Client.Realm, Result, Pos(#0, Result));
+            Result := Result + '/' + Client.Realm;
           end;
         end;
-     2: Insert(ExpandConstant('/{cm:openwg_branch_ct}'), Result, Pos(#0, Result));
-     3: Insert(ExpandConstant('/{cm:openwg_branch_st}'), Result, Pos(#0, Result));
-     4: Insert(ExpandConstant('/{cm:openwg_branch_sb}'), Result, Pos(#0, Result));
+     2: Result := Result + ExpandConstant('/{cm:openwg_branch_ct}');
+     3: Result := Result + ExpandConstant('/{cm:openwg_branch_st}');
+     4: Result := Result + ExpandConstant('/{cm:openwg_branch_sb}');
   end;
 
-  Insert('] - ', Result, Pos(#0, Result));
-  Insert(Client.Path, Result, Pos(#0, Result));
+  Result := Result + '] - ' + Client.Path;
 end;
 
 

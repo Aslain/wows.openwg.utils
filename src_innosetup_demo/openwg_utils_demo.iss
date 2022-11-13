@@ -2,7 +2,7 @@
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
 #define APP_WEBSITE    "https://gitlab.com/openwg/openwg.utils"
-#define APP_VERSION    "2022.11.13.1"
+#define APP_VERSION    "2022.11.14.1"
 #define APP_DIR_UNINST "openwg_utils\uninst"
 
 #define WOT_VERSION_PATTERN "1.18.1.*"
@@ -83,7 +83,7 @@ Name: "ru"; MessagesFile: "compiler:Languages/Russian.isl";
 [CustomMessages]
 en.open_website=Open Website
 ru.open_website=Открыть сайт
-en.version_not_match=The select client is not supported.%n%nThis installer support WoT v{#WOT_VERSION_PATTERN}
+en.version_not_match=This client is not supported.%n%nThis installer only supports WoT v{#WOT_VERSION_PATTERN}
 ru.version_not_match=Выбранный клиент не поддерживается.%n%nЭтот установщик поддерживает только WoT v{#WOT_VERSION_PATTERN}
 
 
