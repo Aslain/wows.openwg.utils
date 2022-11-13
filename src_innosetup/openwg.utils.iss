@@ -45,6 +45,8 @@ type
     Realm: String;
     Version: String;
     Path: String;
+    PathMods: String;
+    PathResmods: String;
   end;
 
 
@@ -437,6 +439,38 @@ begin
 end;
 
 
+// WOT/GetClientPathModsW
+procedure WOT_GetClientPathModsW_I(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
+external 'WOT_GetClientPathModsW@files:openwg.utils.dll cdecl setuponly';
+
+procedure WOT_GetClientPathModsW_U(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
+external 'WOT_GetClientPathModsW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+procedure WOT_GetClientPathModsW(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
+begin
+    if IsUninstaller() then
+        WOT_GetClientPathModsW_U(Buffer, BufferSize, ClientIndex)
+    else
+        WOT_GetClientPathModsW_I(Buffer, BufferSize, ClientIndex)
+end;
+
+
+// WOT/GetClientPathResmodsW
+procedure WOT_GetClientPathResmodsW_I(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
+external 'WOT_GetClientPathResmodsW@files:openwg.utils.dll cdecl setuponly';
+
+procedure WOT_GetClientPathResmodsW_U(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
+external 'WOT_GetClientPathResmodsW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+procedure WOT_GetClientPathResmodsW(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
+begin
+    if IsUninstaller() then
+        WOT_GetClientPathResmodsW_U(Buffer, BufferSize, ClientIndex)
+    else
+        WOT_GetClientPathResmodsW_I(Buffer, BufferSize, ClientIndex)
+end;
+
+
 // WOT/GetClientRealmW
 procedure WOT_GetClientRealmW_I(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
 external 'WOT_GetClientRealmW@files:openwg.utils.dll cdecl setuponly';
@@ -527,6 +561,12 @@ begin
 
   WOT_GetClientPathW(Buffer, 1024, Index);
   Result.Path := Copy(Buffer, 1, Pos(#0, Buffer));
+
+  WOT_GetClientPathModsW(Buffer, 1024, Index);
+  Result.PathMods := Copy(Buffer, 1, Pos(#0, Buffer));
+
+  WOT_GetClientPathResmodsW(Buffer, 1024, Index);
+  Result.PathResmods := Copy(Buffer, 1, Pos(#0, Buffer));
 end;
 
 
@@ -547,9 +587,10 @@ begin
   case Client.Branch of
      0: Insert(ExpandConstant('/{cm:openwg_unknown}'), Result, Pos(#0, Result));
      1: begin
-          //Insert(ExpandConstant('/{cm:openwg_branch_release}'), Result, Pos(#0, Result));
           if Client.LauncherFlavour = 1 then
+          begin
             Insert('/' + Client.Realm, Result, Pos(#0, Result));
+          end;
         end;
      2: Insert(ExpandConstant('/{cm:openwg_branch_ct}'), Result, Pos(#0, Result));
      3: Insert(ExpandConstant('/{cm:openwg_branch_st}'), Result, Pos(#0, Result));
@@ -683,10 +724,4 @@ end;
 function WotList_Selected_Record(List: TNewComboBox): ClientRecord;
 begin;
   Result := CLIENT_GetRecord(List.ItemIndex);
-end;
-
-
-function WotList_Selected_Lesta(List: TNewComboBox): Boolean;
-begin;
-  Result := WOT_GetClientLauncherFlavour(List.ItemIndex) = 4;
 end;
