@@ -110,9 +110,9 @@ namespace OpenWG::Utils::WoT {
 
         rescanAppType();
         rescanExe();
+        rescanVersion();
         rescanGameInfo();
         rescanPaths();
-        rescanVersion();
     }
 
     void ClientWoT::rescanAppType() {
@@ -166,7 +166,16 @@ namespace OpenWG::Utils::WoT {
 
             pugi::xml_document doc;
             if (doc.load_file(gameinfoxml.wstring().c_str())) {
+                // id
+                auto id = doc.select_node(L"/protocol/game/id");
+                if (id) {
+                    std::wstring id_str = id.node().first_child().value();
+                    if (id_str.contains(L".RPT.")) {
+                        m_branch = ClientBranch::WoT_Branch_CommonTest;
+                    }
+                }
 
+                // localization
                 auto localization = doc.select_node(L"/protocol/game/localization");
                 if (localization) {
                     m_locale = localization.node().first_child().value();
