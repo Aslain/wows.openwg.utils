@@ -45,6 +45,6 @@ New-Item -ItemType Directory -Path ~output/innosetup -ErrorAction SilentlyContin
 New-Item -ItemType Directory -Path ~output/innosetup_demo -ErrorAction SilentlyContinue
 
 Copy-Item -Path src_innosetup/openwg.utils.iss -Destination ~output/innosetup
-Copy-Item -Path src_innosetup_demo/* -Destination ~output/innosetup_demo
+Copy-Item -Path src_innosetup_demo/* -Destination ~output/innosetup_demo -Recurse
 
 iscc  ~output/innosetup_demo/openwg_utils_demo.iss

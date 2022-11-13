@@ -1,4 +1,4 @@
-﻿// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
 #define APP_WEBSITE    "https://gitlab.com/openwg/openwg.utils"
@@ -56,18 +56,19 @@ Name: "test/wg/sub"    ; Description: "Sub"          ; Types: full compact custo
 
 
 [Files]
-Source: "splashscreen.png"; Flags: dontcopy noencryption
-Source: "splashscreen_uninst.png"; DestDir: "{app}/{#APP_DIR_UNINST}"; Flags: noencryption
+Source: "assets/splashscreen.png"; Flags: dontcopy noencryption
+Source: "assets/splashscreen_uninst.png"; DestDir: "{app}/{#APP_DIR_UNINST}"; Flags: noencryption
 
-Source: "filecheck.txt"       ; DestDir: "{app}/tests/filecheck"; Components: filecheck
-Source: "filecheck_lesta.txt" ; DestDir: "{app}/tests/filecheck"; Components: filecheck; Check: Check_IsLesta
-Source: "filecheck_wg.txt"    ; DestDir: "{app}/tests/filecheck"; Components: filecheck; Check: not Check_IsLesta
+Source: "cur_ver/*.txt"            ; DestDir: "{app}"
 
-Source: "test.txt"            ; DestDir: "{app}/tests/test"; Components: test
-Source: "test_lesta.txt"      ; DestDir: "{app}/tests/test"; Components: test/lesta
-Source: "test_lesta_sub.txt"  ; DestDir: "{app}/tests/test"; Components: test/lesta/sub
-Source: "test_wg.txt"         ; DestDir: "{app}/tests/test"; Components: test/wg
-Source: "test_wg_sub.txt"     ; DestDir: "{app}/tests/test"; Components: test/wg/sub
+Source: "test/filecheck.txt"       ; DestDir: "{app}/mods/openwg_test"; Components: filecheck
+Source: "test/filecheck_lesta.txt" ; DestDir: "{app}/mods/openwg_test"; Components: filecheck; Check: Check_IsLesta
+Source: "test/filecheck_wg.txt"    ; DestDir: "{app}/mods/openwg_test"; Components: filecheck; Check: not Check_IsLesta
+Source: "test/test.txt"            ; DestDir: "{app}/mods/openwg_test"; Components: test
+Source: "test/test_lesta.txt"      ; DestDir: "{app}/mods/openwg_test"; Components: test/lesta
+Source: "test/test_lesta_sub.txt"  ; DestDir: "{app}/mods/openwg_test"; Components: test/lesta/sub
+Source: "test/test_wg.txt"         ; DestDir: "{app}/mods/openwg_test"; Components: test/wg
+Source: "test/test_wg_sub.txt"     ; DestDir: "{app}/mods/openwg_test"; Components: test/wg/sub
 
 
 [Languages]
