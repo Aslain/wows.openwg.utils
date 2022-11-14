@@ -11,6 +11,11 @@
 #define OPENWGUTILS_DIR_UNINST "."
 #endif
 
+// default buffer size for path, should be between 250 .. 32767
+#ifndef OPENWGUTILS_BUF_SIZE
+#define OPENWGUTILS_BUF_SIZE 1024
+#endif
+
 [Files]
 Source: "{#OPENWGUTILS_DIR_SRC}\openwg.utils.x86_32.dll"; DestName: openwg.utils.dll; Flags: ignoreversion dontcopy noencryption;
 Source: "{#OPENWGUTILS_DIR_SRC}\openwg.utils.x86_32.dll"; DestDir: {app}\{#OPENWGUTILS_DIR_UNINST}; DestName: openwg.utils.dll; Flags: ignoreversion noencryption;
@@ -40,13 +45,16 @@ ru.openwg_branch_sb=Песочница
 type
   ClientRecord = Record
     Index: Integer;
-    LauncherFlavour: Integer;
     Branch: Integer;
-    Realm: String;
-    Version: String;
+    LauncherFlavour: Integer;
+    Locale: String;
     Path: String;
     PathMods: String;
     PathResmods: String;
+    Realm: String;
+    ContentType: Integer;
+    Version: String;
+    VersionExe: String;
   end;
 
 
@@ -216,18 +224,18 @@ end;
 
 
 //PROCESS/TerminateProcess
-function PROCESS_TerminateProcess_I(ProcessName: String): Boolean;
+function PROCESS_TerminateProcess_I(ProcessPath: String): Boolean;
 external 'PROCESS_TerminateProcess@files:openwg.utils.dll cdecl setuponly';
 
-function PROCESS_TerminateProcess_U(ProcessName: String): Boolean;
+function PROCESS_TerminateProcess_U(ProcessPath: String): Boolean;
 external 'PROCESS_TerminateProcess@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
 
-function PROCESS_TerminateProcess(ProcessName: String): Boolean;
+function PROCESS_TerminateProcess(ProcessPath: String): Boolean;
 begin
     if IsUninstaller() then
-        Result := PROCESS_TerminateProcess_U(ProcessName)
+        Result := PROCESS_TerminateProcess_U(ProcessPath)
     else
-        Result := PROCESS_TerminateProcess_I(ProcessName)
+        Result := PROCESS_TerminateProcess_I(ProcessPath)
 end;
 
 
@@ -429,12 +437,18 @@ external 'WOT_GetClientLocaleW@files:openwg.utils.dll cdecl setuponly';
 procedure WOT_GetClientLocaleW_U(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
 external 'WOT_GetClientLocaleW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
 
-procedure WOT_GetClientLocaleW(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
+function WOT_GetClientLocaleW(ClientIndex: Integer): String;
+var
+    Buffer: String;
 begin
+    SetLength(Buffer, {#OPENWGUTILS_BUF_SIZE});
+
     if IsUninstaller() then
-        WOT_GetClientLocaleW_U(Buffer, BufferSize, ClientIndex)
+        WOT_GetClientLocaleW_U(Buffer, {#OPENWGUTILS_BUF_SIZE}, ClientIndex)
     else
-        WOT_GetClientLocaleW_I(Buffer, BufferSize, ClientIndex)
+        WOT_GetClientLocaleW_I(Buffer, {#OPENWGUTILS_BUF_SIZE}, ClientIndex);
+
+    Result := Copy(Buffer, 1, Pos(#0, Buffer)-1);
 end;
 
 
@@ -445,12 +459,18 @@ external 'WOT_GetClientPathW@files:openwg.utils.dll cdecl setuponly';
 procedure WOT_GetClientPathW_U(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
 external 'WOT_GetClientPathW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
 
-procedure WOT_GetClientPathW(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
+function WOT_GetClientPathW(ClientIndex: Integer): String;
+var
+    Buffer: String;
 begin
+    SetLength(Buffer, {#OPENWGUTILS_BUF_SIZE});
+
     if IsUninstaller() then
-        WOT_GetClientPathW_U(Buffer, BufferSize, ClientIndex)
+        WOT_GetClientPathW_U(Buffer, {#OPENWGUTILS_BUF_SIZE}, ClientIndex)
     else
-        WOT_GetClientPathW_I(Buffer, BufferSize, ClientIndex)
+        WOT_GetClientPathW_I(Buffer, {#OPENWGUTILS_BUF_SIZE}, ClientIndex);
+
+    Result := Copy(Buffer, 1, Pos(#0, Buffer)-1);
 end;
 
 
@@ -461,12 +481,18 @@ external 'WOT_GetClientPathModsW@files:openwg.utils.dll cdecl setuponly';
 procedure WOT_GetClientPathModsW_U(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
 external 'WOT_GetClientPathModsW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
 
-procedure WOT_GetClientPathModsW(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
+function WOT_GetClientPathModsW(ClientIndex: Integer): String;
+var
+    Buffer: String;
 begin
+    SetLength(Buffer, {#OPENWGUTILS_BUF_SIZE});
+
     if IsUninstaller() then
-        WOT_GetClientPathModsW_U(Buffer, BufferSize, ClientIndex)
+        WOT_GetClientPathModsW_U(Buffer, {#OPENWGUTILS_BUF_SIZE}, ClientIndex)
     else
-        WOT_GetClientPathModsW_I(Buffer, BufferSize, ClientIndex)
+        WOT_GetClientPathModsW_I(Buffer, {#OPENWGUTILS_BUF_SIZE}, ClientIndex);
+
+    Result := Copy(Buffer, 1, Pos(#0, Buffer)-1);
 end;
 
 
@@ -477,12 +503,18 @@ external 'WOT_GetClientPathResmodsW@files:openwg.utils.dll cdecl setuponly';
 procedure WOT_GetClientPathResmodsW_U(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
 external 'WOT_GetClientPathResmodsW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
 
-procedure WOT_GetClientPathResmodsW(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
+function WOT_GetClientPathResmodsW(ClientIndex: Integer): String;
+var
+    Buffer: String;
 begin
+    SetLength(Buffer, {#OPENWGUTILS_BUF_SIZE});
+
     if IsUninstaller() then
-        WOT_GetClientPathResmodsW_U(Buffer, BufferSize, ClientIndex)
+        WOT_GetClientPathResmodsW_U(Buffer, {#OPENWGUTILS_BUF_SIZE}, ClientIndex)
     else
-        WOT_GetClientPathResmodsW_I(Buffer, BufferSize, ClientIndex)
+        WOT_GetClientPathResmodsW_I(Buffer, {#OPENWGUTILS_BUF_SIZE}, ClientIndex);
+
+    Result := Copy(Buffer, 1, Pos(#0, Buffer)-1);
 end;
 
 
@@ -493,12 +525,18 @@ external 'WOT_GetClientRealmW@files:openwg.utils.dll cdecl setuponly';
 procedure WOT_GetClientRealmW_U(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
 external 'WOT_GetClientRealmW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
 
-procedure WOT_GetClientRealmW(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
+function WOT_GetClientRealmW(ClientIndex: Integer): String;
+var
+    Buffer: String;
 begin
+    SetLength(Buffer, {#OPENWGUTILS_BUF_SIZE});
+
     if IsUninstaller() then
-        WOT_GetClientRealmW_U(Buffer, BufferSize, ClientIndex)
+        WOT_GetClientRealmW_U(Buffer, {#OPENWGUTILS_BUF_SIZE}, ClientIndex)
     else
-        WOT_GetClientRealmW_I(Buffer, BufferSize, ClientIndex)
+        WOT_GetClientRealmW_I(Buffer, {#OPENWGUTILS_BUF_SIZE}, ClientIndex);
+
+    Result := Copy(Buffer, 1, Pos(#0, Buffer)-1);
 end;
 
 
@@ -525,12 +563,18 @@ external 'WOT_GetClientVersionW@files:openwg.utils.dll cdecl setuponly';
 procedure WOT_GetClientVersionW_U(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
 external 'WOT_GetClientVersionW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
 
-procedure WOT_GetClientVersionW(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
+function WOT_GetClientVersionW(ClientIndex: Integer): String;
+var
+    Buffer: String;
 begin
+    SetLength(Buffer, {#OPENWGUTILS_BUF_SIZE});
+
     if IsUninstaller() then
-        WOT_GetClientVersionW_U(Buffer, BufferSize, ClientIndex)
+        WOT_GetClientVersionW_U(Buffer, {#OPENWGUTILS_BUF_SIZE}, ClientIndex)
     else
-        WOT_GetClientVersionW_I(Buffer, BufferSize, ClientIndex)
+        WOT_GetClientVersionW_I(Buffer, {#OPENWGUTILS_BUF_SIZE}, ClientIndex);
+
+    Result := Copy(Buffer, 1, Pos(#0, Buffer)-1);
 end;
 
 
@@ -541,12 +585,18 @@ external 'WOT_GetClientExeVersionW@files:openwg.utils.dll cdecl setuponly';
 procedure WOT_GetClientExeVersionW_U(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
 external 'WOT_GetClientExeVersionW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
 
-procedure WOT_GetClientExeVersionW(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
+function WOT_GetClientExeVersionW(ClientIndex: Integer): String;
+var
+    Buffer: String;
 begin
+    SetLength(Buffer, {#OPENWGUTILS_BUF_SIZE});
+
     if IsUninstaller() then
-        WOT_GetClientExeVersionW_U(Buffer, BufferSize, ClientIndex)
+        WOT_GetClientExeVersionW_U(Buffer, {#OPENWGUTILS_BUF_SIZE}, ClientIndex)
     else
-        WOT_GetClientExeVersionW_I(Buffer, BufferSize, ClientIndex)
+        WOT_GetClientExeVersionW_I(Buffer, {#OPENWGUTILS_BUF_SIZE}, ClientIndex);   
+
+    Result := Copy(Buffer, 1, Pos(#0, Buffer)-1);
 end;
 
 
@@ -556,32 +606,18 @@ end;
 //
 
 function CLIENT_GetRecord(Index: Integer): ClientRecord;
-var
-  Buffer: String;
-
 begin
-  SetLength(Buffer, 1024);
-
   Result.Index := Index;
-
-  Result.LauncherFlavour := WOT_GetClientLauncherFlavour(Index);
-
   Result.Branch := WOT_GetClientBranch(Index);
-
-  WOT_GetClientRealmW(Buffer, 1024, Index);
-  Result.Realm := Copy(Buffer, 1, Pos(#0, Buffer)-1);
-
-  WOT_GetClientVersionW(Buffer, 1024, Index);
-  Result.Version := Copy(Buffer, 1, Pos(#0, Buffer)-1);
-
-  WOT_GetClientPathW(Buffer, 1024, Index);
-  Result.Path := Copy(Buffer, 1, Pos(#0, Buffer)-1);
-
-  WOT_GetClientPathModsW(Buffer, 1024, Index);
-  Result.PathMods := Copy(Buffer, 1, Pos(#0, Buffer)-1);
-
-  WOT_GetClientPathResmodsW(Buffer, 1024, Index);
-  Result.PathResmods := Copy(Buffer, 1, Pos(#0, Buffer)-1);
+  Result.LauncherFlavour := WOT_GetClientLauncherFlavour(Index);
+  Result.Locale :=  WOT_GetClientLocaleW(Index);
+  Result.Path := WOT_GetClientPathW(Index);
+  Result.PathMods :=  WOT_GetClientPathModsW(Index);
+  Result.PathResmods := WOT_GetClientPathResmodsW(Index);
+  Result.Realm :=  WOT_GetClientRealmW(Index);
+  Result.ContentType := WOT_GetClientType(Index);
+  Result.Version := WOT_GetClientVersionW(Index);
+  Result.VersionExe := WOT_GetClientExeVersionW(Index);
 end;
 
 
@@ -684,7 +720,10 @@ var
 begin
   if Length(ClientPath) = 0 then
   begin
-    List.ItemIndex := -1;
+    if List.Items.Count > 1 then
+        List.ItemIndex := 0
+    else
+        List.ItemIndex := -1;
     Exit;
   end;
 
@@ -696,30 +735,30 @@ begin
   end else
   begin
     MsgBox(ExpandConstant('{cm:openwg_client_not_found}'), mbError, MB_OK);
-    List.ItemIndex := -1;
+    if List.Items.Count > 1 then
+        List.ItemIndex := 0
+    else
+        List.ItemIndex := -1;
   end;
 end;
 
 
 procedure WotList_OnChange(Sender: TObject);
 var
-  Buffer: String;
   Combobox: TNewComboBox;
 begin
-  SetLength(Buffer, 1024);
-
   if Sender is TNewComboBox then
   begin
     Combobox := Sender as TNewComboBox; 
     
     if Combobox.Text = ExpandConstant('{cm:openwg_browse}') then
     begin
+      WizardForm.DirEdit.Text := '';
       WizardForm.DirBrowseButton.OnClick(nil);
       WotList_AddClient(Combobox, WizardForm.DirEdit.Text);
     end;
 
-    WOT_GetClientPathW(Buffer, 1024, Combobox.ItemIndex);
-    WizardForm.DirEdit.Text := Buffer;
+    WizardForm.DirEdit.Text := WOT_GetClientPathW(Combobox.ItemIndex);
   end;
 end;
 

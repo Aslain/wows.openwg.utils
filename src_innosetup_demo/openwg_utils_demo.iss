@@ -2,7 +2,7 @@
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
 #define APP_WEBSITE    "https://gitlab.com/openwg/openwg.utils"
-#define APP_VERSION    "2022.11.14.2"
+#define APP_VERSION    "2022.11.15.1"
 #define APP_DIR_UNINST "openwg_utils\uninst"
 
 #define WOT_VERSION_PATTERN "1.18.1.*"
@@ -168,7 +168,7 @@ end;
 
 procedure CurPageChanged_wpSelectDir();
 begin
-  if WotList.ItemIndex = -1 then
+  if (WotList.ItemIndex = -1) and (WotList.Items.Count > 1) then
   begin
     WotList.ItemIndex := 0;
   end;
