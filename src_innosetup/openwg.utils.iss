@@ -1,4 +1,4 @@
-﻿// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
 // directory with OpenWG.Utils installation files, relative to the main .iss file
@@ -208,13 +208,13 @@ end;
 
 
 // PROCESS/GetRunningInDirectoryW
-function PROCESS_GetRunningInDirectoryW_I(DirectoryPth: String; Buffer: String; BufferSize: Integer): Boolean;
+function PROCESS_GetRunningInDirectoryW_I(DirectoryPth: String; Buffer: String; BufferSize: Integer): Integer;
 external 'PROCESS_GetRunningInDirectoryW@files:openwg.utils.dll cdecl setuponly';
 
-function PROCESS_GetRunningInDirectoryW_U(DirectoryPth: String; Buffer: String; BufferSize: Integer): Boolean;
+function PROCESS_GetRunningInDirectoryW_U(DirectoryPth: String; Buffer: String; BufferSize: Integer): Integer;
 external 'PROCESS_GetRunningInDirectoryW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
 
-function PROCESS_GetRunningInDirectoryW(DirectoryPth: String; Buffer: String; BufferSize: Integer): Boolean;
+function PROCESS_GetRunningInDirectoryW(DirectoryPth: String; Buffer: String; BufferSize: Integer): Integer;
 begin
     if IsUninstaller() then
         Result := PROCESS_GetRunningInDirectoryW_U(DirectoryPth, Buffer, BufferSize)
@@ -666,13 +666,13 @@ end;
 function PROCESS_GetRunningProcesses(szPath: string): TStringList;
 var
     Buffer: String;
-    ExtResult: Boolean;
+    ProcCount: Integer;
 begin
     SetLength(Buffer, 1024);
-    ExtResult:=PROCESS_GetRunningInDirectoryW(szPath, Buffer, 1024);
-    if ExtResult = True then
+    ProcCount:=PROCESS_GetRunningInDirectoryW(szPath, Buffer, 1024);
+    if ProcCount > 0 then
     begin
-        Buffer:=Copy(Buffer,0,Pos(#0, Buffer));
+        Buffer:=Copy(Buffer,0,Pos(#0, Buffer)-1);
         Result:=STRING_Split(Buffer,';');
         Exit;
     end;
