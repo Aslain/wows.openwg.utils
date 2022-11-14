@@ -116,7 +116,6 @@ namespace OpenWG::Utils::Process {
                 switch (WaitForSingleObject(hProcess, 5000)) {
                     case WAIT_OBJECT_0:
                         CloseHandle(hProcess);
-                        result = true;
                         break;
                     default:
                         break;
@@ -124,7 +123,7 @@ namespace OpenWG::Utils::Process {
             }
 
             ::TerminateProcess(hProcess, 9);
-            CloseHandle(hProcess);
+            result = true;
         }
 
         return result;
@@ -134,7 +133,7 @@ namespace OpenWG::Utils::Process {
         bool result{false};
 
         for (auto &process: GetProcessList()) {
-            if (Common::String::ToLower(process.first.filename()) == Common::String::ToLower(processName)) {
+            if (Common::String::ToLower(process.first) == Common::String::ToLower(processName)) {
                 result = TerminateProcess(process.second);
             }
         }

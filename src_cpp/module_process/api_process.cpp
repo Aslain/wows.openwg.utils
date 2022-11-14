@@ -6,30 +6,21 @@
 
 using namespace OpenWG::Utils;
 
-int32_t PROCESS_GetRunningInDirectoryW(const wchar_t * directory_path, wchar_t * output_list, int32_t output_list_size)
+int32_t PROCESS_GetRunningInDirectoryW(const wchar_t* directory_path, wchar_t* output_list, int32_t output_list_size)
 {
-    if(!directory_path || !output_list ){
-        return false;
-    }
-    if (output_list_size == 0) {
-        return false;
-    }
-    output_list[0] = L'\0';
+    int32_t result = -1;
 
-    auto procs = Process::GetRunningProcessesInDirectory(directory_path);
-    if (procs.empty()) {
-        return false;
+    if (directory_path && output_list && output_list_size) {
+        output_list[0] = L'\0';
+        auto procs = Process::GetRunningProcessesInDirectory(directory_path);
+        for (const auto& proc : procs) {
+            wcscat_s(output_list, output_list_size, proc.c_str());
+            wcscat_s(output_list, output_list_size, L";");
+        }
+        result = procs.size();
     }
 
-    std::wstring output = L"";
-    for (auto&proc : procs) {
-        output += proc.wstring() + L";";
-    }
-    output.pop_back();
-
-    wcscpy_s(output_list, output_list_size, output.c_str());
-
-    return true;
+    return result;
 }
 
 int32_t PROCESS_TerminateProcess(const wchar_t * processName)
