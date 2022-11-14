@@ -70,11 +70,8 @@ file(GLOB srcs CONFIGURE_DEPENDS
 )
 
 
-target_sources(openwg.utils PRIVATE
-    dllmain.cpp
-    dllmain.rc
-    ${srcs}
-)
+target_sources(openwg.utils PRIVATE dllmain.cpp ${srcs})
+target_sources(openwg.utils PRIVATE dllmain.rc)
 
 
 target_include_directories(openwg.utils PRIVATE .)

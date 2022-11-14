@@ -1,38 +1,53 @@
-#define LANG_NEUTRAL 0
-#define SUBLANG_NEUTRAL 0
+#include <winres.h>
 
-LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+#define VER_COMPANYNAME_STR "OpenWG"
+#define VER_FILEDESCRIPTION_STR "OpenWG utilities library"
+#define VER_INTERNALNAME_STR "openwg.utils"
+#define VER_LEGALCOPYRIGHT_STR "OpenWG Contributors, 2017-2022. MIT license"
+#define VER_LEGALTRADEMARKS1_STR ""
+#define VER_LEGALTRADEMARKS2_STR ""
+#define VER_ORIGINALFILENAME_STR "openwg.utils.dll"
+#define VER_PRODUCTNAME_STR "OpenWG utilities library"
+
+#define VER_PRIVATEBUILD 0x0L
+#define VER_PRERELEASE 0x0L
+#define VER_VERSION             21,11,14,2
+#define VER_VERSION_STR         "21.11.14.2\0"
+
+#ifndef DEBUG
+    #define VER_DEBUG                   0
+#else
+    #define VER_DEBUG                   VS_FF_DEBUG
+#endif
+
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 22,11,14,1
- PRODUCTVERSION 22,11,14,1
- FILEFLAGSMASK 0x0L
-#ifdef _DEBUG
- FILEFLAGS 0x1L
-#else
- FILEFLAGS 0x0L
-#endif
- FILEOS 0x4L
- FILETYPE 0x2L
- FILESUBTYPE 0x0L
+FILEVERSION     VER_VERSION
+PRODUCTVERSION  VER_VERSION
+FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
+FILEFLAGS       (VER_PRIVATEBUILD|VER_PRERELEASE|VER_DEBUG)
+FILEOS          VOS__WINDOWS32
+FILETYPE        VFT_DLL
+FILESUBTYPE     VFT2_UNKNOWN
 BEGIN
-    BLOCK "StringFileInfo"
-    BEGIN
-        BLOCK "040904e4"
-        BEGIN
-            VALUE "CompanyName", "OpenWG"
-            VALUE "FileDescription", "OpenWG utilities library"
-            VALUE "FileVersion", "22.11.14.1"
-            VALUE "InternalName", "openwg.utils"
-            VALUE "LegalCopyright", "OpenWG Contributors, 2017-2022. MIT license"
-            VALUE "OriginalFilename", "openwg.utils.dll"
-            VALUE "PrivateBuild", "0"
-            VALUE "ProductName", "OpenWG utilities"
-            VALUE "ProductVersion", "22.11.14.1"
-        END
-    END
     BLOCK "VarFileInfo"
     BEGIN
-        VALUE "Translation", 0x409, 1252
+        VALUE "Translation", 0x409, 1200
+    END
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName",      VER_COMPANYNAME_STR
+            VALUE "FileDescription",  VER_FILEDESCRIPTION_STR
+            VALUE "FileVersion",      VER_VERSION_STR
+            VALUE "InternalName",     VER_INTERNALNAME_STR
+            VALUE "LegalCopyright",   VER_LEGALCOPYRIGHT_STR
+            VALUE "LegalTrademarks1", VER_LEGALTRADEMARKS1_STR
+            VALUE "LegalTrademarks2", VER_LEGALTRADEMARKS2_STR
+            VALUE "OriginalFilename", VER_ORIGINALFILENAME_STR
+            VALUE "ProductName",      VER_PRODUCTNAME_STR
+            VALUE "ProductVersion",   VER_VERSION_STR
+        END
     END
 END

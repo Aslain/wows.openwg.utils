@@ -37,8 +37,8 @@ function Build-CppProject($Toolset, $Architecture) {
 
 Build-CppProject -Toolset v143 -Architecture Win32
 Build-CppProject -Toolset v143 -Architecture x64
-Build-CppProject -Toolset v143 -Architecture ARM
-Build-CppProject -Toolset v143 -Architecture ARM64
+#Build-CppProject -Toolset v143 -Architecture ARM
+#Build-CppProject -Toolset v143 -Architecture ARM64
 
 
 New-Item -ItemType Directory -Path ~output/innosetup -ErrorAction SilentlyContinue
