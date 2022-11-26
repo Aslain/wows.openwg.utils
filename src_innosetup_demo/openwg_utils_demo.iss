@@ -40,6 +40,7 @@ OutputBaseFilename=openwg_utils_demo
 
 UninstallFilesDir={app}\{#APP_DIR_UNINST}
 DefaultDirName=C:\
+UsePreviousAppDir=yes
 
 
 [Run]
@@ -155,8 +156,13 @@ begin
       WizardForm.DirBrowseButton.Left + WizardForm.DirBrowseButton.Width,
       WizardForm.DirEdit.Height
   );
+  WotList.ItemIndex := WOT_ClientFind(WizardForm.DirEdit.Text);
+
+  if (WotList.ItemIndex = -1) and (WotList.Items.Count > 1) then
+    WotList.ItemIndex := 0;
+  WotList.OnChange(WotList);
+
   WizardForm.DirEdit.Visible := False;
-  WizardForm.DirEdit.Text := '';
   WizardForm.DirBrowseButton.Visible := False;
 end;
 
@@ -168,12 +174,6 @@ end;
 
 procedure CurPageChanged_wpSelectDir();
 begin
-  if (WotList.ItemIndex = -1) and (WotList.Items.Count > 1) then
-  begin
-    WotList.ItemIndex := 0;
-  end;
-
-  WotList.OnChange(WotList);
 end;
 
 

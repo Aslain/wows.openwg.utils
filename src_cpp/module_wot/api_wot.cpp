@@ -122,6 +122,23 @@ int32_t WOT_LauncherSetDefault(int32_t launcher_flavour) {
     return WOT_LauncherRescan();
 }
 
+int32_t WOT_ClientFind(const wchar_t *path) {
+    int32_t result{-1};
+    launchers_init();
+
+    if(path != nullptr) {
+        auto path_norm = std::filesystem::path(path).lexically_normal();
+        for (int32_t idx = 0; idx < g_clients.size(); idx++) {
+            auto &client = g_clients[idx];
+            if (client->GetPath() == path_norm) {
+                result = idx;
+                break;
+            }
+        }
+    }
+
+    return result;
+}
 
 int32_t WOT_ClientIsStarted(int32_t index) {
     int32_t result = -1;
@@ -141,7 +158,7 @@ int32_t WOT_ClientIsStarted(int32_t index) {
     return result;
 }
 
-int32_t WOT_ClientIsVersionMatch(int32_t index, const wchar_t* pattern){
+int32_t WOT_ClientIsVersionMatch(int32_t index, const wchar_t *pattern) {
     int32_t result = -1;
 
     launchers_init();

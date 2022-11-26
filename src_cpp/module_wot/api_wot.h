@@ -69,6 +69,13 @@ XVMEXT_API_CALL int32_t WOT_LauncherRescan();
 XVMEXT_API_CALL int32_t WOT_LauncherSetDefault(int32_t launcher_flavour);
 
 /**
+ * Find client by its path
+ * @param path absolute path to the client
+ * @return client index, -1 if client was not found
+ */
+XVMEXT_API_CALL int32_t WOT_ClientFind(const wchar_t* path);
+
+/**
  * Checks that client is started
  * @param index client index, negative value to check all the registered clients
  * @return 1 if at least one client is started, 0 if client was not launched, -1 if client does not exists or error occurred

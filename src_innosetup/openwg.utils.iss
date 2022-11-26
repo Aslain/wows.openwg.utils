@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
 // directory with OpenWG.Utils installation files, relative to the main .iss file
@@ -334,6 +334,20 @@ begin
         Result := WOT_LauncherSetDefault_I(LauncherFlavour)
 end;
 
+// WOT/ClientFind
+function WOT_ClientFind_I(Path: String): Integer;
+external 'WOT_ClientFind@files:openwg.utils.dll cdecl setuponly';
+
+function WOT_ClientFind_U(Path: String): Integer;
+external 'WOT_ClientFind@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function WOT_ClientFind(Path: String): Integer;
+begin
+    if IsUninstaller() then
+        Result := WOT_ClientFind_U(Path)
+    else
+        Result := WOT_ClientFind_I(Path)
+end;
 
 // WOT/ClientIsStarted
 function WOT_ClientIsStarted_I(ClientIndex: Integer): Integer;
