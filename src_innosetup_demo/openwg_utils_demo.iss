@@ -2,8 +2,8 @@
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
 #define APP_WEBSITE    "https://gitlab.com/openwg/openwg.utils"
-#define APP_VERSION    "2022.11.15.1"
-#define APP_DIR_UNINST "openwg_utils\uninst"
+#define APP_VERSION    "2022.11.26.1"
+#define APP_DIR_UNINST "openwg_uninst"
 
 #define WOT_VERSION_PATTERN "1.18.1.*"
 
@@ -204,6 +204,20 @@ begin
     wpSelectComponents: CurPageChanged_wpSelectComponents();
   end
 end;
+
+
+
+//
+// DeinitializeUninstall
+//
+
+
+procedure DeinitializeUninstall();
+begin
+  OPENWG_DllUnload();
+  OPENWG_DllDelete();
+end;
+
 
 
 

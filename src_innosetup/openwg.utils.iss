@@ -694,6 +694,29 @@ begin
 end;
 
 
+procedure OPENWG_DllDelete();
+begin
+    if IsUninstaller() then
+    begin
+        DeleteFile(ExpandConstant('{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll'));
+        RemoveDir(ExpandConstant('{app}\{#OPENWGUTILS_DIR_UNINST}'));
+    end
+    else begin
+        DeleteFile(ExpandConstant('{tmp}\openwg.utils.dll'));
+        RemoveDir(ExpandConstant('{tmp}'));
+    end;
+end;    
+
+
+procedure OPENWG_DllUnload();
+begin
+    if IsUninstaller() then
+        UnloadDLL(ExpandConstant('{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll'))
+    else
+        UnloadDLL(ExpandConstant('{tmp}\openwg.utils.dll'));
+end;    
+
+
 
 //
 // WoT List
