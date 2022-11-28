@@ -721,6 +721,8 @@ end;
 //
 // WoT List
 //
+var
+  wotlist_prev_idx: Integer;
 
 procedure WotList_Update(List: TNewComboBox);
 var
@@ -755,15 +757,10 @@ procedure WotList_AddClient(List: TNewComboBox; ClientPath: String);
 var
   Index: Integer;
 begin
-  if Length(ClientPath) = 0 then
-  begin
-    if List.Items.Count > 1 then
-        List.ItemIndex := 0
-    else
-        List.ItemIndex := -1;
-    Exit;
-  end;
+  // do nothing in case of empty string
+  if Length(ClientPath) = 0 then Exit;
 
+  // try to add client
   Index := WOT_AddClientW(ClientPath);
   if Index >= 0 then
   begin
@@ -772,11 +769,9 @@ begin
   end else
   begin
     MsgBox(ExpandConstant('{cm:openwg_client_not_found}'), mbError, MB_OK);
-    if List.Items.Count > 1 then
-        List.ItemIndex := 0
-    else
-        List.ItemIndex := -1;
+    List.ItemIndex := -1;
   end;
+
 end;
 
 
@@ -790,10 +785,19 @@ begin
     
     if Combobox.Text = ExpandConstant('{cm:openwg_browse}') then
     begin
+      // call folder browser
       WizardForm.DirEdit.Text := '';
       WizardForm.DirBrowseButton.OnClick(nil);
+
+      // try to add client
       WotList_AddClient(Combobox, WizardForm.DirEdit.Text);
-    end;
+
+      // fallback to the previous client in case of failure
+      if ((Combobox.ItemIndex < 0) or (Combobox.Text = ExpandConstant('{cm:openwg_browse}'))) and (Combobox.Items.Count > 1) then
+        Combobox.ItemIndex := wotlist_prev_idx;
+    end
+    else 
+      wotlist_prev_idx := Combobox.ItemIndex;
 
     WizardForm.DirEdit.Text := WOT_GetClientPathW(Combobox.ItemIndex);
   end;
