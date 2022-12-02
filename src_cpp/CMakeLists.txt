@@ -1,14 +1,35 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
+#
+# CMake
+#
+
 cmake_minimum_required(VERSION 3.23)
 project(openwg.utils)
 
 include(cmake/CPM.cmake)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+#
+# Global options
+#
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+
+
+#
+# Dependencies
+#
+
+# Catch2
+CPMAddPackage(
+    NAME Catch2
+    GITHUB_REPOSITORY catchorg/Catch2
+    VERSION 3.1.1
+)
 
 # JSON CPP
 add_library(jsoncpp STATIC
@@ -44,37 +65,40 @@ target_include_directories(lodepng PUBLIC 3rdparty/lodepng)
 add_library(stb INTERFACE)
 target_include_directories(stb INTERFACE 3rdparty/stb)
 
-##############################
-### Library: openwg.utils ###
-##############################
+
+
+#
+# Library
+#
 
 add_library(openwg.utils SHARED)
 
 file(GLOB srcs CONFIGURE_DEPENDS
         "common/*.cpp"
         "common/*.h"
-        "module_bwxml/*.cpp"
-        "module_bwxml/*.h"
-        "module_imagedraw/*.cpp"
-        "module_imagedraw/*.h"
-        "module_json/*.cpp"
-        "module_json/*.h"
-        "module_process/*.cpp"
-        "module_process/*.h"
-        "module_splashscreen/*.cpp"
-        "module_splashscreen/*.h"
-        "module_wine/*.cpp"
-        "module_wine/*.h"
-        "module_wot/*.cpp"
-        "module_wot/*.h"
+        "bwxml/*.cpp"
+        "bwxml/*.h"
+        "imagedraw/*.cpp"
+        "imagedraw/*.h"
+        "json/*.cpp"
+        "json/*.h"
+        "process/*.cpp"
+        "process/*.h"
+        "splashscreen/*.cpp"
+        "splashscreen/*.h"
+        "string/*.cpp"
+        "string/*.h"
+        "wine/*.cpp"
+        "wine/*.h"
+        "wot/*.cpp"
+        "wot/*.h"
 )
 
 
 target_sources(openwg.utils PRIVATE dllmain.cpp ${srcs})
 target_sources(openwg.utils PRIVATE dllmain.rc)
 
-
-target_include_directories(openwg.utils PRIVATE .)
+target_include_directories(openwg.utils PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 
 target_link_libraries(openwg.utils PRIVATE "Version" "Kernel32" "Psapi" "Shell32" "Advapi32" "Gdi32")
 target_link_libraries(openwg.utils PUBLIC jsoncpp)
@@ -109,53 +133,27 @@ set_target_properties(openwg.utils PROPERTIES RELEASE_POSTFIX ".${XVMEXT_PLAT}_$
 set_target_properties(openwg.utils PROPERTIES RELWITHDEBINFO_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
 set_target_properties(openwg.utils PROPERTIES MINSIZEREL_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
 
+
+
+#
+# Tests
+#
+
+add_subdirectory(tests)
+
+
+
+#
+# Install
+#
+
 install(
     TARGETS openwg.utils
     RUNTIME DESTINATION bin
 )
 
+file(GLOB HEADERS_API CONFIGURE_DEPENDS  */api_*.h)
 install(
-    FILES
-        module_bwxml/api_bwxml.h
-        module_imagedraw/api_imagedraw.h
-        module_json/api_json.h
-        module_process/api_process.h
-        module_splashscreen/api_splashscreen.h
-        module_wine/api_wine.h
-        module_wot/api_wot.h
+    FILES ${HEADERS_API}
     DESTINATION include
-)
-
-###############################
-###       Test: JSON        ###
-###############################
-
-add_executable(test_bwxml "tests/bwxml.cpp")
-target_link_libraries(test_bwxml openwg.utils)
-target_include_directories(test_bwxml PRIVATE .)
-
-#add_executable(test_json "tests/json.cpp")
-#target_link_libraries(test_json openwg.utils)
-#target_include_directories(test_json PRIVATE .)
-
-add_executable(test_process "tests/process.cpp")
-target_link_libraries(test_process openwg.utils)
-target_include_directories(test_process PRIVATE .)
-
-add_executable(test_splashscreen "tests/splashscreen.cpp")
-target_link_libraries(test_splashscreen openwg.utils)
-target_include_directories(test_splashscreen PRIVATE .)
-
-add_executable(demo_wot "tests/wot.cpp")
-target_link_libraries(demo_wot openwg.utils)
-target_include_directories(demo_wot PRIVATE .)
-
-set_target_properties(demo_wot PROPERTIES DEBUG_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}d")
-set_target_properties(demo_wot PROPERTIES RELEASE_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
-set_target_properties(demo_wot PROPERTIES RELWITHDEBINFO_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
-set_target_properties(demo_wot PROPERTIES MINSIZEREL_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
-
-install(
-    TARGETS demo_wot
-    RUNTIME DESTINATION bin
 )

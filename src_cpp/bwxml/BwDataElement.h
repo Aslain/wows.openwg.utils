@@ -1,0 +1,24 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2017-2022 OpenWG.Utils Contributors
+
+#pragma once
+
+#include <pugixml.hpp>
+
+#include "bwxml/BwInputStream.h"
+#include "bwxml/BwDataDescriptor.h"
+#include "bwxml/BwStringTable.h"
+
+
+class BwDataElement {
+public:
+    BwDataElement() = default;
+    ~BwDataElement();
+    BwDataElement(BwInputStream& stream, BwDataDescriptor typeoff, int32_t element_startoff);
+
+    void SaveXml(pugi::xml_node& node, BwStringTable& stringTable);
+
+private:
+    BwDataType _type;
+    std::vector<uint8_t> _data;
+};
