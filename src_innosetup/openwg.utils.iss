@@ -401,12 +401,12 @@ external 'WOT_ClientIsStarted@files:openwg.utils.dll cdecl setuponly';
 function WOT_ClientIsStarted_U(ClientIndex: Integer): Integer;
 external 'WOT_ClientIsStarted@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
 
-function WOT_ClientIsStarted(ClientIndex: Integer): Integer;
+function WOT_ClientIsStarted(ClientIndex: Integer): Boolean;
 begin
     if IsUninstaller() then
-        Result := WOT_ClientIsStarted_U(ClientIndex)
+        Result := WOT_ClientIsStarted_U(ClientIndex) = 1
     else
-        Result := WOT_ClientIsStarted_I(ClientIndex)
+        Result := WOT_ClientIsStarted_I(ClientIndex) = 1
 end;
 
 
@@ -433,12 +433,12 @@ external 'WOT_ClientTerminate@files:openwg.utils.dll cdecl setuponly';
 function WOT_ClientTerminate_U(ClientIndex: Integer): Integer;
 external 'WOT_ClientTerminate@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
 
-function WOT_ClientTerminate(ClientIndex: Integer): Integer;
+function WOT_ClientTerminate(ClientIndex: Integer): Boolean;
 begin
     if IsUninstaller() then
-        Result := WOT_ClientTerminate_U(ClientIndex)
+        Result := WOT_ClientTerminate_U(ClientIndex) = 1
     else
-        Result := WOT_ClientTerminate_I(ClientIndex)
+        Result := WOT_ClientTerminate_I(ClientIndex) = 1
 end;
 
 
@@ -866,6 +866,15 @@ begin;
   Result := CLIENT_GetRecord(List.ItemIndex);
 end;
 
+function WotList_Selected_IsStarted(List: TNewComboBox): Boolean;
+begin;
+  Result := WOT_ClientIsStarted(List.ItemIndex);
+end;
+
+function WotList_Selected_Terminate(List: TNewComboBox): Boolean;
+begin;
+  Result := WOT_ClientTerminate(List.ItemIndex);
+end;
 
 function WotList_Selected_VersionMatch(List: TNewComboBox; VersionPattern: String): Boolean;
 begin;

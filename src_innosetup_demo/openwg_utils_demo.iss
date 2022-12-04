@@ -2,10 +2,10 @@
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
 #define APP_WEBSITE    "https://gitlab.com/openwg/openwg.utils"
-#define APP_VERSION    "2022.12.02.1"
+#define APP_VERSION    "2022.12.04.1"
 #define APP_DIR_UNINST "openwg_uninst"
 
-#define WOT_VERSION_PATTERN "1.18.1.*"
+#define WOT_VERSION_PATTERN "1.19.0.*"
 
 #define OPENWGUTILS_DIR_SRC    "..\bin"
 #define OPENWGUTILS_DIR_UNINST APP_DIR_UNINST
@@ -86,6 +86,8 @@ en.open_website=Open Website
 ru.open_website=Открыть сайт
 en.version_not_match=This client is not supported.%n%nThis installer only supports WoT v{#WOT_VERSION_PATTERN}
 ru.version_not_match=Выбранный клиент не поддерживается.%n%nЭтот установщик поддерживает только WoT v{#WOT_VERSION_PATTERN}
+en.client_started=The selected client is running.%n%nDo you want to terminate the selected client?
+ru.client_started=Выбранный клиент запущен.%n%nЖелаете ли вы закрыть выбранный клиент?
 
 
 
@@ -136,7 +138,7 @@ end;
 function InitializeSetup: Boolean;
 begin
   ExtractTemporaryFile('splashscreen.png');
-  SPLASHSCREEN_ShowSplashScreenW('splashscreen.png', 3);
+  SPLASHSCREEN_ShowSplashScreenW(ExpandConstant('{tmp}\splashscreen.png'), 3);
   Result := True;
 end;
 
@@ -242,11 +244,23 @@ end;
 
 function NextButtonClick_wpSelectDir(): Boolean;
 begin
+  Result := True;
+
+  // check for version
   if not WotList_Selected_VersionMatch(WotList, '{#WOT_VERSION_PATTERN}') then
   begin
     MsgBox(ExpandConstant('{cm:version_not_match}'), mbError, MB_OK);
     Result := False;
     Exit;
+  end;
+
+  // check for running client
+  if WotList_Selected_IsStarted(WotList) then
+  begin
+    if (MsgBox(ExpandConstant('{cm:client_started}'), mbConfirmation, MB_YESNO) = IDYES) then 
+      WotList_Selected_Terminate(WotList)
+    else
+      Result := False;
   end;
 end;
 
