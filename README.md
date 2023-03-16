@@ -8,32 +8,39 @@ This project provides several ways to use it features:
 * C# assembly
 * InnoSetup script
 
-## Feature matrix
+## Example
 
-| Function                       | C    | C#                   | InnoSetup |
-| ------------------------------ | ---- | -------------------- | --------- |
-| BwXML::Unpack                  | ✅    | ✅                    | ✅         |
-| JSON::ContainsKey              | ✅    | ❌                    | ✅         |
-| JSON::GetValue                 | ✅    | ❌                    | ✅         |
-| JSON::SetValueBool             | ✅    | ❌                    | ✅         |
-| JSON::SetValueObj              | ✅    | ❌                    | ✅         |
-| JSON::GetNamesAndValues        | ✅    | ❌                    | ✅         |
-| JSON::GetNamesAndValues_S      | ✅    | ❌                    | ✅         |
-| JSON::GetArrayValue_S          | ✅    | ❌                    | ✅         |
-| ImageDraw::PngToBmp            | ✅    | ❌                    | ✅         |
-| Process::GetRunningInDirectory | ✅    | ✅                    | ✅         |
-| Process::TerminateProcess      | ✅    | ✅                    | ✅         |
-| SplashScreen::ShowSplashScreen | ✅    | ✅                    | ✅         |
-| Wine::IsRunningUnder           | 🐍    | 🐍                    | 🐍         |
-| WOT::AddClient                 | ✅    | ❌                    | ✅         |
-| WOT::GetPreferredClientPath    | ✅    | ✅                    | ✅         |
-| WOT::GetClientsCount           | ✅    | ✅                    | ✅         |
-| WOT::GetClientBranch           | ✅    | ✅                    | ✅         |
-| WOT::GetClientType             | ✅    | ✅                    | ✅         |
-| WOT::GetClientWgcFlavour       | ✅    | ❌                    | ✅         |
-| WOT::GetClientLocale           | ✅    | ✅                    | ✅         |
-| WOT::GetClientPath             | ✅    | ✅                    | ✅         |
-| WOT::GetClientVersion          | ✅    | ✅                    | ✅         |
-| WOT::GetClientExeVersion       | ✅    | ✅                    | ✅         |
-| WOT::GetIdsRangeForRegion      | ❌    | ✅                    | ❌         |
-| WOT::GetRegionFromString       | ❌    | ✅                    | ❌         |
+### Json
+
+InnoSetup code
+
+```pascal
+procedure TestJson;
+var
+  Handle: Integer;
+begin
+  Handle := JSON_FileOpen('meow.json', True);
+  if Handle <> 0 then
+  begin
+     JSON_SetBool(Handle,'/meow',True);  // must start with /
+     JSON_SetBool(Handle,'/gaw', False);
+     JSON_SetBool(Handle,'/krya/krya/krya', False);
+     JSON_FileClose(Handle);             // save changes to the file and close it, 
+                                         // after JSON_FileClose() the file handle is not valid anymore
+  end
+end;
+```
+
+Result
+
+```json
+{
+    "gaw": false,
+    "krya": {
+        "krya": {
+            "krya": false
+        }
+    },
+    "meow": true
+}
+```
