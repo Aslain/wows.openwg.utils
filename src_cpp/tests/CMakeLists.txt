@@ -5,6 +5,7 @@
 add_executable(openwg.utils.test)
 
 target_sources(openwg.utils.test PRIVATE
+    test_json.cpp
     test_string.cpp
 )
 

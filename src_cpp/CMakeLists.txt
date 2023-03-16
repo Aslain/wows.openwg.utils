@@ -52,6 +52,12 @@ CPMAddPackage(
     "PUGIXML_STATIC_CRT ON"
 )
 
+# Nlohmann
+CPMAddPackage(
+    NAME nlohmann_json
+    GITHUB_REPOSITORY nlohmann/json
+    VERSION 3.11.2
+)
 
 # LodePNG
 add_library(lodepng STATIC
@@ -104,6 +110,7 @@ target_include_directories(openwg.utils PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT
 
 target_link_libraries(openwg.utils PRIVATE "Version" "Kernel32" "Psapi" "Shell32" "Advapi32" "Gdi32")
 target_link_libraries(openwg.utils PUBLIC jsoncpp)
+target_link_libraries(openwg.utils PUBLIC nlohmann_json::nlohmann_json)
 target_link_libraries(openwg.utils PUBLIC pugixml::pugixml)
 target_link_libraries(openwg.utils PUBLIC lodepng)
 target_link_libraries(openwg.utils PUBLIC stb)

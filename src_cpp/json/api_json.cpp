@@ -1,82 +1,46 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
-#include "api_json.h"
+#include <filesystem>
 
-#include "json_utils.h"
+#include "json/api_json.h"
+#include "json/json_utils.h"
 
-bool JSON_ContainsKeyW(const wchar_t* json, const wchar_t* path)
-{
-    return JsonUtils::ContainsKey(json, path);
+using namespace OpenWG::Utils;
+
+
+void *JSON_FileOpenW(const wchar_t *path, bool allow_creation) {
+    void *result = nullptr;
+
+    if(path != nullptr) {
+        auto filepath = std::filesystem::path(path);
+        if (std::filesystem::exists(filepath) || allow_creation) {
+            result = new JSON::Json(filepath);
+        }
+    }
+
+    return result;
 }
 
-void JSON_GetValueW(const wchar_t* json, const wchar_t* path, wchar_t* output, unsigned int output_size)
-{
-    if (output_size <= 0)
-        return;
-    output[0] = L'\0';
+bool JSON_FileClose(void *object) {
+    bool result = false;
 
-    std::wstring val = JsonUtils::GetValue(json, path);
+    if (object) {
+        auto *obj = reinterpret_cast<JSON::Json *>(object);
+        result = obj->Save();
+        delete obj;
+    }
 
-    if(val.empty())
-        return;
-
-    wcscpy_s(output, output_size, val.c_str());
+    return result;
 }
 
-void JSON_SetValueBoolW(const wchar_t* file_name, const wchar_t* path, const bool value)
-{
-    JsonUtils::SetValueBool(file_name, path, value);
-}
+bool JSON_SetBoolW(void *object, const wchar_t *path, bool value) {
+    bool result = false;
 
+    if (object && path) {
+        auto *obj = reinterpret_cast<JSON::Json *>(object);
+        result = obj->SetBool(path, value);
+    }
 
-void JSON_SetValueObjW(const wchar_t* file_name, const wchar_t* json, bool is_add)
-{
-    JsonUtils::SetValueObj(file_name, json, is_add);
-}
-
-void JSON_GetNamesAndValuesW(const wchar_t* file_name, const wchar_t* path, wchar_t* names, wchar_t* values, unsigned int output_size)
-{
-    if (output_size <= 0)
-        return;
-    names[0] = L'\0';
-    values[0] = L'\0';
-
-    std::pair<std::wstring, std::wstring> val = JsonUtils::GetNamesAndValues(file_name, path);
-
-    if (val.first.empty())
-        return;
-
-    wcscpy_s(names, output_size, val.first.c_str());
-    wcscpy_s(values, output_size, val.second.c_str());
-}
-
-void JSON_GetNamesAndValuesW_S(const wchar_t* json, wchar_t* names, wchar_t* values, unsigned int output_size)
-{
-    if (output_size <= 0)
-        return;
-    names[0] = L'\0';
-    values[0] = L'\0';
-
-    std::pair<std::wstring, std::wstring> val = JsonUtils::GetNamesAndValues(json);
-
-    if (val.first.empty())
-        return;
-
-    wcscpy_s(names, output_size, val.first.c_str());
-    wcscpy_s(values, output_size, val.second.c_str());
-}
-
-void JSON_GetArrayValueW_S(const wchar_t* json, wchar_t* output, unsigned int output_size)
-{
-    if (output_size <= 0)
-        return;
-    output[0] = L'\0';
-
-    std::wstring val = JsonUtils::GetArrayValue(json);
-
-    if (val.empty())
-        return;
-
-    wcscpy_s(output, output_size, val.c_str());
+    return result;
 }
