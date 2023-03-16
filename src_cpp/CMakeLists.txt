@@ -28,7 +28,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 CPMAddPackage(
     NAME Catch2
     GITHUB_REPOSITORY catchorg/Catch2
-    VERSION 3.1.1
+    VERSION 3.3.2
 )
 
 # JSON CPP
@@ -82,6 +82,8 @@ file(GLOB srcs CONFIGURE_DEPENDS
         "imagedraw/*.h"
         "json/*.cpp"
         "json/*.h"
+        "json_old/*.cpp"
+        "json_old/*.h"
         "process/*.cpp"
         "process/*.h"
         "splashscreen/*.cpp"
