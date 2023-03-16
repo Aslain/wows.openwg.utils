@@ -48,7 +48,7 @@ namespace OpenWG::Utils::Common {
         std::wstring GetFileContent(const std::wstring &filepath) {
             std::wstring content;
 
-            std::wifstream in(filepath, std::wifstream::in);
+            std::wifstream in(std::filesystem::path(filepath), std::wifstream::in);
             if (!in.is_open()) {
                 return std::wstring();
             }

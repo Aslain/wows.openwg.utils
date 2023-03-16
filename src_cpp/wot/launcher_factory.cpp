@@ -1,3 +1,5 @@
+#include <optional>
+
 #include "common/filesystem.h"
 #include "wot/launcher_factory.h"
 #include "wot/launcher_standalone.h"

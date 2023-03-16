@@ -4,6 +4,8 @@
 #define STBI_WINDOWS_UTF8
 #include <stb_image.h>
 
+#include <thread>
+
 #include "splashscreen/splashscreen.h"
 
 
@@ -57,7 +59,9 @@ namespace OpenWG::Utils::Splashscreen {
         int image_width = 0, image_height = 0, channels = 0;
 
         char buffer[500]{};
+#if defined(_MSC_VER)
         stbi_convert_wchar_to_utf8(buffer, sizeof(buffer), path.wstring().c_str());
+#endif
 
         unsigned char *data = stbi_load(buffer, &image_width, &image_height, &channels, 4);
         if (!data) {
