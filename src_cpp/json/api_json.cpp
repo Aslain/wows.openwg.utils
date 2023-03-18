@@ -9,7 +9,7 @@
 using namespace OpenWG::Utils;
 
 
-void *JSON_FileOpenW(const wchar_t *path, bool allow_creation) {
+void *JSON_OpenFileW(const wchar_t *path, bool allow_creation) {
     void *result = nullptr;
 
     if(path != nullptr) {
@@ -22,13 +22,23 @@ void *JSON_FileOpenW(const wchar_t *path, bool allow_creation) {
     return result;
 }
 
-bool JSON_FileClose(void *object) {
+void *__cdecl JSON_OpenStringW(const wchar_t* value) {
+    void *result = nullptr;
+
+    if (value != nullptr) {
+        result = new JSON::Json(value);
+    }
+
+    return result;
+}
+
+bool JSON_Close(void *object) {
     bool result = false;
 
     if (object) {
         auto *obj = reinterpret_cast<JSON::Json *>(object);
-        result = obj->Save();
         delete obj;
+        result = true;
     }
 
     return result;

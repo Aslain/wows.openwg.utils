@@ -18,6 +18,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE STRING "MSVC Runtime Library")
 
 
 #
@@ -66,7 +67,6 @@ add_library(lodepng STATIC
   3rdparty/lodepng/lodepng.cpp
   3rdparty/lodepng/lodepng.h
 )
-set_target_properties(lodepng PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 target_include_directories(lodepng PUBLIC 3rdparty/lodepng)
 
 # STB

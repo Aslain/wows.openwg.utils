@@ -10,6 +10,7 @@
 namespace OpenWG::Utils::JSON {
     class Json {
     public:
+        explicit Json(const wchar_t* value);
         explicit Json(const std::filesystem::path& path);
         ~Json();
 

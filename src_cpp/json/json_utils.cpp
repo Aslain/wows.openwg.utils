@@ -15,8 +15,16 @@ namespace OpenWG::Utils::JSON {
         }
     }
 
-    Json::~Json() {
+    Json::Json(const wchar_t *value) {
+        if (value) {
+            auto value_u8 = Encoding::wstring_to_utf8(value);
+            std::stringstream stream(value_u8);
+            stream >> m_json;
+        }
+    }
 
+    Json::~Json() {
+        Save();
     }
 
     bool Json::Save() {
@@ -48,10 +56,16 @@ namespace OpenWG::Utils::JSON {
             node = &(*node)[token_u8];
         }
 
-        (*node)[Encoding::wstring_to_utf8(tokens.back())] = value;
+        auto name_u8 = Encoding::wstring_to_utf8(tokens.back());
+        if(node->isMember(name_u8)){
+            auto val_copy = value;
+            (*node)[name_u8].swapPayload(val_copy);
+        }
+        else {
+            (*node)[name_u8] = value;
+        }
 
         result = true;
         return result;
     }
-
 }

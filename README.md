@@ -19,14 +19,14 @@ procedure TestJson;
 var
   Handle: Integer;
 begin
-  Handle := JSON_FileOpen('meow.json', True);
+  Handle := JSON_OpenFile('meow.json', True);
   if Handle <> 0 then
   begin
      JSON_SetBool(Handle,'/meow',True);             // must start with /
      JSON_SetDouble(Handle,'/gaw', 1.3);
      JSON_SetInteger(Handle,'/krya/krya/krya', 42);
      JSON_SetString(Handle,'/chyk/chyryk', 'aaa');
-     JSON_FileClose(Handle);                        // save changes to the file and close it, 
+     JSON_Close(Handle);                            // save changes to the file and close it, 
                                                     // after JSON_FileClose() the file handle is not valid anymore
   end
 end;
