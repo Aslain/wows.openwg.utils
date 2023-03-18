@@ -44,3 +44,36 @@ bool JSON_SetBoolW(void *object, const wchar_t *path, bool value) {
 
     return result;
 }
+
+bool JSON_SetDoubleW(void *object, const wchar_t *path, double value) {
+    bool result = false;
+
+    if (object && path) {
+        auto *obj = reinterpret_cast<JSON::Json *>(object);
+        result = obj->SetDouble(path, value);
+    }
+
+    return result;
+}
+
+bool JSON_SetIntegerW(void *object, const wchar_t *path, int32_t value) {
+    bool result = false;
+
+    if (object && path) {
+        auto *obj = reinterpret_cast<JSON::Json *>(object);
+        result = obj->SetInteger(path, value);
+    }
+
+    return result;
+}
+
+bool JSON_SetStringW(void *object, const wchar_t *path, const wchar_t* value) {
+    bool result = false;
+
+    if (object && path && value) {
+        auto *obj = reinterpret_cast<JSON::Json *>(object);
+        result = obj->SetString(path, value);
+    }
+
+    return result;
+}

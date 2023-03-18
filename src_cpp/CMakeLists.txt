@@ -32,14 +32,23 @@ CPMAddPackage(
 )
 
 # JSON CPP
-add_library(jsoncpp STATIC
-  3rdparty/jsoncpp/src/lib_json/json_reader.cpp
-  3rdparty/jsoncpp/src/lib_json/json_tool.h
-  3rdparty/jsoncpp/src/lib_json/json_value.cpp
-  3rdparty/jsoncpp/src/lib_json/json_writer.cpp
+CPMAddPackage(
+    NAME JsonCpp
+    GITLAB_REPOSITORY xvm/xvm-3rdparty/jsoncpp
+    VERSION 1.9.5
+    OPTIONS
+        "JSONCPP_WITH_TESTS OFF"
+        "JSONCPP_WITH_POST_BUILD_UNITTEST OFF"
+        "JSONCPP_WITH_WARNING_AS_ERROR OFF"
+        "JSONCPP_WITH_STRICT_ISO OFF"
+        "JSONCPP_WITH_PKGCONFIG_SUPPORT OFF"
+        "JSONCPP_WITH_CMAKE_PACKAGE OFF"
+        "JSONCPP_WITH_EXAMPLE OFF"
+        "JSONCPP_STATIC_WINDOWS_RUNTIME ON"
+        "BUILD_SHARED_LIBS OFF"
+        "BUILD_STATIC_LIBS ON"
+        "BUILD_OBJECT_LIBS OFF"
 )
-set_target_properties(jsoncpp PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-target_include_directories(jsoncpp PUBLIC 3rdparty/jsoncpp/include)
 
 # PugiXML
 CPMAddPackage(
@@ -50,13 +59,6 @@ CPMAddPackage(
     "BUILD_SHARED_LIBS OFF"
     "PUGIXML_WCHAR_MODE ON"
     "PUGIXML_STATIC_CRT ON"
-)
-
-# Nlohmann
-CPMAddPackage(
-    NAME nlohmann_json
-    GITHUB_REPOSITORY nlohmann/json
-    VERSION 3.11.2
 )
 
 # LodePNG
@@ -109,8 +111,7 @@ target_sources(openwg.utils PRIVATE dllmain.rc)
 target_include_directories(openwg.utils PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 
 target_link_libraries(openwg.utils PRIVATE "Version" "Kernel32" "Psapi" "Shell32" "Advapi32" "Gdi32")
-target_link_libraries(openwg.utils PUBLIC jsoncpp)
-target_link_libraries(openwg.utils PUBLIC nlohmann_json::nlohmann_json)
+target_link_libraries(openwg.utils PUBLIC jsoncpp_static)
 target_link_libraries(openwg.utils PUBLIC pugixml::pugixml)
 target_link_libraries(openwg.utils PUBLIC lodepng)
 target_link_libraries(openwg.utils PUBLIC stb)

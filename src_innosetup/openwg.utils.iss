@@ -127,6 +127,54 @@ begin
 end;
 
 
+// Json/SetDouble
+function JSON_SetDoubleW_I(Handle: Integer; Path: String; Value: Double): Boolean;
+external 'JSON_SetDoubleW@files:openwg.utils.dll cdecl setuponly';
+
+function JSON_SetDoubleW_U(Handle: Integer; Path: String; Value: Double): Boolean;
+external 'JSON_SetDoubleW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function JSON_SetDouble(Handle: Integer; Path: String; Value: Double): Boolean;
+begin
+    if IsUninstaller() then
+        Result := JSON_SetDoubleW_U(Handle, Path, Value)
+    else
+        Result := JSON_SetDoubleW_I(Handle, Path, Value)
+end;
+
+
+// Json/SetInteger
+function JSON_SetIntegerW_I(Handle: Integer; Path: String; Value: Integer): Boolean;
+external 'JSON_SetIntegerW@files:openwg.utils.dll cdecl setuponly';
+
+function JSON_SetIntegerW_U(Handle: Integer; Path: String; Value: Integer): Boolean;
+external 'JSON_SetIntegerW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function JSON_SetInteger(Handle: Integer; Path: String; Value: Integer): Boolean;
+begin
+    if IsUninstaller() then
+        Result := JSON_SetIntegerW_U(Handle, Path, Value)
+    else
+        Result := JSON_SetIntegerW_I(Handle, Path, Value)
+end;
+
+
+// Json/SetString
+function JSON_SetStringW_I(Handle: Integer; Path: String; Value: String): Boolean;
+external 'JSON_SetStringW@files:openwg.utils.dll cdecl setuponly';
+
+function JSON_SetStringW_U(Handle: Integer; Path: String; Value: String): Boolean;
+external 'JSON_SetStringW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function JSON_SetString(Handle: Integer; Path: String; Value: String): Boolean;
+begin
+    if IsUninstaller() then
+        Result := JSON_SetStringW_U(Handle, Path, Value)
+    else
+        Result := JSON_SetStringW_I(Handle, Path, Value)
+end;
+
+
 // JSON_OLD/ContainsKeyW
 function JSON_OLD_ContainsKeyW_I(JSON: String; Path: String): Boolean;
 external 'JSON_OLD_ContainsKeyW@files:openwg.utils.dll cdecl setuponly';
