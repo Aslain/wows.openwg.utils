@@ -7,7 +7,7 @@
 #include <io.h>
 #include <fcntl.h>
 
-#include "module_wot/api_wot.h"
+#include "wot/api_wot.h"
 
 std::wstring describe_client_branch(int32_t branch){
     switch(branch) {
@@ -65,7 +65,7 @@ int main() {
 
     wchar_t buffer[1024]{};
 
-    std::wstring version_pattern{L"1.18.1.*"};
+    std::wstring version_pattern{L"1.21.1.*"};
 
     //WOT_LauncherSetDefault(Launcher_Flavour_Standalone);
 
