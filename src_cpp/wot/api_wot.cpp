@@ -38,7 +38,7 @@ void clients_rescan() {
         for (auto &client: launcher->GetClients()) {
             bool exists = false;
             for (auto &client_existing: g_clients) {
-                if (client_existing->GetPath() == client->GetPath()) {
+                if (std::filesystem::equivalent(client_existing->GetPath(), client->GetPath())) {
                     exists = true;
                     break;
                 }
