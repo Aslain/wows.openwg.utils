@@ -1,6 +1,3 @@
 [submodule "src_cpp/3rdparty/lodepng"]
 	path = src_cpp/3rdparty/lodepng
 	url = https://github.com/lvandeve/lodepng
-[submodule "src_cpp/3rdparty/stb"]
-	path = src_cpp/3rdparty/stb
-	url = https://github.com/nothings/stb
