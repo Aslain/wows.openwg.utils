@@ -48,8 +48,6 @@ file(GLOB srcs CONFIGURE_DEPENDS
         "imagedraw/*.h"
         "json/*.cpp"
         "json/*.h"
-        "json_old/*.cpp"
-        "json_old/*.h"
         "process/*.cpp"
         "process/*.h"
         "splashscreen/*.cpp"
