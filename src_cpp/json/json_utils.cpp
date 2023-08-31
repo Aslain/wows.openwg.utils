@@ -19,6 +19,9 @@ namespace OpenWG::Utils::JSON {
     Json::Json(const wchar_t *value) {
         if (value) {
             auto value_u8 = Encoding::wstring_to_utf8(value);
+            if(!value_u8.starts_with('{')) {
+                value_u8 = '{' + value_u8 + '}';
+            }
             std::stringstream stream(value_u8);
             stream >> m_json;
         }
@@ -58,6 +61,7 @@ namespace OpenWG::Utils::JSON {
         if(node.isNull()) {
             return {};
         }
+
         return Encoding::utf8_to_wstring(node.asString());
     }
 

@@ -79,7 +79,7 @@ begin
 end;
 
 
-// JSON/FileOpen
+// JSON/OpenFile
 function JSON_OpenFileW_I(Path: String; AllowCreation: Boolean): Integer;
 external 'JSON_OpenFileW@files:openwg.utils.dll cdecl setuponly';
 
@@ -95,7 +95,24 @@ begin
 end;
 
 
-// Json/FileClose
+// JSON/OpenString
+function JSON_OpenStringW_I(Text: String): Integer;
+external 'JSON_OpenStringW@files:openwg.utils.dll cdecl setuponly';
+
+function JSON_OpenStringW_U(Text: String): Integer;
+external 'JSON_OpenStringW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function JSON_OpenString(Text: String): Integer;
+begin
+    if IsUninstaller() then
+        Result := JSON_OpenStringW_U(Text)
+    else
+        Result := JSON_OpenStringW_I(Text)
+end;
+
+
+
+// Json/Close
 function JSON_Close_I(Handle: Integer): Boolean;
 external 'JSON_Close@files:openwg.utils.dll cdecl setuponly';
 

@@ -14,7 +14,7 @@
 
 
 
-TEST_CASE( "json_open", "[json]" ) {
+TEST_CASE( "json_open_file", "[json]" ) {
     SECTION("nullptr"){
         REQUIRE_FALSE(JSON_OpenFileW(nullptr, false));
         REQUIRE_FALSE(JSON_OpenFileW(nullptr, true));
@@ -71,6 +71,25 @@ TEST_CASE( "json_open", "[json]" ) {
 
         REQUIRE(str.contains("//"));
 
+    }
+}
+
+
+TEST_CASE( "json_open_string", "[json]"){
+    SECTION("nullptr"){
+        REQUIRE_FALSE(JSON_OpenStringW(nullptr));
+    }
+
+    SECTION("brackets"){
+        auto* ptr = JSON_OpenStringW(L"{\"meow\":\"meow\"}");
+        REQUIRE(JSON_ContainsKeyW(ptr, L"meow"));
+        REQUIRE(JSON_Close(ptr));
+    }
+
+    SECTION("no_brackets"){
+        auto* ptr = JSON_OpenStringW(L"\"meow\":\"meow\"");
+        REQUIRE(JSON_ContainsKeyW(ptr, L"meow"));
+        REQUIRE(JSON_Close(ptr));
     }
 }
 
