@@ -74,6 +74,49 @@ TEST_CASE( "json_open", "[json]" ) {
     }
 }
 
+
+TEST_CASE( "json_contains_key", "[json]"){
+    SECTION("nullptr") {
+        REQUIRE_FALSE(JSON_ContainsKeyW(nullptr, L"meow"));
+        REQUIRE_FALSE(JSON_ContainsKeyW(reinterpret_cast<void*>(0x1234), nullptr));
+    }
+
+    SECTION("level_1") {
+        auto *ptr = JSON_OpenStringW(L"{\"meow\":\"meow\"}");
+        REQUIRE(JSON_ContainsKeyW(ptr, L"meow"));
+        REQUIRE_FALSE(JSON_ContainsKeyW(ptr, L"moo"));
+        REQUIRE(JSON_Close(ptr));
+    }
+
+    SECTION("level_2"){
+        auto *ptr = JSON_OpenStringW(L"{\"meow\": { \"gaw\" : 1 }}");
+        REQUIRE(JSON_ContainsKeyW(ptr, L"meow/gaw"));
+        REQUIRE_FALSE(JSON_ContainsKeyW(ptr, L"moo"));
+        REQUIRE_FALSE(JSON_ContainsKeyW(ptr, L"meew/meow/"));
+        REQUIRE_FALSE(JSON_ContainsKeyW(ptr, L"meew/gaw/moo"));
+        REQUIRE(JSON_Close(ptr));
+    }
+}
+
+TEST_CASE( "json_get_string", "[json]"){
+    SECTION("nullptr") {
+        REQUIRE_FALSE(JSON_GetStringW(nullptr, nullptr, nullptr, 0));
+        REQUIRE_FALSE(JSON_GetStringW(nullptr, reinterpret_cast<wchar_t*>(0x1234), reinterpret_cast<wchar_t *>(0x1234),  1));
+        REQUIRE_FALSE(JSON_GetStringW(reinterpret_cast<void*>(0x1234), nullptr, reinterpret_cast<wchar_t *>(0x1234),  1));
+        REQUIRE_FALSE(JSON_GetStringW(reinterpret_cast<void*>(0x1234), reinterpret_cast<wchar_t *>(0x1234), nullptr, 1));
+        REQUIRE_FALSE(JSON_GetStringW(reinterpret_cast<void*>(0x1234), reinterpret_cast<wchar_t*>(0x1234), reinterpret_cast<wchar_t *>(0x1234),  0));
+    }
+
+    SECTION("level_1") {
+        auto *ptr = JSON_OpenStringW(L"{\"meow\":\"meow\"}");
+        wchar_t buf[256]{};
+
+        REQUIRE_FALSE(JSON_GetStringW(ptr, L"gaw", buf, sizeof(buf)));
+        REQUIRE(JSON_GetStringW(ptr, L"meow", buf, sizeof(buf)));
+        REQUIRE(wcscmp(buf, L"meow") == 0);
+    }
+}
+
 TEST_CASE( "json_set_bool", "[json]" ) {
     SECTION("nullptr") {
         REQUIRE_FALSE(JSON_SetBoolW(nullptr, L"meow", true));

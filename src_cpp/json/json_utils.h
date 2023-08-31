@@ -1,11 +1,17 @@
 #pragma once
 
-#include "common/encoding.h"
+// stdlib
+#include <cstdint>
 #include <filesystem>
-#include <stdint.h>
+#include <optional>
 #include <string>
 
+// jsoncpp
 #include <json/json.h>
+
+// OpenWG
+#include "common/encoding.h"
+
 
 namespace OpenWG::Utils::JSON {
     class Json {
@@ -13,6 +19,10 @@ namespace OpenWG::Utils::JSON {
         explicit Json(const wchar_t* value);
         explicit Json(const std::filesystem::path& path);
         ~Json();
+
+        bool ContainsKey(const std::wstring& path);
+
+        std::optional<std::wstring> GetString(const std::wstring& path);
 
         bool SetValue(const std::wstring& path, const ::Json::Value& value);
 

@@ -7,6 +7,7 @@
 #include "string/string.h"
 
 namespace OpenWG::Utils::JSON {
+
     Json::Json(const std::filesystem::path &path) {
         m_path = path;
         if (std::filesystem::exists(path)) {
@@ -25,6 +26,39 @@ namespace OpenWG::Utils::JSON {
 
     Json::~Json() {
         Save();
+    }
+
+    bool Json::ContainsKey(const std::wstring &path) {
+        auto node = m_json;
+
+        try {
+            for (const auto &token: String::Split(Encoding::wstring_to_utf8(path), '/')) {
+                node = node[token.c_str()];
+            }
+        }
+        catch (::Json::LogicError &) {
+            return false;
+        }
+
+        return !node.isNull();
+    }
+
+    std::optional<std::wstring> Json::GetString(const std::wstring &path) {
+        auto node = m_json;
+
+        try {
+            for (const auto &token: String::Split(Encoding::wstring_to_utf8(path), '/')) {
+                node = node[token.c_str()];
+            }
+        }
+        catch (::Json::LogicError &) {
+            return {};
+        }
+
+        if(node.isNull()) {
+            return {};
+        }
+        return Encoding::utf8_to_wstring(node.asString());
     }
 
     bool Json::Save() {
@@ -68,4 +102,5 @@ namespace OpenWG::Utils::JSON {
         result = true;
         return result;
     }
+
 }

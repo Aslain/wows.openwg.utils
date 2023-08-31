@@ -15,6 +15,10 @@ XVMEXT_API_CALL void *__cdecl JSON_OpenStringW(const wchar_t* value);
 
 XVMEXT_API_CALL bool __cdecl JSON_Close(void *object);
 
+XVMEXT_API_CALL bool __cdecl JSON_ContainsKeyW(_In_ void *object, _In_ const wchar_t *path);
+
+XVMEXT_API_CALL bool __cdecl JSON_GetStringW(_In_ void *object, _In_ const wchar_t *path, _Out_ wchar_t* output, _In_ uint32_t output_size);
+
 XVMEXT_API_CALL bool __cdecl JSON_SetBoolW(_In_ void *object, _In_ const wchar_t *path, bool value);
 
 XVMEXT_API_CALL bool __cdecl JSON_SetDoubleW(_In_ void *object, _In_ const wchar_t *path, _In_ double value);

@@ -111,6 +111,44 @@ begin
 end;
 
 
+// Json/ContainsKey
+function JSON_ContainsKeyW_I(Handle: Integer; Path: String): Boolean;
+external 'JSON_ContainsKeyW@files:openwg.utils.dll cdecl setuponly';
+
+function JSON_ContainsKeyW_U(Handle: Integer; Path: String): Boolean;
+external 'JSON_ContainsKeyW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function JSON_ContainsKey(Handle: Integer; Path: String): Boolean;
+begin
+    if IsUninstaller() then
+        Result := JSON_ContainsKeyW_U(Handle, Path)
+    else
+        Result := JSON_ContainsKeyW_I(Handle, Path)
+end;
+
+
+// Json/GetString
+procedure JSON_GetStringW_I(Handle: Integer; Path: String; Output: String; OutputSize: Integer);
+external 'JSON_GetStringW@files:openwg.utils.dll cdecl setuponly';
+
+procedure JSON_GetStringW_U(Handle: Integer; Path: String; Output: String; OutputSize: Integer);
+external 'JSON_GetStringW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function JSON_GetString(Handle: Integer; Path: String): String;
+var
+    Buffer: String;
+begin
+    SetLength(Buffer, {#OPENWGUTILS_BUF_SIZE});
+
+    if IsUninstaller() then
+        JSON_GetStringW_U(Handle, Path, Buffer, {#OPENWGUTILS_BUF_SIZE})
+    else
+        JSON_GetStringW_I(Handle, Path, Buffer, {#OPENWGUTILS_BUF_SIZE});
+
+    Result := Copy(Buffer, 1, Pos(#0, Buffer)-1);
+end;
+
+
 // Json/SetBool
 function JSON_SetBoolW_I(Handle: Integer; Path: String; Value: Boolean): Boolean;
 external 'JSON_SetBoolW@files:openwg.utils.dll cdecl setuponly';
