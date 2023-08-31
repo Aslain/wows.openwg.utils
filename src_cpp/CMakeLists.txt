@@ -8,7 +8,7 @@
 cmake_minimum_required(VERSION 3.23)
 project(openwg.utils)
 
-include(cmake/CPM.cmake)
+include(cmake/cpm.cmake)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 #
@@ -25,53 +25,11 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE STR
 # Dependencies
 #
 
-# Catch2
-CPMAddPackage(
-    NAME Catch2
-    GITHUB_REPOSITORY catchorg/Catch2
-    VERSION 3.3.2
-)
-
-# JSON CPP
-CPMAddPackage(
-    NAME JsonCpp
-    GITLAB_REPOSITORY xvm/xvm-3rdparty/jsoncpp
-    VERSION 1.9.5
-    OPTIONS
-        "JSONCPP_WITH_TESTS OFF"
-        "JSONCPP_WITH_POST_BUILD_UNITTEST OFF"
-        "JSONCPP_WITH_WARNING_AS_ERROR OFF"
-        "JSONCPP_WITH_STRICT_ISO OFF"
-        "JSONCPP_WITH_PKGCONFIG_SUPPORT OFF"
-        "JSONCPP_WITH_CMAKE_PACKAGE OFF"
-        "JSONCPP_WITH_EXAMPLE OFF"
-        "JSONCPP_STATIC_WINDOWS_RUNTIME ON"
-        "BUILD_SHARED_LIBS OFF"
-        "BUILD_STATIC_LIBS ON"
-        "BUILD_OBJECT_LIBS OFF"
-)
-
-# PugiXML
-CPMAddPackage(
-  NAME pugixml
-  GITHUB_REPOSITORY zeux/pugixml
-  VERSION 1.13
-  OPTIONS
-    "BUILD_SHARED_LIBS OFF"
-    "PUGIXML_WCHAR_MODE ON"
-    "PUGIXML_STATIC_CRT ON"
-)
-
-# LodePNG
-add_library(lodepng STATIC
-  3rdparty/lodepng/lodepng.cpp
-  3rdparty/lodepng/lodepng.h
-)
-target_include_directories(lodepng PUBLIC 3rdparty/lodepng)
-
-# STB
-add_library(stb INTERFACE)
-target_include_directories(stb INTERFACE 3rdparty/stb)
+include(cmake/cpm-catch2.cmake)
+include(cmake/cpm-jsoncpp.cmake)
+include(cmake/cpm-lodepng.cmake)
+include(cmake/cpm-pugixml.cmake)
+include(cmake/cpm-stb.cmake)
 
 
 
