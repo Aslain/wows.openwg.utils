@@ -58,6 +58,8 @@ file(GLOB srcs CONFIGURE_DEPENDS
         "wine/*.h"
         "wot/*.cpp"
         "wot/*.h"
+        "wwise/*.cpp"
+        "wwise/*.h"
 )
 
 
