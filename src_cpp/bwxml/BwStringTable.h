@@ -28,7 +28,7 @@ public:
 
         while (true) {
             std::string str = stream.GetString();
-            if (str.size() == 0) {
+            if (str.empty()) {
                 break;
             }
 

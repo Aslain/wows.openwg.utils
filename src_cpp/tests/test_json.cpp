@@ -14,6 +14,10 @@
 
 
 
+//
+// Tests
+//
+
 TEST_CASE( "json_open_file", "[json]" ) {
     SECTION("nullptr"){
         REQUIRE_FALSE(JSON_OpenFileW(nullptr, false));
