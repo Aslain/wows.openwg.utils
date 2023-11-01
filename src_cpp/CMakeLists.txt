@@ -48,6 +48,8 @@ file(GLOB srcs CONFIGURE_DEPENDS
         "imagedraw/*.h"
         "json/*.cpp"
         "json/*.h"
+        "network/*.cpp"
+        "network/*.h"
         "process/*.cpp"
         "process/*.h"
         "splashscreen/*.cpp"
@@ -68,7 +70,7 @@ target_sources(openwg.utils PRIVATE dllmain.rc)
 
 target_include_directories(openwg.utils PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 
-target_link_libraries(openwg.utils PRIVATE "Version" "Kernel32" "Psapi" "Shell32" "Advapi32" "Gdi32")
+target_link_libraries(openwg.utils PRIVATE "Version" "Kernel32" "Psapi" "Shell32" "Advapi32" "Gdi32" "Iphlpapi" "Ws2_32")
 target_link_libraries(openwg.utils PUBLIC jsoncpp_static)
 target_link_libraries(openwg.utils PUBLIC pugixml::pugixml)
 target_link_libraries(openwg.utils PUBLIC lodepng)
