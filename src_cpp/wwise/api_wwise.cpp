@@ -104,3 +104,13 @@ bool WWISE_SaveFileW(void *object, const wchar_t *path) {
     auto *obj = reinterpret_cast<Bank *>(object);
     return path ? obj->Save(path) : obj->Save();
 }
+
+bool WWISE_BKHD_ProjectId_Set(void *object, uint32_t project_id) {
+    if (!object) {
+        return false;
+    }
+
+    auto *obj = reinterpret_cast<Bank *>(object);
+    obj->BKHD().SetProjectId(project_id);
+    return true;
+}

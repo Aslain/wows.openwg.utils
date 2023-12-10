@@ -23,7 +23,7 @@
 //
 
 namespace OpenWG::Utils::WWISE {
-    class XVMEXT_API_CALL Bank {
+    class Bank {
     public:
         bool Read(const std::filesystem::path &path);
 

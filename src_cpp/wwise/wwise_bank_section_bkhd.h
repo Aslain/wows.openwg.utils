@@ -19,7 +19,7 @@
 
 namespace OpenWG::Utils::WWISE {
 
-    class XVMEXT_API_CALL SectionBKHD {
+    class SectionBKHD {
     public:
         SectionBKHD() = default;
         SectionBKHD(std::fstream& stream, const SectionHeader& sectionBase);
@@ -41,6 +41,7 @@ namespace OpenWG::Utils::WWISE {
         [[nodiscard]] bool IsDecrypted() const;
 
         void SetBankId(const std::string& str);
+        void SetProjectId(uint32_t value);
 
     private:
         uint32_t dwBankGeneratorVersion;

@@ -43,6 +43,10 @@ namespace OpenWG::Utils::WWISE {
         dwSoundBankID = hash.Get();
     }
 
+    void SectionBKHD::SetProjectId(uint32_t value) {
+        dwProjectID = value;
+    }
+
     uint32_t SectionBKHD::GetLanguageId() const {
         return dwLanguageID;
     }
@@ -103,6 +107,4 @@ namespace OpenWG::Utils::WWISE {
     bool SectionBKHD::IsDecrypted() const {
         return dwBankGeneratorVersion == 0x87;
     }
-
-
 }
