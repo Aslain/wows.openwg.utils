@@ -44,6 +44,8 @@ file(GLOB srcs CONFIGURE_DEPENDS
         "common/*.h"
         "bwxml/*.cpp"
         "bwxml/*.h"
+        "fs/*.cpp"
+        "fs/*.h"
         "imagedraw/*.cpp"
         "imagedraw/*.h"
         "json/*.cpp"
