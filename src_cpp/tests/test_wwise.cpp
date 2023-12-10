@@ -5,16 +5,21 @@
 // Includes
 //
 
+// stdlib
+#include <filesystem>
+
+// catch2
 #include <catch2/catch_test_macros.hpp>
 
-#include <wwise/api_wwise.h>
-#include <wwise/wwise_bank.h>
-#include <wwise/wwise_utils.h>
+// openwg.utils
+#include "common/api_common.h"
+#include "fs/api_fs.h"
+#include "wwise/api_wwise.h"
 
-using namespace OpenWG::Utils::WWISE;
+
 
 //
-// WWISE_TEST
+// Tests
 //
 
 TEST_CASE("wwise_openclose"){
@@ -85,110 +90,46 @@ TEST_CASE("wwise_license_set"){
 
         std::filesystem::remove(std::filesystem::path(ASSETS_FOLDER) / "soundbank_license_wg_2.bnk");
     }
-}
 
-TEST_CASE( "wwise_bkhd", "[wwise]" ) {
-    SECTION("nolicense_empty"){
-        Bank bnk{};
-        bnk.Read(std::filesystem::path(std::filesystem::path(ASSETS_FOLDER) / "soundbank_license_no.bnk"));
-
-        auto& bkhd = bnk.BKHD();
-        REQUIRE(bkhd.GetVersion() == 0x87);
-        REQUIRE(bkhd.GetAlignment() == 16);
-        REQUIRE(bkhd.GetDeviceAllocated() == 0);
-        REQUIRE(bkhd.GetProjectId() == 0);
-
+    SECTION("lesta_license") {
+        SECTION("lesta->none")
         {
-            FNVHash32 hash{};
-            hash.Compute("new_soundbank", strlen("new_soundbank"));
-            REQUIRE(bkhd.GetBankId() == hash.Get());
+            auto ptr_lesta = WWISE_OpenFileW(std::filesystem::path(
+                    std::filesystem::path(ASSETS_FOLDER) / "u_lesta.bnk").wstring().c_str());
+            REQUIRE(ptr_lesta != nullptr);
+            REQUIRE(WWISE_LicenseGet(ptr_lesta) == WwiseLicense_Lesta);
+            REQUIRE(WWISE_LicenseSet(ptr_lesta, WwiseLicense_Unlicensed));
+            REQUIRE(WWISE_BKHD_ProjectId_Set(ptr_lesta, 0x0000));
+            REQUIRE(WWISE_SaveFileW(ptr_lesta, std::filesystem::path(
+                    std::filesystem::path(ASSETS_FOLDER) / "u_lesta_2.bnk").wstring().c_str()));
+
+            auto res = FS_File_IsEqualW(
+                    (std::filesystem::path(ASSETS_FOLDER) / "u_lesta_2.bnk").wstring().c_str(),
+                    (std::filesystem::path(ASSETS_FOLDER) / "u_none.bnk").wstring().c_str()
+            );
+
+            std::filesystem::remove(std::filesystem::path(ASSETS_FOLDER) / "u_lesta_2.bnk");
+            REQUIRE(res);
         }
 
+        SECTION("wg->none")
         {
-            REQUIRE(bkhd.GetLanguageId() == 0x17705d3e);
-        }
-    }
+            auto ptr_wg = WWISE_OpenFileW(std::filesystem::path(
+                    std::filesystem::path(ASSETS_FOLDER) / "u_wg.bnk").wstring().c_str());
+            REQUIRE(ptr_wg != nullptr);
+            REQUIRE(WWISE_LicenseGet(ptr_wg) == WwiseLicense_Wargaming);
+            REQUIRE(WWISE_LicenseSet(ptr_wg, WwiseLicense_Unlicensed));
+            REQUIRE(WWISE_BKHD_ProjectId_Set(ptr_wg, 0x0000));
+            REQUIRE(WWISE_SaveFileW(ptr_wg, std::filesystem::path(
+                    std::filesystem::path(ASSETS_FOLDER) / "u_wg_2.bnk").wstring().c_str()));
 
-    SECTION("wg_empty") {
-        Bank bnk{};
-        bnk.Read(std::filesystem::path(std::filesystem::path(ASSETS_FOLDER) / "soundbank_license_wg.bnk"));
+            auto res = FS_File_IsEqualW(
+                    (std::filesystem::path(ASSETS_FOLDER) / "u_wg_2.bnk").wstring().c_str(),
+                    (std::filesystem::path(ASSETS_FOLDER) / "u_none.bnk").wstring().c_str()
+                    );
 
-
-        auto& bkhd = bnk.BKHD();
-
-        License lic{};
-        lic.m_key[0] = 0xD2F5B297;
-        lic.m_key[1] = 0xC57DA87E;
-        lic.m_key[2] = 0xD10C0503;
-        lic.m_key[3] = 0x6B0403D4;
-
-        REQUIRE(bkhd.Decrypt(lic));
-
-        REQUIRE(bkhd.GetVersion() == 0x87);
-        REQUIRE(bkhd.GetAlignment() == 16);
-        REQUIRE(bkhd.GetDeviceAllocated() == 0);
-        REQUIRE(bkhd.GetProjectId() == 0x0F2E);
-
-        {
-            FNVHash32 hash{};
-            hash.Compute("new_soundbank", strlen("new_soundbank"));
-            REQUIRE(bkhd.GetBankId() == hash.Get());
-        }
-
-        {
-            REQUIRE(bkhd.GetLanguageId() == 0x17705d3e);
-        }
-    }
-
-    SECTION("wg_voiceover") {
-        Bank bnk{};
-        bnk.Read(std::filesystem::path(std::filesystem::path(ASSETS_FOLDER) / "voiceover_wg.bnk"));
-
-        auto& bkhd = bnk.BKHD();
-
-        License lic{};
-        lic.m_key[0] = 0xD2F5B297;
-        lic.m_key[1] = 0xC57DA87E;
-        lic.m_key[2] = 0xD10C0503;
-        lic.m_key[3] = 0x6B0403D4;
-
-        REQUIRE(bkhd.Decrypt(lic));
-
-        REQUIRE(bkhd.GetVersion() == 0x87);
-        REQUIRE(bkhd.GetAlignment() == 16);
-        REQUIRE(bkhd.GetDeviceAllocated() == 0);
-        REQUIRE(bkhd.GetProjectId() == 0x05AD);
-
-        {
-            FNVHash32 hash{};
-            hash.Compute("voiceover", strlen("voiceover"));
-            REQUIRE(bkhd.GetBankId() == hash.Get());
-        }
-
-        {
-            REQUIRE(bkhd.GetLanguageId() == 0x65fde48a);
-        }
-    }
-
-    SECTION("lesta_voiceover") {
-        Bank bnk{};
-        bnk.Read(std::filesystem::path(std::filesystem::path(ASSETS_FOLDER) / "voiceover_lesta.bnk"));
-
-        auto& bkhd = bnk.BKHD();
-
-        REQUIRE(bkhd.GetVersion() == 0x87);
-        REQUIRE(bkhd.GetAlignment() == 16);
-        REQUIRE(bkhd.GetDeviceAllocated() == 0);
-        REQUIRE(bkhd.GetProjectId() == 0x3741);
-
-        {
-            FNVHash32 hash{};
-            hash.Compute("voiceover", strlen("voiceover"));
-            REQUIRE(bkhd.GetBankId() == hash.Get());
-        }
-
-        {
-            REQUIRE(bkhd.GetLanguageId() == 0x686a6d9c);
+            std::filesystem::remove(std::filesystem::path(ASSETS_FOLDER) / "u_wg_2.bnk");
+            REQUIRE(res);
         }
     }
 }
