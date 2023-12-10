@@ -61,6 +61,7 @@ int main(int argc, char* argv[]) {
         WWISE_Close(wwise);
     }
 
+    std::cout << std::endl << "---" << std::endl << "press Enter to exit" << std::endl;
     std::cin.get();
     return 0;
 }
