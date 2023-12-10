@@ -6,10 +6,12 @@ add_executable(openwg.utils.test)
 
 target_sources(openwg.utils.test PRIVATE
     test_bwxml.cpp
+    test_fs.cpp
     test_json.cpp
     test_network.cpp
     test_string.cpp
     test_wwise.cpp
+    test_xml.cpp
 )
 
 target_compile_definitions(openwg.utils.test PRIVATE "ASSETS_FOLDER=\"${CMAKE_CURRENT_SOURCE_DIR}/assets/\"")

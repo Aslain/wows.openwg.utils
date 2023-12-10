@@ -79,6 +79,9 @@ begin
 end;
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 // JSON/OpenFile
 function JSON_OpenFileW_I(Path: String; AllowCreation: Boolean): Integer;
 external 'JSON_OpenFileW@files:openwg.utils.dll cdecl setuponly';
@@ -230,6 +233,43 @@ begin
 end;
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// FS/FileExists
+function FS_FileExists_I(Path: String): Integer;
+external 'FS_FileExistsW@files:openwg.utils.dll cdecl setuponly';
+
+function FS_FileExists_U(Path: String): Integer;
+external 'FS_FileExistsW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function FS_FileExists(Path: String): Integer;
+begin
+    if IsUninstaller() then
+        Result := FS_FileExists_U(Path)
+    else
+        Result := FS_FileExists_I(Path)
+end;
+
+
+// FS/FileEqual
+function FS_FileEqual_I(Path1: String; Path2: String): Integer;
+external 'FS_FileEqualW@files:openwg.utils.dll cdecl setuponly';
+
+function FS_FileEqual_U(Path1: String; Path2: String): Integer;
+external 'FS_FileEqualW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function FS_FileEqual(Path1: String; Path2: String): Integer;
+begin
+    if IsUninstaller() then
+        Result := FS_FileEqual_U(Path1, Path2)
+    else
+        Result := FS_FileEqual_I(Path1, Path2)
+end;
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 // IMAGEDRAW/PngToBmp
 procedure IMAGEDRAW_PngToBmp_I(FileName: String);
@@ -245,6 +285,9 @@ begin
     else
         IMAGEDRAW_PngToBmp_I(FileName)
 end;
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 // Network/Ping
@@ -279,6 +322,9 @@ begin
 end;
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 // PROCESS/GetRunningInDirectoryW
 function PROCESS_GetRunningInDirectoryW_I(DirectoryPth: String; Buffer: String; BufferSize: Integer): Integer;
 external 'PROCESS_GetRunningInDirectoryW@files:openwg.utils.dll cdecl setuponly';
@@ -311,6 +357,9 @@ begin
 end;
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 //SPLASHSCREEN/ShowSplashScreenW
 function SPLASHSCREEN_ShowSplashScreenW_I(FileName: String; SecondsToShow: Integer): Integer;
 external 'SPLASHSCREEN_ShowSplashScreenW@files:openwg.utils.dll cdecl setuponly';
@@ -327,7 +376,10 @@ begin
 end;
 
 
-//STRING/ReplaceRegex
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// STRING/ReplaceRegex
 function STRING_ReplaceRegex_I(Input: String; Search: String; Replace: String; Output: String; BufferSize: Integer): Integer;
 external 'STRING_ReplaceRegex@files:openwg.utils.dll cdecl setuponly';
 
@@ -370,6 +422,9 @@ begin
 end;
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 // WINE/IsRunningUnder
 function WINE_IsRunningUnder_I(): Boolean;
 external 'WINE_IsRunningUnder@files:openwg.utils.dll cdecl setuponly';
@@ -384,6 +439,9 @@ begin
     else
         Result := WINE_IsRunningUnder_I()
 end;
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 // WOT/AddClientW
@@ -732,6 +790,8 @@ begin
 end;
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 // WWISE/OpenFile
 function WWISE_OpenFileW_I(Path: String): Integer;
@@ -813,6 +873,105 @@ begin
         Result := WWISE_SaveFileW_U(Handle, Path)
     else
         Result := WWISE_SaveFileW_I(Handle, Path)
+end;
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// XML/AddKey
+function XML_AddKey_I(Handle: Integer; Path: String; Name: String; Value: String): Boolean;
+external 'XML_AddKeyW@files:openwg.utils.dll cdecl setuponly';
+
+function XML_AddKey_U(Handle: Integer; Path: String; Name: String; Value: String): Boolean;
+external 'XML_AddKeyW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function XML_AddKey(Handle: Integer; Path: String; Name: String; Value: String): Boolean;
+begin
+    if IsUninstaller() then
+        Result := XML_AddKey_U(Handle, Path, Name, Value)
+    else
+        Result := XML_AddKey_I(Handle, Path, Name, Value)
+end;
+
+
+// XML/Close
+function XML_Close_I(Handle: Integer): Boolean;
+external 'XML_Close@files:openwg.utils.dll cdecl setuponly';
+
+function XML_Close_U(Handle: Integer): Boolean;
+external 'XML_Close@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function XML_Close(Handle: Integer): Boolean;
+begin
+    if IsUninstaller() then
+        Result := XML_Close_U(Handle)
+    else
+        Result := XML_Close_I(Handle)
+end;
+
+
+// XML/ContainsKey
+function XML_ContainsKey_I(Handle: Integer; Path: String): Boolean;
+external 'XML_ContainsKeyW@files:openwg.utils.dll cdecl setuponly';
+
+function XML_ContainsKey_U(Handle: Integer; Path: String): Boolean;
+external 'XML_ContainsKeyW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function XML_ContainsKey(Handle: Integer; Path: String): Boolean;
+begin
+    if IsUninstaller() then
+        Result := XML_ContainsKey_U(Handle, Path)
+    else
+        Result := XML_ContainsKey_I(Handle, Path)
+end;
+
+
+// XML/ContainsKeyEx
+function XML_ContainsKeyEx_I(Handle: Integer; Path: String; Value: String): Boolean;
+external 'XML_ContainsKeyExW@files:openwg.utils.dll cdecl setuponly';
+
+function XML_ContainsKeyEx_U(Handle: Integer; Path: String; Value: String): Boolean;
+external 'XML_ContainsKeyExW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function XML_ContainsKeyEx(Handle: Integer; Path: String; Value: String): Boolean;
+begin
+    if IsUninstaller() then
+        Result := XML_ContainsKeyEx_U(Handle, Path, Value)
+    else
+        Result := XML_ContainsKeyEx_I(Handle, Path, Value)
+end;
+
+
+// XML/OpenFile
+function XML_OpenFileW_I(Path: String; AllowCreation: Boolean): Integer;
+external 'XML_OpenFileW@files:openwg.utils.dll cdecl setuponly';
+
+function XML_OpenFileW_U(Path: String; AllowCreation: Boolean): Integer;
+external 'XML_OpenFileW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function XML_OpenFile(Path: String; AllowCreation: Boolean): Integer;
+begin
+    if IsUninstaller() then
+        Result := XML_OpenFileW_U(Path, AllowCreation)
+    else
+        Result := XML_OpenFileW_I(Path, AllowCreation)
+end;
+
+
+// XML/SaveFile
+function XML_SaveFileW_I(Handle: Integer; Path: String): Boolean;
+external 'XML_SaveFileW@files:openwg.utils.dll cdecl setuponly';
+
+function XML_SaveFileW_U(Handle: Integer; Path: String): Boolean;
+external 'XML_SaveFileW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function XML_SaveFile(Handle: Integer; Path: String): Boolean;
+begin
+    if IsUninstaller() then
+        Result := XML_SaveFileW_U(Handle, Path)
+    else
+        Result := XML_SaveFileW_I(Handle, Path)
 end;
 
 

@@ -10,18 +10,18 @@
 namespace OpenWG::Utils {
     namespace Filesystem {
 
-        std::wstring GetExeVersion(const std::wstring &filepath);
+        [[nodiscard]] std::wstring GetExeVersion(const std::wstring &filepath);
 
-        std::wstring GetFileContent(const std::wstring &filepath);
+        [[nodiscard]] std::wstring GetFileContent(const std::wstring &filepath);
 
-        std::filesystem::path GetProgramDataPath();
+        [[nodiscard]] std::filesystem::path GetProgramDataPath();
 
-        std::vector<std::wstring> GetLogicalDrives();
+        [[nodiscard]] std::vector<std::wstring> GetLogicalDrives();
 
-        bool Exists(const std::filesystem::path &path);
+        [[nodiscard]] bool Exists(const std::filesystem::path &path);
 
         [[nodiscard]] bool IsEqual(const std::filesystem::path& path_1, const std::filesystem::path& path_2);
 
-        bool IsSubpath(const std::filesystem::path &path, const std::filesystem::path &base);
+        [[nodiscard]] bool IsSubpath(const std::filesystem::path &path, const std::filesystem::path &base);
     }
 }

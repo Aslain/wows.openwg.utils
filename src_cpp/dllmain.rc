@@ -3,7 +3,7 @@
 #define VER_COMPANYNAME_STR "OpenWG"
 #define VER_FILEDESCRIPTION_STR "OpenWG utilities library"
 #define VER_INTERNALNAME_STR "openwg.utils"
-#define VER_LEGALCOPYRIGHT_STR "OpenWG Contributors, 2017-2022. MIT license"
+#define VER_LEGALCOPYRIGHT_STR "OpenWG Contributors, 2017-2023. MIT license"
 #define VER_LEGALTRADEMARKS1_STR ""
 #define VER_LEGALTRADEMARKS2_STR ""
 #define VER_ORIGINALFILENAME_STR "openwg.utils.dll"
@@ -11,8 +11,8 @@
 
 #define VER_PRIVATEBUILD 0x0L
 #define VER_PRERELEASE 0x0L
-#define VER_VERSION             23,11,01,1
-#define VER_VERSION_STR         "23.11.01.1\0"
+#define VER_VERSION             23,12,10,1
+#define VER_VERSION_STR         "23.12.10.1\0"
 
 #ifndef DEBUG
     #define VER_DEBUG                   0

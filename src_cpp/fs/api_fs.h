@@ -19,7 +19,11 @@ extern "C" {
 // Functions
 //
 
-XVMEXT_API_CALL bool FS_File_IsEqualW(const wchar_t* path_1, const wchar_t* path_2);
+XVMEXT_API_CALL bool FS_FileEqualW(const wchar_t* path_1, const wchar_t* path_2);
+
+
+XVMEXT_API_CALL bool FS_FileExistsW(const wchar_t* path);
+
 
 #ifdef __cplusplus
 }

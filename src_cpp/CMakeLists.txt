@@ -20,12 +20,24 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE STRING "MSVC Runtime Library")
 
+option(BUILD_TESTS               "Build Tests"               OFF)
+option(BUILD_MODULE_BWXML        "Build module BWXML"        OFF)
+option(BUILD_MODULE_IMAGEDRAW    "Build module ImageDraw"    OFF)
+option(BUILD_MODULE_NETWORK      "Build module Network"      OFF)
+option(BUILD_MODULE_PROCESS      "Build module Process"      OFF)
+option(BUILD_MODULE_SPLASHSCREEN "Build module SplashScreen" OFF)
+option(BUILD_MODULE_WOT          "Build module WoT"          OFF)
+option(BUILD_MODULE_WWISE        "Build module WWISE"        OFF)
+
+
 
 #
 # Dependencies
 #
 
-include(cmake/cpm-catch2.cmake)
+if(BUILD_TESTS)
+  include(cmake/cpm-catch2.cmake)
+endif()
 include(cmake/cpm-jsoncpp.cmake)
 include(cmake/cpm-lodepng.cmake)
 include(cmake/cpm-pugixml.cmake)
@@ -39,44 +51,99 @@ include(cmake/cpm-stb.cmake)
 
 add_library(openwg.utils SHARED)
 
+target_sources(openwg.utils PRIVATE dllmain.cpp dllmain.rc)
+
 file(GLOB srcs CONFIGURE_DEPENDS
         "common/*.cpp"
         "common/*.h"
-        "bwxml/*.cpp"
-        "bwxml/*.h"
         "fs/*.cpp"
         "fs/*.h"
-        "imagedraw/*.cpp"
-        "imagedraw/*.h"
         "json/*.cpp"
         "json/*.h"
-        "network/*.cpp"
-        "network/*.h"
-        "process/*.cpp"
-        "process/*.h"
-        "splashscreen/*.cpp"
-        "splashscreen/*.h"
         "string/*.cpp"
         "string/*.h"
         "wine/*.cpp"
         "wine/*.h"
+        "xml/*.cpp"
+        "xml/*.h"
+)
+target_sources(openwg.utils PRIVATE ${srcs})
+
+# BWXML
+if(BUILD_MODULE_BWXML)
+    file(GLOB srcs CONFIGURE_DEPENDS
+        "bwxml/*.cpp"
+        "bwxml/*.h"
+    )
+    target_sources(openwg.utils PRIVATE ${srcs})
+endif()
+
+# ImageDraw
+if(BUILD_MODULE_IMAGEDRAW)
+    file(GLOB srcs CONFIGURE_DEPENDS
+        "imagedraw/*.cpp"
+        "imagedraw/*.h"
+    )
+    target_sources(openwg.utils PRIVATE ${srcs})
+    target_link_libraries(openwg.utils PUBLIC lodepng)
+endif()
+
+# Network
+if(BUILD_MODULE_NETWORK)
+    file(GLOB srcs CONFIGURE_DEPENDS
+        "network/*.cpp"
+        "network/*.h"
+    )
+    target_sources(openwg.utils PRIVATE ${srcs})
+endif()
+
+# Process
+if(BUILD_MODULE_PROCESS)
+    file(GLOB srcs CONFIGURE_DEPENDS
+        "process/*.cpp"
+        "process/*.h"
+    )
+    target_sources(openwg.utils PRIVATE ${srcs})
+endif()
+
+# Splashscreen
+if(BUILD_MODULE_SPLASHSCREEN)
+    file(GLOB srcs CONFIGURE_DEPENDS
+        "splashscreen/*.cpp"
+        "splashscreen/*.h"
+    )
+    target_sources(openwg.utils PRIVATE ${srcs})
+    target_link_libraries(openwg.utils PUBLIC stb)
+endif()
+
+
+# WoT
+if(BUILD_MODULE_WOT)
+    file(GLOB srcs CONFIGURE_DEPENDS
         "wot/*.cpp"
         "wot/*.h"
+    )
+    target_sources(openwg.utils PRIVATE ${srcs})
+endif()
+
+# WWISE
+if(BUILD_MODULE_WWISE)
+    file(GLOB srcs CONFIGURE_DEPENDS
         "wwise/*.cpp"
         "wwise/*.h"
-)
+    )
+    target_sources(openwg.utils PRIVATE ${srcs})
+endif()
 
 
-target_sources(openwg.utils PRIVATE dllmain.cpp ${srcs})
-target_sources(openwg.utils PRIVATE dllmain.rc)
+
 
 target_include_directories(openwg.utils PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 
 target_link_libraries(openwg.utils PRIVATE "Version" "Kernel32" "Psapi" "Shell32" "Advapi32" "Gdi32" "Iphlpapi" "Ws2_32")
 target_link_libraries(openwg.utils PUBLIC jsoncpp_static)
 target_link_libraries(openwg.utils PUBLIC pugixml::pugixml)
-target_link_libraries(openwg.utils PUBLIC lodepng)
-target_link_libraries(openwg.utils PUBLIC stb)
+
 
 target_compile_definitions(openwg.utils PRIVATE "-DBUILD_OPENWGUTILS")
 target_compile_definitions(openwg.utils PRIVATE "-DNOMINMAX")
@@ -109,15 +176,17 @@ set_target_properties(openwg.utils PROPERTIES MINSIZEREL_POSTFIX ".${XVMEXT_PLAT
 # Demo
 #
 
-add_subdirectory(demo)
-
+if(BUILD_MODULE_WOT)
+    add_subdirectory(demo)
+endif()
 
 #
 # Tests
 #
 
-add_subdirectory(tests)
-
+if(BUILD_TESTS)
+  add_subdirectory(tests)
+endif()
 
 
 #

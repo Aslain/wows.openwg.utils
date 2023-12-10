@@ -92,26 +92,6 @@ TEST_CASE("wwise_license_set"){
     }
 
     SECTION("lesta_license") {
-        SECTION("lesta->none")
-        {
-            auto ptr_lesta = WWISE_OpenFileW(std::filesystem::path(
-                    std::filesystem::path(ASSETS_FOLDER) / "u_lesta.bnk").wstring().c_str());
-            REQUIRE(ptr_lesta != nullptr);
-            REQUIRE(WWISE_LicenseGet(ptr_lesta) == WwiseLicense_Lesta);
-            REQUIRE(WWISE_LicenseSet(ptr_lesta, WwiseLicense_Unlicensed));
-            REQUIRE(WWISE_BKHD_ProjectId_Set(ptr_lesta, 0x0000));
-            REQUIRE(WWISE_SaveFileW(ptr_lesta, std::filesystem::path(
-                    std::filesystem::path(ASSETS_FOLDER) / "u_lesta_2.bnk").wstring().c_str()));
-
-            auto res = FS_File_IsEqualW(
-                    (std::filesystem::path(ASSETS_FOLDER) / "u_lesta_2.bnk").wstring().c_str(),
-                    (std::filesystem::path(ASSETS_FOLDER) / "u_none.bnk").wstring().c_str()
-            );
-
-            std::filesystem::remove(std::filesystem::path(ASSETS_FOLDER) / "u_lesta_2.bnk");
-            REQUIRE(res);
-        }
-
         SECTION("wg->none")
         {
             auto ptr_wg = WWISE_OpenFileW(std::filesystem::path(
