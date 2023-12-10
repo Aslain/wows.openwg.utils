@@ -2,7 +2,7 @@
 
 #include <Windows.h>
 
-#include "common/filesystem.h"
+#include "fs/fs.h"
 #include "wine/wine.h"
 #include "wot/client_wot.h"
 #include "wot/launcher_standalone.h"
@@ -71,7 +71,7 @@ namespace OpenWG::Utils::WoT {
 
             std::wstring wot_osx = std::wstring(L"Z:\\Users\\") + std::wstring(buf.data()) + std::wstring(
                     L"\\Library\\Application Support\\World of Tanks\\Bottles\\worldoftanks\\drive_c\\Games\\World_of_Tanks\\");
-            if (Common::Filesystem::Exists(wot_osx)) {
+            if (Filesystem::Exists(wot_osx)) {
                 AddClient(wot_osx);
             }
         }
@@ -80,7 +80,7 @@ namespace OpenWG::Utils::WoT {
     }
 
     std::vector<std::wstring> LauncherStandalone::getDrives() {
-        std::vector<std::wstring> drives = Common::Filesystem::GetLogicalDrives();
+        std::vector<std::wstring> drives = Filesystem::GetLogicalDrives();
 
         // Non-windows additions
         Wine::WineStatus wine_status = Wine::GetStatus();
@@ -92,7 +92,7 @@ namespace OpenWG::Utils::WoT {
                 // /media/<USERNAME>/ mounted partitions
                 std::wstring linux_mounts(
                         std::wstring(L"Z:\\media\\") + std::wstring(buf.data()) + std::wstring(L"\\"));
-                if (Common::Filesystem::Exists(linux_mounts)) {
+                if (Filesystem::Exists(linux_mounts)) {
                     for (auto &p: std::filesystem::directory_iterator(linux_mounts)) {
                         if (!std::filesystem::is_directory(p))
                             continue;
@@ -104,7 +104,7 @@ namespace OpenWG::Utils::WoT {
 
             if (wcscmp(wine_status.system, L"Darwin") == 0) {
                 // /Volumes/ mounted partitions
-                if (Common::Filesystem::Exists(L"Z:\\Volumes\\")) {
+                if (Filesystem::Exists(L"Z:\\Volumes\\")) {
                     for (auto &p: std::filesystem::directory_iterator(L"Z:\\Volumes\\")) {
                         if (!std::filesystem::is_directory(p))
                             continue;

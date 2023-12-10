@@ -2,7 +2,7 @@
 
 #include <pugixml.hpp>
 
-#include "common/filesystem.h"
+#include "fs/fs.h"
 #include "string/string.h"
 #include "process/process_module.h"
 #include "wot/client_wot.h"
@@ -17,11 +17,11 @@ namespace OpenWG::Utils::WoT {
 
 
     bool ClientWoT::IsValid() const {
-        return Common::Filesystem::Exists(m_path / "app_type.xml") &&
-               Common::Filesystem::Exists(m_path / "game_info.xml") &&
-               Common::Filesystem::Exists(m_path / "paths.xml") &&
-               Common::Filesystem::Exists(m_path / "version.xml") &&
-               Common::Filesystem::Exists(m_path / m_exename);
+        return Filesystem::Exists(m_path / "app_type.xml") &&
+               Filesystem::Exists(m_path / "game_info.xml") &&
+               Filesystem::Exists(m_path / "paths.xml") &&
+               Filesystem::Exists(m_path / "version.xml") &&
+               Filesystem::Exists(m_path / m_exename);
     }
 
     ClientBranch ClientWoT::GetBranch() const {
@@ -67,7 +67,7 @@ namespace OpenWG::Utils::WoT {
     bool ClientWoT::IsStarted() const {
         bool result{false};
         for (auto &process: Process::GetProcessList()) {
-            if (Common::Filesystem::IsSubpath(process.first, GetPath())) {
+            if (Filesystem::IsSubpath(process.first, GetPath())) {
                 auto process_name = String::ToLower(process.first.filename().wstring());
                 if (process_name == String::ToLower(m_exename)) {
                     result = true;
@@ -88,7 +88,7 @@ namespace OpenWG::Utils::WoT {
     bool ClientWoT::Terminate() {
         bool result{false};
         for (auto &process: Process::GetProcessList()) {
-            if (Common::Filesystem::IsSubpath(process.first, GetPath())) {
+            if (Filesystem::IsSubpath(process.first, GetPath())) {
                 auto process_name = String::ToLower(process.first.filename().wstring());
                 if (process_name == String::ToLower(m_exename)) {
                     result = Process::TerminateProcess(process.second);
@@ -118,7 +118,7 @@ namespace OpenWG::Utils::WoT {
     void ClientWoT::rescanAppType() {
         m_type = WoT_Type_Unknown;
         auto apptypexml = m_path / L"app_type.xml";
-        if (Common::Filesystem::Exists(apptypexml)) {
+        if (Filesystem::Exists(apptypexml)) {
 
             pugi::xml_document doc;
             if (!doc.load_file(apptypexml.wstring().c_str())) {
@@ -141,20 +141,20 @@ namespace OpenWG::Utils::WoT {
         m_versionExe.clear();
 
         auto path = m_path / "win64" / m_exename;
-        if (Common::Filesystem::Exists(path)) {
-            m_versionExe = Common::Filesystem::GetExeVersion(path);
+        if (Filesystem::Exists(path)) {
+            m_versionExe = Filesystem::GetExeVersion(path);
             return;
         }
 
         path = m_path / "win32" / m_exename;
-        if (Common::Filesystem::Exists(path)) {
-            m_versionExe = Common::Filesystem::GetExeVersion(path);
+        if (Filesystem::Exists(path)) {
+            m_versionExe = Filesystem::GetExeVersion(path);
             return;
         }
 
         path = m_path / m_exename;
-        if (Common::Filesystem::Exists(path)) {
-            m_versionExe = Common::Filesystem::GetExeVersion(path);
+        if (Filesystem::Exists(path)) {
+            m_versionExe = Filesystem::GetExeVersion(path);
             return;
         }
     }
@@ -162,7 +162,7 @@ namespace OpenWG::Utils::WoT {
     void ClientWoT::rescanGameInfo() {
         m_locale.clear();
         auto gameinfoxml = m_path / L"game_info.xml";
-        if (Common::Filesystem::Exists(gameinfoxml)) {
+        if (Filesystem::Exists(gameinfoxml)) {
 
             pugi::xml_document doc;
             if (doc.load_file(gameinfoxml.wstring().c_str())) {
@@ -189,7 +189,7 @@ namespace OpenWG::Utils::WoT {
         m_path_resmods.clear();
 
         auto pathsxml = m_path / L"paths.xml";
-        if (Common::Filesystem::Exists(pathsxml)) {
+        if (Filesystem::Exists(pathsxml)) {
             pugi::xml_document doc;
             if (doc.load_file(pathsxml.wstring().c_str())) {
                 auto nodes = doc.select_nodes(L"/root/Paths/Path");
@@ -213,7 +213,7 @@ namespace OpenWG::Utils::WoT {
         m_realm.clear();
 
         auto versionxml = m_path / L"version.xml";
-        if (Common::Filesystem::Exists(versionxml)) {
+        if (Filesystem::Exists(versionxml)) {
             pugi::xml_document doc;
             if (doc.load_file(versionxml.wstring().c_str())) {
                 // realm

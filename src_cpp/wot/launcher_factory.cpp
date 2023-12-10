@@ -1,6 +1,6 @@
 #include <optional>
 
-#include "common/filesystem.h"
+#include "fs/fs.h"
 #include "wot/launcher_factory.h"
 #include "wot/launcher_standalone.h"
 #include "wot/launcher_wgc.h"
@@ -38,12 +38,12 @@ namespace OpenWG::Utils::WoT {
             if (info.flavour == Launcher_Flavour_Standalone) {
                 return std::make_shared<LauncherStandalone>();
             } else {
-                auto path_programdata = Common::Filesystem::GetProgramDataPath() / info.prefix;
+                auto path_programdata = Filesystem::GetProgramDataPath() / info.prefix;
                 auto wgcpath_file = path_programdata / "data" / info.path_filename;
 
-                if (Common::Filesystem::Exists(wgcpath_file)) {
-                    auto path_wgc = std::filesystem::path(Common::Filesystem::GetFileContent(wgcpath_file));
-                    if (Common::Filesystem::Exists(path_wgc / info.exe_filename)) {
+                if (Filesystem::Exists(wgcpath_file)) {
+                    auto path_wgc = std::filesystem::path(Filesystem::GetFileContent(wgcpath_file));
+                    if (Filesystem::Exists(path_wgc / info.exe_filename)) {
                         return std::make_shared<LauncherWgc>(info, path_programdata, path_wgc);
                     }
                 }

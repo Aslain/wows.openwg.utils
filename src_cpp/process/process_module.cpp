@@ -7,7 +7,7 @@
 #include <TlHelp32.h>
 #include <Psapi.h>
 
-#include "common/filesystem.h"
+#include "fs/fs.h"
 #include "process/process_module.h"
 #include "string/string.h"
 
@@ -81,7 +81,7 @@ namespace OpenWG::Utils::Process {
         auto dir_norm = directoryName.lexically_normal();
 
         for (const auto &process: GetProcessList()) {
-            if (Common::Filesystem::IsSubpath(process.first, dir_norm)) {
+            if (Filesystem::IsSubpath(process.first, dir_norm)) {
                 result.emplace_back(process.first);
             }
         }

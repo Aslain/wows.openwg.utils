@@ -1,6 +1,6 @@
 #include <pugixml.hpp>
 
-#include "common/filesystem.h"
+#include "fs/fs.h"
 #include "common/vector.h"
 #include "wot/client_wot.h"
 #include "wot/launcher_wgc.h"
@@ -28,7 +28,7 @@ namespace OpenWG::Utils::WoT {
     size_t LauncherWgc::Rescan() {
         m_clients.clear();
         for (auto &client_path: getClientPaths()) {
-            if (!Common::Filesystem::Exists(client_path)) {
+            if (!Filesystem::Exists(client_path)) {
                 continue;
             }
 
@@ -53,7 +53,7 @@ namespace OpenWG::Utils::WoT {
         // <WGC>/preferences.xml
         try {
             auto preferencesPath = m_path_wgc / L"preferences.xml";
-            if (Common::Filesystem::Exists(preferencesPath)) {
+            if (Filesystem::Exists(preferencesPath)) {
                 pugi::xml_document doc;
                 if (doc.load_file(preferencesPath.wstring().c_str())) {
 
@@ -94,7 +94,7 @@ namespace OpenWG::Utils::WoT {
                 }
 
                 for (auto &appinfo_file: std::filesystem::directory_iterator(appinfo_folder)) {
-                    std::filesystem::path path = Common::Filesystem::GetFileContent(appinfo_file.path().wstring());
+                    std::filesystem::path path = Filesystem::GetFileContent(appinfo_file.path().wstring());
                     if (!Common::Vector::Contains(result, path)) {
                         result.emplace_back(path);
                     }
@@ -108,7 +108,7 @@ namespace OpenWG::Utils::WoT {
 
     std::filesystem::path LauncherWgc::getPreferredPath() {
         auto preferencesPath = m_path_wgc / L"preferences.xml";
-        if (!Common::Filesystem::Exists(preferencesPath)) {
+        if (!Filesystem::Exists(preferencesPath)) {
             return {};
         }
 
