@@ -2,26 +2,28 @@
 ###       Test: JSON        ###
 ###############################
 
-add_executable(openwg.utils.demo)
-
-target_sources(openwg.utils.demo PRIVATE
-    wot.cpp
-)
-
-target_link_libraries(openwg.utils.demo PRIVATE openwg.utils)
-
-add_custom_command(TARGET openwg.utils.demo POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:openwg.utils.demo> $<TARGET_FILE_DIR:openwg.utils.demo>
+function(create_demo name)
+  add_executable(${name})
+  target_sources(${name} PRIVATE ${name}.cpp)
+  target_link_libraries(${name} PRIVATE openwg.utils)
+  add_custom_command(TARGET ${name} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:${name}> $<TARGET_FILE_DIR:${name}>
     COMMAND_EXPAND_LISTS
-)
+  )
 
 
-set_target_properties(openwg.utils.demo PROPERTIES DEBUG_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}d")
-set_target_properties(openwg.utils.demo PROPERTIES RELEASE_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
-set_target_properties(openwg.utils.demo PROPERTIES RELWITHDEBINFO_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
-set_target_properties(openwg.utils.demo PROPERTIES MINSIZEREL_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
+  set_target_properties(${name} PROPERTIES DEBUG_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}d")
+  set_target_properties(${name} PROPERTIES RELEASE_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
+  set_target_properties(${name} PROPERTIES RELWITHDEBINFO_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
+  set_target_properties(${name} PROPERTIES MINSIZEREL_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
 
-install(
-    TARGETS openwg.utils.demo
-    RUNTIME DESTINATION bin
-)
+  install(
+      TARGETS ${name}
+      RUNTIME DESTINATION bin
+  )
+endfunction()
+
+
+create_demo(demo_wot)
+create_demo(wwise_convert_to_wg)
+create_demo(wwise_convert_to_unlicensed)
