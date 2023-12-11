@@ -30,21 +30,14 @@ $root = (Get-Location).Path -replace "\\","/"
 function Build-CppProject($Toolset, $Architecture) {
     New-Item -ItemType Directory -Path ./~build/$Architecture/ -ErrorAction SilentlyContinue
     Push-Location ./~build/$Architecture/ -ErrorAction Stop
-    cmake -T $Toolset -A $Architecture $root/src_cpp/ -DCMAKE_INSTALL_PREFIX="$root/~output/"
+    cmake -T $Toolset -A $Architecture $root/src/ -DCMAKE_INSTALL_PREFIX="$root/~output/"
     cmake --build . --config Release --target Install
     Pop-Location
 }
 
 Build-CppProject -Toolset v143 -Architecture Win32
-Build-CppProject -Toolset v143 -Architecture x64
-#Build-CppProject -Toolset v143 -Architecture ARM
-#Build-CppProject -Toolset v143 -Architecture ARM64
 
+New-Item -ItemType Directory -Path ~output/demo -ErrorAction SilentlyContinue
+Copy-Item -Path src_demo/* -Destination ~output/demo -Recurse
 
-New-Item -ItemType Directory -Path ~output/innosetup -ErrorAction SilentlyContinue
-New-Item -ItemType Directory -Path ~output/innosetup_demo -ErrorAction SilentlyContinue
-
-Copy-Item -Path src_innosetup/openwg.utils.iss -Destination ~output/innosetup
-Copy-Item -Path src_innosetup_demo/* -Destination ~output/innosetup_demo -Recurse
-
-iscc  ~output/innosetup_demo/openwg_utils_demo.iss
+iscc  ~output/demo/openwg_utils_demo.iss

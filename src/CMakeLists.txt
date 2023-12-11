@@ -1,0 +1,272 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2017-2023 OpenWG.Utils Contributors
+
+#
+# CMake
+#
+
+cmake_minimum_required(VERSION 3.23)
+project(openwg.utils)
+
+include(_cmake/cpm.cmake)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+
+
+#
+# Global options
+#
+
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE STRING "MSVC Runtime Library")
+
+option(BUILD_TESTS               "Build Tests"               OFF)
+option(BUILD_DEMOS               "Build Demos"               OFF)
+
+option(BUILD_MODULE_BWXML        "Build module BWXML"        ON)
+option(BUILD_MODULE_FS           "Build module FS"           ON)
+option(BUILD_MODULE_IMAGEDRAW    "Build module ImageDraw"    ON)
+option(BUILD_MODULE_JSON         "Build module JSON"         ON)
+option(BUILD_MODULE_NETWORK      "Build module Network"      ON)
+option(BUILD_MODULE_PROCESS      "Build module Process"      ON)
+option(BUILD_MODULE_SPLASHSCREEN "Build module SplashScreen" ON)
+option(BUILD_MODULE_STRING       "Build module String"       ON)
+option(BUILD_MODULE_WOT          "Build module WoT"          ON)
+option(BUILD_MODULE_WINE         "Build module Wine"         ON)
+option(BUILD_MODULE_WWISE        "Build module WWISE"        ON)
+option(BUILD_MODULE_XML          "Build module XML"          ON)
+
+
+
+#
+# Library
+#
+
+add_library(openwg.utils SHARED)
+
+# Common
+file(GLOB srcs CONFIGURE_DEPENDS
+        "common/*.cpp"
+        "common/*.h"
+        "common/*.rc"
+)
+target_sources(openwg.utils PRIVATE ${srcs})
+file(COPY_FILE common/api_common.iss "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss")
+
+# BWXML
+if(BUILD_MODULE_BWXML)
+    file(GLOB srcs CONFIGURE_DEPENDS
+        "bwxml/*.cpp"
+        "bwxml/*.h"
+    )
+    target_sources(openwg.utils PRIVATE ${srcs})
+    file(READ bwxml/api_bwxml.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+endif()
+
+# FS
+if(BUILD_MODULE_FS)
+    file(GLOB srcs CONFIGURE_DEPENDS
+        "fs/*.cpp"
+        "fs/*.h"
+    )
+    target_sources(openwg.utils PRIVATE ${srcs})
+    file(READ fs/api_fs.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+endif()
+
+# ImageDraw
+if(BUILD_MODULE_IMAGEDRAW)
+    file(GLOB srcs CONFIGURE_DEPENDS
+        "imagedraw/*.cpp"
+        "imagedraw/*.h"
+    )
+    target_sources(openwg.utils PRIVATE ${srcs})
+    include(_cmake/cpm-lodepng.cmake)
+    target_link_libraries(openwg.utils PUBLIC lodepng)
+    file(READ imagedraw/api_imagedraw.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+endif()
+
+# JSON
+if(BUILD_MODULE_JSON)
+    file(GLOB srcs CONFIGURE_DEPENDS
+        "json/*.cpp"
+        "json/*.h"
+    )
+    target_sources(openwg.utils PRIVATE ${srcs})
+    include(_cmake/cpm-jsoncpp.cmake)
+    target_link_libraries(openwg.utils PUBLIC jsoncpp_static)
+    file(READ json/api_json.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+endif()
+
+# Network
+if(BUILD_MODULE_NETWORK)
+    file(GLOB srcs CONFIGURE_DEPENDS
+        "network/*.cpp"
+        "network/*.h"
+    )
+    target_sources(openwg.utils PRIVATE ${srcs})
+    file(READ network/api_network.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+endif()
+
+# String
+if(BUILD_MODULE_STRING)
+    file(GLOB srcs CONFIGURE_DEPENDS
+        "string/*.cpp"
+        "string/*.h"
+    )
+    target_sources(openwg.utils PRIVATE ${srcs})
+    file(READ string/api_string.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+endif()
+
+# Process
+# Depends on String
+if(BUILD_MODULE_PROCESS)
+    file(GLOB srcs CONFIGURE_DEPENDS
+        "process/*.cpp"
+        "process/*.h"
+    )
+    target_sources(openwg.utils PRIVATE ${srcs})
+    file(READ process/api_process.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+endif()
+
+# Splashscreen
+if(BUILD_MODULE_SPLASHSCREEN)
+    file(GLOB srcs CONFIGURE_DEPENDS
+        "splashscreen/*.cpp"
+        "splashscreen/*.h"
+    )
+    target_sources(openwg.utils PRIVATE ${srcs})
+    include(_cmake/cpm-stb.cmake)
+    target_link_libraries(openwg.utils PUBLIC stb)
+    file(READ splashscreen/api_splashscreen.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+endif()
+
+# Wine
+if(BUILD_MODULE_WINE)
+    file(GLOB srcs CONFIGURE_DEPENDS
+        "wine/*.cpp"
+        "wine/*.h"
+    )
+    target_sources(openwg.utils PRIVATE ${srcs})
+    file(READ wine/api_wine.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+endif()
+
+# WoT
+if(BUILD_MODULE_WOT)
+    file(GLOB srcs CONFIGURE_DEPENDS
+        "wot/*.cpp"
+        "wot/*.h"
+    )
+    target_sources(openwg.utils PRIVATE ${srcs})
+    file(READ wot/api_wot.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+endif()
+
+# WWISE
+if(BUILD_MODULE_WWISE)
+    file(GLOB srcs CONFIGURE_DEPENDS
+        "wwise/*.cpp"
+        "wwise/*.h"
+    )
+    target_sources(openwg.utils PRIVATE ${srcs})
+    file(READ wwise/api_wwise.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+endif()
+
+# XML
+if(BUILD_MODULE_XML)
+    file(GLOB srcs CONFIGURE_DEPENDS
+        "xml/*.cpp"
+        "xml/*.h"
+    )
+    target_sources(openwg.utils PRIVATE ${srcs})
+    include(_cmake/cpm-pugixml.cmake)
+    target_link_libraries(openwg.utils PUBLIC pugixml::pugixml)
+    file(READ xml/api_xml.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+endif()
+
+
+target_include_directories(openwg.utils PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+
+target_link_libraries(openwg.utils PRIVATE "Version" "Kernel32" "Psapi" "Shell32" "Advapi32" "Gdi32" "Iphlpapi" "Ws2_32")
+
+
+target_compile_definitions(openwg.utils PRIVATE "-DBUILD_OPENWGUTILS")
+target_compile_definitions(openwg.utils PRIVATE "-DNOMINMAX")
+target_compile_definitions(openwg.utils PRIVATE "-D_CRT_SECURE_NO_WARNINGS")
+target_compile_definitions(openwg.utils PRIVATE "-D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING")
+
+set_target_properties(openwg.utils PROPERTIES PREFIX "")
+set_target_properties(openwg.utils PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
+#detect platform
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set(XVMEXT_BIT "64")
+elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
+    set(XVMEXT_BIT "32")
+endif()
+
+if(CMAKE_GENERATOR_PLATFORM STREQUAL "ARM" OR CMAKE_GENERATOR_PLATFORM STREQUAL "ARM64")
+    set(XVMEXT_PLAT "arm")
+else()
+    set(XVMEXT_PLAT "x86")
+endif()
+
+
+set_target_properties(openwg.utils PROPERTIES DEBUG_POSTFIX          ".${XVMEXT_PLAT}_${XVMEXT_BIT}d")
+set_target_properties(openwg.utils PROPERTIES RELEASE_POSTFIX        ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
+set_target_properties(openwg.utils PROPERTIES RELWITHDEBINFO_POSTFIX ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
+set_target_properties(openwg.utils PROPERTIES MINSIZEREL_POSTFIX     ".${XVMEXT_PLAT}_${XVMEXT_BIT}")
+
+
+
+#
+# Demo
+#
+
+if(BUILD_DEMOS)
+    add_subdirectory(_demo)
+endif()
+
+
+
+#
+# Tests
+#
+
+if(BUILD_TESTS)
+  include(_cmake/cpm-catch2.cmake)
+  add_subdirectory(_tests)
+endif()
+
+
+
+#
+# Install
+#
+
+install(
+    TARGETS openwg.utils
+    RUNTIME DESTINATION bin
+)
+
+file(GLOB HEADERS_API CONFIGURE_DEPENDS  */api_*.h)
+install(
+    FILES ${HEADERS_API}
+    DESTINATION include
+)
+
+install(
+    FILES "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss"
+    DESTINATION innosetup
+)

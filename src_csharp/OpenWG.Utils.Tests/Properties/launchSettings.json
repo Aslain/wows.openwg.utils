@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "OpenWG.Utils.Tests": {
-      "commandName": "Project",
-      "nativeDebugging": true
-    }
-  }
-}
