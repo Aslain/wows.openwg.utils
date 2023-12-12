@@ -3,12 +3,15 @@
 
 #include "fs.h"
 
+#include <array>
 #include <codecvt>
 #include <fstream>
 #include <locale>
 
+
 #include <Windows.h>
 #include <ShlObj.h>
+#include "wine/wine.h"
 
 namespace OpenWG::Utils {
     namespace Filesystem {
@@ -87,6 +90,40 @@ namespace OpenWG::Utils {
                 }
             }
 
+            // Non-windows additions
+            Wine::WineStatus wine_status = Wine::GetStatus();
+            if (wine_status.running_on) {
+                std::array<wchar_t, 256> buf{};
+                GetEnvironmentVariableW(L"USERNAME", buf.data(), 256);
+
+                if (wcsicmp(wine_status.system, L"Linux") == 0) {
+                    // /media/<USERNAME>/ mounted partitions
+                    std::wstring linux_mounts(
+                            std::wstring(L"Z:\\media\\") + std::wstring(buf.data()) + std::wstring(L"\\"));
+                    if (Filesystem::Exists(linux_mounts)) {
+                        for (auto &p: std::filesystem::directory_iterator(linux_mounts)) {
+                            if (!std::filesystem::is_directory(p))
+                                continue;
+
+                            drives.push_back(p.path().wstring() + L"\\");
+                        }
+                    }
+                }
+
+                if (wcsicmp(wine_status.system, L"Darwin") == 0) {
+                    // /Volumes/ mounted partitions
+                    if (Filesystem::Exists(L"Z:\\Volumes\\")) {
+                        for (auto &p: std::filesystem::directory_iterator(L"Z:\\Volumes\\")) {
+                            if (!std::filesystem::is_directory(p))
+                                continue;
+
+                            drives.push_back(p.path().wstring() + L"\\");
+                        }
+                    }
+                }
+
+            }
+
             return drives;
         }
 
@@ -124,5 +161,7 @@ namespace OpenWG::Utils {
                               std::istreambuf_iterator<char>(),
                               std::istreambuf_iterator<char>(stream_2.rdbuf()));
         }
+
+
     }
 }

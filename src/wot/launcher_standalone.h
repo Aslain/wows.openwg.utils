@@ -20,9 +20,6 @@ namespace OpenWG::Utils::WoT {
         bool AddClient(const std::filesystem::path &path) override;
 
     private:
-        std::vector<std::wstring> getDrives();
-
-    private:
         std::vector<std::shared_ptr<ClientInterface>> m_clients{};
     };
 }

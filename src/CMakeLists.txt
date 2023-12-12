@@ -21,7 +21,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE STRING "MSVC Runtime Library")
 
-option(BUILD_TESTS               "Build Tests"               OFF)
+option(BUILD_TESTS               "Build Tests"               ON)
 option(BUILD_DEMOS               "Build Demos"               OFF)
 
 option(BUILD_MODULE_BWXML        "Build module BWXML"        ON)
@@ -65,7 +65,19 @@ if(BUILD_MODULE_BWXML)
     file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
 endif()
 
+# Wine
+if(BUILD_MODULE_WINE)
+    file(GLOB srcs CONFIGURE_DEPENDS
+            "wine/*.cpp"
+            "wine/*.h"
+    )
+    target_sources(openwg.utils PRIVATE ${srcs})
+    file(READ wine/api_wine.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+endif()
+
 # FS
+# Depends on Wine
 if(BUILD_MODULE_FS)
     file(GLOB srcs CONFIGURE_DEPENDS
         "fs/*.cpp"
@@ -146,17 +158,6 @@ if(BUILD_MODULE_SPLASHSCREEN)
     include(_cmake/cpm-stb.cmake)
     target_link_libraries(openwg.utils PUBLIC stb)
     file(READ splashscreen/api_splashscreen.iss CONTENTS)
-    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
-endif()
-
-# Wine
-if(BUILD_MODULE_WINE)
-    file(GLOB srcs CONFIGURE_DEPENDS
-        "wine/*.cpp"
-        "wine/*.h"
-    )
-    target_sources(openwg.utils PRIVATE ${srcs})
-    file(READ wine/api_wine.iss CONTENTS)
     file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
 endif()
 

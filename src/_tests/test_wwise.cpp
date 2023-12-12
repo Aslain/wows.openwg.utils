@@ -103,7 +103,7 @@ TEST_CASE("wwise_license_set"){
             REQUIRE(WWISE_SaveFileW(ptr_wg, std::filesystem::path(
                     std::filesystem::path(ASSETS_FOLDER) / "u_wg_2.bnk").wstring().c_str()));
 
-            auto res = FS_File_IsEqualW(
+            auto res = FS_FileEqualW(
                     (std::filesystem::path(ASSETS_FOLDER) / "u_wg_2.bnk").wstring().c_str(),
                     (std::filesystem::path(ASSETS_FOLDER) / "u_none.bnk").wstring().c_str()
                     );
