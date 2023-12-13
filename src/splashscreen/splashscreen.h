@@ -14,10 +14,15 @@ namespace OpenWG::Utils::Splashscreen {
     class SplashScreen {
     public:
         SplashScreen();
+        ~SplashScreen();
 
         bool Load(const std::filesystem::path &path);
 
+        bool Show();
+
         bool Show(int seconds);
+
+        bool Close();
 
     private:
 

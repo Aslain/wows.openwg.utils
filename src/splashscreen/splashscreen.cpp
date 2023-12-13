@@ -55,6 +55,10 @@ namespace OpenWG::Utils::Splashscreen {
         registerClass();
     }
 
+    SplashScreen::~SplashScreen() {
+        Close();
+    }
+
     bool SplashScreen::Load(const std::filesystem::path &path) {
         int image_width = 0, image_height = 0, channels = 0;
 
@@ -81,24 +85,34 @@ namespace OpenWG::Utils::Splashscreen {
         return true;
     }
 
-    bool SplashScreen::Show(int seconds) {
+    bool SplashScreen::Show() {
         if (!m_bitmap) {
             return false;
         }
 
         if (!m_window) {
-            if(!createWindow()){
+            if (!createWindow()) {
                 return false;
             }
         }
         setBitmap();
 
-        std::this_thread::sleep_for(std::chrono::seconds(seconds));
+        return true;
+    }
 
+    bool SplashScreen::Close() {
         DestroyWindow(m_window);
         m_window = nullptr;
-
         return true;
+    }
+
+    bool SplashScreen::Show(int seconds) {
+        if (!Show()) {
+            return false;
+        }
+
+        std::this_thread::sleep_for(std::chrono::seconds(seconds));
+        return Close();
     }
 
     bool SplashScreen::registerClass() {
@@ -159,4 +173,6 @@ namespace OpenWG::Utils::Splashscreen {
 
         return true;
     }
+
+
 }
