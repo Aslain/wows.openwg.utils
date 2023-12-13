@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2023 OpenWG.Utils Contributors
 
+#include <iterator>
+
 #include "fs/fs.h"
 #include "fs/fs_search.h"
 
@@ -10,24 +12,22 @@ namespace OpenWG::Utils::FS {
         m_depth_max = max_depth;
         m_regex = regex;
         m_results.clear();
-        for(auto& drive: Filesystem::GetLogicalDrives()){
-            auto results_drive = queryFolder(drive, 1);
-            m_results.insert(m_results.end(), results_drive.begin(), results_drive.end());
+        for (auto &drive: Filesystem::GetLogicalDrives()) {
+            m_results.splice(m_results.end(), queryFolder(drive, 1));
         }
     }
 
-    std::vector<std::filesystem::path>
+    std::list<std::filesystem::path>
     Search::queryFolder(const std::filesystem::path &path, size_t depth) {
-        std::vector<std::filesystem::path> result;
+        std::list<std::filesystem::path> result;
 
         if (depth < m_depth_max) {
             try {
-                for (auto &item: std::filesystem::directory_iterator(path)) {
+                for (const auto &item: std::filesystem::directory_iterator(path)) {
                     if (!is_directory(item)) {
                         continue;
                     }
-                    auto results_sub = queryFolder(item, depth + 1);
-                    result.insert(result.end(), results_sub.begin(), results_sub.end());
+                    result.splice(result.end(), queryFolder(item, depth + 1));
                 }
             }
             catch (std::exception &) {
@@ -35,8 +35,7 @@ namespace OpenWG::Utils::FS {
         }
 
         const auto &name = path.filename().wstring();
-        std::wsmatch match;
-        if (std::regex_match(name.begin(), name.end(), match, m_regex)) {
+        if (std::regex_match(name.begin(), name.end(), m_regex)) {
             result.push_back(path);
         }
 
@@ -47,8 +46,7 @@ namespace OpenWG::Utils::FS {
         if(index>=m_results.size()){
             return {};
         }
-
-        return m_results[index];
+        return *std::next(m_results.begin(), index);
     }
 
     size_t Search::GetCount() const {
