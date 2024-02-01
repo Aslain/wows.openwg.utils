@@ -29,6 +29,8 @@ namespace OpenWG::Utils::WoT {
 
         [[nodiscard]] ClientType GetType() const override;
 
+        [[nodiscard]] ClientVendor GetVendor() const override;
+
         [[nodiscard]] std::wstring GetVersionClient() const override;
 
         [[nodiscard]] std::wstring GetVersionExe() const override;
@@ -56,6 +58,7 @@ namespace OpenWG::Utils::WoT {
     private:
         ClientBranch m_branch{ClientBranch::WoT_Branch_Unknown};
         LauncherFlavour m_launcherFlavour{Launcher_Flavour_Unknown};
+        ClientVendor m_vendor{ClientVendor::WoT_Vendor_Unknown};
         std::wstring m_locale{};
         std::filesystem::path m_path{};
         std::wstring m_path_mods{};

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2023 OpenWG.Utils Contributors
+// Copyright (c) 2024 OpenWG.Utils Contributors
 
 #include "network/api_network.h"
 #include "network/network_ping.h"

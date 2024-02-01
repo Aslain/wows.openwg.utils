@@ -27,14 +27,21 @@ enum ClientType {
     WoT_Type_HD = 2,
 };
 
+enum ClientVendor {
+    WoT_Vendor_Unknown = 0,
+    WoT_Vendor_WG = 1,
+    WoT_Vendor_Lesta = 2,
+};
+
 enum LauncherFlavour {
-    Launcher_Flavour_Unknown = 0,
-    Launcher_Flavour_WG = 1,
-    Launcher_Flavour_China360 = 2,
-    Launcher_Flavour_Steam = 3,
-    Launcher_Flavour_Lesta = 4,
+    Launcher_Flavour_Unknown    = 0,
+    Launcher_Flavour_WGC        = 1,
+    Launcher_Flavour_China360   = 2,
+    Launcher_Flavour_Steam      = 3,
+    Launcher_Flavour_LGC        = 4,
     Launcher_Flavour_Standalone = 5,
 };
+
 
 //
 // Functions
@@ -165,6 +172,13 @@ XVMEXT_API_CALL void WOT_GetClientRealmW(wchar_t *buffer, int32_t buffer_size, i
  * @return one of ::ClientType values or -1 in case of error
  */
 XVMEXT_API_CALL int32_t WOT_GetClientType(int32_t index);
+
+/**
+ * Get client vendor
+ * @param index client index
+ * @return one of ::ClientVendor values or -1 in case of error
+ */
+XVMEXT_API_CALL int32_t WOT_GetClientVendor(int32_t index);
 
 /**
  * Get client version

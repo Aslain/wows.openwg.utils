@@ -25,17 +25,18 @@ ru.openwg_branch_sb=Песочница
 
 type
   ClientRecord = Record
-    Index: Integer;
-    Branch: Integer;
-    LauncherFlavour: Integer;
-    Locale: String;
-    Path: String;
-    PathMods: String;
-    PathResmods: String;
-    Realm: String;
-    ContentType: Integer;
-    Version: String;
-    VersionExe: String;
+    Index          : Integer;
+    Branch         : Integer;
+    LauncherFlavour: Integer; 
+    Vendor         : Integer;
+    Locale         : String;
+    Path           : String;
+    PathMods       : String;
+    PathResmods    : String;
+    Realm          : String;
+    ContentType    : Integer;
+    Version        : String;
+    VersionExe     : String;
   end;
 
 // WOT/AddClientW
@@ -340,6 +341,22 @@ begin
 end;
 
 
+// WOT/GetClientVendor
+function WOT_GetClientVendor_I(ClientIndex: Integer): Integer;
+external 'WOT_GetClientVendor@files:openwg.utils.dll cdecl setuponly';
+
+function WOT_GetClientVendor_U(ClientIndex: Integer): Integer;
+external 'WOT_GetClientVendor@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function WOT_GetClientVendor(ClientIndex: Integer): Integer;
+begin
+    if IsUninstaller() then
+        Result := WOT_GetClientVendor_U(ClientIndex)
+    else
+        Result := WOT_GetClientVendor_I(ClientIndex)
+end;
+
+
 // WOT/GetClientVersionW
 procedure WOT_GetClientVersionW_I(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
 external 'WOT_GetClientVersionW@files:openwg.utils.dll cdecl setuponly';
@@ -389,6 +406,7 @@ begin
   Result.Index := Index;
   Result.Branch := WOT_GetClientBranch(Index);
   Result.LauncherFlavour := WOT_GetClientLauncherFlavour(Index);
+  Result.Vendor := WOT_GetClientVendor(Index);
   Result.Locale :=  WOT_GetClientLocaleW(Index);
   Result.Path := WOT_GetClientPathW(Index);
   Result.PathMods :=  WOT_GetClientPathModsW(Index);
@@ -402,15 +420,21 @@ end;
 
 function CLIENT_FormatString(Client: ClientRecord): String;
 begin
-  Result := Client.Version;
+    case Client.Vendor of
+        0: Result := 'Unknown Game';
+        1: Result := 'WoT';
+        2: Result := 'MT';
+    end;
+
+  Result := Result + ' ' + Client.Version;
   Result := Result + ' [';
 
   case Client.LauncherFlavour of
      0: Result := Result + ExpandConstant('{cm:openwg_unknown');
-     1: Result := Result + 'WG';
+     1: Result := Result + 'WGC';
      2: Result := Result + '360';
      3: Result := Result + 'Steam';
-     4: Result := Result + 'Lesta';
+     4: Result := Result + 'LGC';
      5: Result := Result + 'Standalone';
   end;
 

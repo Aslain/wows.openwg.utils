@@ -21,7 +21,7 @@ using namespace OpenWG::Utils::WoT;
 // globals
 //
 
-LauncherFlavour g_launcher_default = LauncherFlavour::Launcher_Flavour_WG;
+LauncherFlavour g_launcher_default = LauncherFlavour::Launcher_Flavour_WGC;
 std::vector<std::shared_ptr<LauncherInterface>> g_launchers{};
 std::vector<std::shared_ptr<ClientInterface>> g_clients{};
 
@@ -297,6 +297,19 @@ int32_t WOT_GetClientType(int32_t index) {
 
     if (index >= 0 && index < g_clients.size() && g_clients[index]) {
         result = g_clients[index]->GetType();
+    }
+
+    return result;
+}
+
+
+int32_t WOT_GetClientVendor(int32_t index) {
+    int32_t result = -1;
+
+    launchers_init();
+
+    if (index >= 0 && index < g_clients.size() && g_clients[index]) {
+        result = g_clients[index]->GetVendor();
     }
 
     return result;

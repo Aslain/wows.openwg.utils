@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2023 OpenWG.Utils Contributors
+// Copyright (c) 2024 OpenWG.Utils Contributors
 
 //
 // Includes

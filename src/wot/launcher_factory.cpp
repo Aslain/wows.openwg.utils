@@ -14,7 +14,7 @@ namespace OpenWG::Utils::WoT {
 
         std::vector<LauncherInfo> launchers_info{
                 {
-                        Launcher_Flavour_WG, L"Wargaming.net//GameCenter", L"wgc_path.dat", L"wgc.exe"
+                        Launcher_Flavour_WGC, L"Wargaming.net//GameCenter", L"wgc_path.dat", L"wgc.exe"
                 },
                 {
                         Launcher_Flavour_China360, L"360 Wargaming//GameCenter", L"wgc_path.dat", L"wgc.exe"
@@ -23,7 +23,7 @@ namespace OpenWG::Utils::WoT {
                         Launcher_Flavour_Steam, L"Wargaming.net//GameCenter for Steam", L"wgc_path.dat", L"wgc.exe"
                 },
                 {
-                        Launcher_Flavour_Lesta, L"Lesta//GameCenter", L"lgc_path.dat", L"lgc.exe"
+                        Launcher_Flavour_LGC, L"Lesta//GameCenter", L"lgc_path.dat", L"lgc.exe"
                 },
                 {
                         Launcher_Flavour_Standalone, L"", L"", L""

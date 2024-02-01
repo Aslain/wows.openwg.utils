@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2017-2023 OpenWG.Utils Contributors
+# Copyright (c) 2017-2024 OpenWG.Utils Contributors
 
 #
 # CMake
@@ -21,7 +21,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE STRING "MSVC Runtime Library")
 
-option(BUILD_TESTS               "Build Tests"               ON)
+option(BUILD_TESTS               "Build Tests"               OFF)
 option(BUILD_DEMOS               "Build Demos"               OFF)
 
 option(BUILD_MODULE_BWXML        "Build module BWXML"        ON)

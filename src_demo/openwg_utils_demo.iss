@@ -2,10 +2,11 @@
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
 #define APP_WEBSITE    "https://gitlab.com/openwg/openwg.utils"
-#define APP_VERSION    "23.12.13.1"
+#define APP_VERSION    "24.2.2.1"
 #define APP_DIR_UNINST "openwg_uninst"
 
-#define WOT_VERSION_PATTERN "1.23.0.*"
+#define VERSION_PATTERN_WG    "1.23.1.*"
+#define VERSION_PATTERN_LESTA "1.24.0.*"
 
 #define OPENWGUTILS_DIR_SRC    "..\bin"
 #define OPENWGUTILS_DIR_UNINST APP_DIR_UNINST
@@ -84,8 +85,10 @@ Name: "ru"; MessagesFile: "compiler:Languages/Russian.isl";
 [CustomMessages]
 en.open_website=Open Website
 ru.open_website=Открыть сайт
-en.version_not_match=This client is not supported.%n%nThis installer only supports WoT v{#WOT_VERSION_PATTERN}
-ru.version_not_match=Выбранный клиент не поддерживается.%n%nЭтот установщик поддерживает только WoT v{#WOT_VERSION_PATTERN}
+en.version_not_match_lesta=This client is not supported.%n%nThis installer only supports MT v{#VERSION_PATTERN_LESTA}
+ru.version_not_match_lesta=Выбранный клиент не поддерживается.%n%nЭтот установщик поддерживает только MT v{#VERSION_PATTERN_LESTA}
+en.version_not_match_wg=This client is not supported.%n%nThis installer only supports WoT v{#VERSION_PATTERN_WG}
+ru.version_not_match_wg=Выбранный клиент не поддерживается.%n%nЭтот установщик поддерживает только WoT v{#VERSION_PATTERN_WG}
 en.client_started=The selected client is running.%n%nDo you want to terminate the selected client?
 ru.client_started=Выбранный клиент запущен.%n%nЖелаете ли вы закрыть выбранный клиент?
 
@@ -107,10 +110,10 @@ var
 
 function CHECK_IsLesta(): Boolean;
 var
-  Flavour: Integer;
+  Vendor: Integer;
 begin
-  Flavour := WotList_Selected_Record(WotList).LauncherFlavour
-  Result := Flavour = 4;
+  Vendor := WotList_Selected_Record(WotList).Vendor;
+  Result := Vendor = 2;
 end;
 
 
@@ -247,10 +250,17 @@ begin
   Result := True;
 
   // check for version
-  if not WotList_Selected_VersionMatch(WotList, '{#WOT_VERSION_PATTERN}') then
+  if CHECK_IsLesta() and not WotList_Selected_VersionMatch(WotList, '{#VERSION_PATTERN_LESTA}') then
   begin
-    MsgBox(ExpandConstant('{cm:version_not_match}'), mbError, MB_OK);
     Result := False;
+    MsgBox(ExpandConstant('{cm:version_not_match_lesta}'), mbError, MB_OK);
+    Exit;
+  end;
+  
+  if not CHECK_IsLesta() and not WotList_Selected_VersionMatch(WotList, '{#VERSION_PATTERN_WG}') then
+  begin
+    Result := False;
+    MsgBox(ExpandConstant('{cm:version_not_match_lesta}'), mbError, MB_OK);
     Exit;
   end;
 

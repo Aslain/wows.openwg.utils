@@ -48,6 +48,10 @@ namespace OpenWG::Utils::WoT {
         return m_type;
     }
 
+    ClientVendor ClientWoT::GetVendor() const {
+        return m_vendor;
+    }
+
     std::wstring ClientWoT::GetPathMods() const {
         return m_path_mods;
     }
@@ -220,6 +224,7 @@ namespace OpenWG::Utils::WoT {
                 auto realm = doc.select_node(L"/version.xml/meta/realm");
                 if (realm) {
                     m_realm = String::Trim(realm.node().first_child().value());
+                    m_vendor = (m_realm == L"RU" || m_realm == L"RPT") ? WoT_Vendor_Lesta : WoT_Vendor_WG;
                 }
 
                 // version & branch
@@ -254,6 +259,9 @@ namespace OpenWG::Utils::WoT {
                         m_branch = WoT_Branch_SuperTest;
                     } else if (type == L"SB") {
                         m_branch = WoT_Branch_Sandbox;
+                    }
+                    if(m_realm == L"RPT"){
+                        m_branch  = WoT_Branch_CommonTest;
                     }
                 }
             }

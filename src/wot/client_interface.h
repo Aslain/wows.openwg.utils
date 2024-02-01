@@ -28,6 +28,8 @@ namespace OpenWG::Utils::WoT {
 
         [[nodiscard]] virtual ClientType GetType() const = 0;
 
+        [[nodiscard]] virtual ClientVendor GetVendor() const = 0;
+
         [[nodiscard]] virtual std::wstring GetVersionClient() const = 0;
 
         [[nodiscard]] virtual std::wstring GetVersionExe() const = 0;
