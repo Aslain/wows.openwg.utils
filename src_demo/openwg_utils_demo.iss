@@ -260,7 +260,7 @@ begin
   if not CHECK_IsLesta() and not WotList_Selected_VersionMatch(WotList, '{#VERSION_PATTERN_WG}') then
   begin
     Result := False;
-    MsgBox(ExpandConstant('{cm:version_not_match_lesta}'), mbError, MB_OK);
+    MsgBox(ExpandConstant('{cm:version_not_match_wg}'), mbError, MB_OK);
     Exit;
   end;
 
