@@ -18,18 +18,24 @@ namespace OpenWG::Utils::WoT {
     }
 
     bool LauncherStandalone::AddClient(const std::filesystem::path& path) {
-        if (!exists(path)) {
+        auto client = std::make_shared<ClientWoT>(path, GetFlavour());
+        if (!client || !client->IsValid()) {
             return false;
         }
 
-        auto client = std::make_shared<ClientWoT>(path, GetFlavour());
-        if (!client || !client->IsValid()) {
+        return AddClient(client);
+    }
+
+
+    bool LauncherStandalone::AddClient(const std::shared_ptr<ClientWoT>& client) {
+        if(!client || !client->IsValid()){
             return false;
         }
 
         m_clients.push_back(client);
         return true;
     }
+
 
     size_t LauncherStandalone::Rescan() {
         m_clients.clear();

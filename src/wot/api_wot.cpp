@@ -21,7 +21,9 @@ using namespace OpenWG::Utils::WoT;
 // globals
 //
 
-LauncherFlavour g_launcher_default = LauncherFlavour::Launcher_Flavour_WGC;
+int32_t g_vendor_default = ClientVendor::WoT_Vendor_WG;
+int32_t g_vendor_filter = ClientVendor::WoT_Vendor_WG | ClientVendor::WoT_Vendor_Lesta;
+
 std::vector<std::shared_ptr<LauncherInterface>> g_launchers{};
 std::vector<std::shared_ptr<ClientInterface>> g_clients{};
 
@@ -36,6 +38,7 @@ void clients_rescan() {
     for (auto &launcher: g_launchers) {
         launcher->Rescan();
         for (auto &client: launcher->GetClients()) {
+            // check that it is already existing
             bool exists = false;
             for (auto &client_existing: g_clients) {
                 if (std::filesystem::equivalent(client_existing->GetPath(), client->GetPath())) {
@@ -43,16 +46,24 @@ void clients_rescan() {
                     break;
                 }
             }
-            if (!exists) {
-                g_clients.push_back(client);
+            if (exists) {
+                continue;
             }
+
+            // check for filter
+            if ((client->GetVendor() & g_vendor_filter) == 0) {
+                continue;
+            }
+
+            // add client
+            g_clients.push_back(client);
         }
     }
 }
 
 void launchers_init() {
     if (g_launchers.empty()) {
-        g_launchers = OpenWG::Utils::WoT::LauncherFactory::getLaunchers(g_launcher_default);
+        g_launchers = OpenWG::Utils::WoT::LauncherFactory::getLaunchers(static_cast<ClientVendor>(g_vendor_default));
         clients_rescan();
     }
 }
@@ -81,7 +92,17 @@ int32_t WOT_AddClientW(const wchar_t *path) {
                     continue;
                 }
 
-                if (launcher->AddClient(path)) {
+                // create client
+                auto client = std::make_shared<ClientWoT>(path, launcher->GetFlavour());
+                if (!client->IsValid()) {
+                    break;
+                }
+                if ((client->GetVendor() & g_vendor_filter) == 0) {
+                    break;
+                }
+
+                // connect to launcher
+                if (dynamic_cast<LauncherStandalone &>(*launcher).AddClient(client)) {
                     g_clients.push_back(launcher->GetClients().back());
                     result = g_clients.size() - 1;
                     break;
@@ -117,10 +138,16 @@ int32_t WOT_LauncherRescan() {
 }
 
 
-int32_t WOT_LauncherSetDefault(int32_t launcher_flavour) {
-    g_launcher_default = static_cast<LauncherFlavour>(launcher_flavour);
+int32_t WOT_LauncherSetDefault(int32_t vendor_filter, int32_t vendor_default) {
+    g_vendor_filter = vendor_filter;
+    g_vendor_default = vendor_default;
+    if ((g_vendor_default & g_vendor_filter) == 0) {
+        g_vendor_default = g_vendor_filter;
+    }
+
     return WOT_LauncherRescan();
 }
+
 
 int32_t WOT_ClientFind(const wchar_t *path) {
     int32_t result{-1};

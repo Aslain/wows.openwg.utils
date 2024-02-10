@@ -29,8 +29,8 @@ enum ClientType {
 
 enum ClientVendor {
     WoT_Vendor_Unknown = 0,
-    WoT_Vendor_WG = 1,
-    WoT_Vendor_Lesta = 2,
+    WoT_Vendor_WG      = 1 << 0,
+    WoT_Vendor_Lesta   = 1 << 1,
 };
 
 enum LauncherFlavour {
@@ -69,11 +69,13 @@ XVMEXT_API_CALL int32_t WOT_LauncherGetPreferredClient(int32_t launcher_flavour)
 XVMEXT_API_CALL int32_t WOT_LauncherRescan();
 
 /**
- * Set default launcher flavour and rescan for new clients
+ * Set vendor filter and vendor priority
+ * @param vendor_filter   bitmask of allowed vendors
+ * @param vendor_priority select vendor which should be displayed first
  * @note it deletes all manually added clients and may change clients order
  * @return number of found clients
  */
-XVMEXT_API_CALL int32_t WOT_LauncherSetDefault(int32_t launcher_flavour);
+XVMEXT_API_CALL int32_t WOT_LauncherSetDefault(int32_t vendor_filter, int32_t vendor_default);
 
 /**
  * Find client by its path

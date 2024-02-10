@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <chrono>
 #include <filesystem>
 #include <string>
 #include <vector>
@@ -24,6 +25,8 @@ namespace OpenWG::Utils::Splashscreen {
 
         bool Close();
 
+        bool CloseAfter(int msecs);
+
     private:
 
         bool registerClass();
@@ -35,6 +38,7 @@ namespace OpenWG::Utils::Splashscreen {
     private:
         HBITMAP m_bitmap{};
         HWND m_window{};
+        std::chrono::high_resolution_clock::time_point m_time;
 
     private:
         static constexpr const wchar_t* m_className = L"SplashScreenWindow";

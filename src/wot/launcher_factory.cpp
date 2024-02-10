@@ -65,11 +65,11 @@ namespace OpenWG::Utils::WoT {
         // Public
         //
 
-        std::vector<std::shared_ptr<LauncherInterface>> getLaunchers(LauncherFlavour default_flavour) {
+        std::vector<std::shared_ptr<LauncherInterface>> getLaunchers(ClientVendor vendor_default) {
             std::vector<std::shared_ptr<LauncherInterface>> result{};
 
             //get default launcher
-            auto info_default = getLauncherInfo(default_flavour);
+            auto info_default = getLauncherInfo(vendor_default == WoT_Vendor_Lesta ? Launcher_Flavour_LGC : Launcher_Flavour_WGC);
             if (info_default.has_value()) {
                 auto launcher = getLauncher(info_default.value());
                 if (launcher) {

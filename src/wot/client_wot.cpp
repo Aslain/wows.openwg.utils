@@ -17,7 +17,8 @@ namespace OpenWG::Utils::WoT {
 
 
     bool ClientWoT::IsValid() const {
-        return Filesystem::Exists(m_path / "app_type.xml") &&
+        return Filesystem::Exists(m_path) &&
+               Filesystem::Exists(m_path / "app_type.xml") &&
                Filesystem::Exists(m_path / "game_info.xml") &&
                Filesystem::Exists(m_path / "paths.xml") &&
                Filesystem::Exists(m_path / "version.xml") &&

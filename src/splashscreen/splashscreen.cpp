@@ -96,13 +96,7 @@ namespace OpenWG::Utils::Splashscreen {
             }
         }
         setBitmap();
-
-        return true;
-    }
-
-    bool SplashScreen::Close() {
-        DestroyWindow(m_window);
-        m_window = nullptr;
+        m_time = std::chrono::high_resolution_clock::now();
         return true;
     }
 
@@ -114,6 +108,23 @@ namespace OpenWG::Utils::Splashscreen {
         std::this_thread::sleep_for(std::chrono::seconds(seconds));
         return Close();
     }
+
+
+    bool SplashScreen::Close() {
+        DestroyWindow(m_window);
+        m_window = nullptr;
+        return true;
+    }
+
+
+    bool SplashScreen::CloseAfter(int msecs)
+    {
+        while (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - m_time).count() < msecs) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        }
+        return Close();
+    }
+
 
     bool SplashScreen::registerClass() {
         WNDCLASSW windowClass{};

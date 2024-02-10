@@ -39,6 +39,22 @@ begin
 end;
 
 
+// SPLASHSCREEN/CloseAfter
+function SPLASHSCREEN_CloseAfter_I(Handle: Integer; Msecs: Integer): Boolean;
+external 'SPLASHSCREEN_CloseAfter@files:openwg.utils.dll cdecl setuponly';
+
+function SPLASHSCREEN_CloseAfter_U(Handle: Integer; Msecs: Integer): Boolean;
+external 'SPLASHSCREEN_CloseAfter@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function SPLASHSCREEN_CloseAfter(Handle: Integer; Msecs: Integer): Boolean;
+begin
+    if IsUninstaller() then
+        Result := SPLASHSCREEN_CloseAfter_U(Handle, Msecs)
+    else
+        Result := SPLASHSCREEN_CloseAfter_I(Handle, Msecs)
+end;
+
+
 //SPLASHSCREEN/Show
 function SPLASHSCREEN_ShowW_I(FileName: String): Integer;
 external 'SPLASHSCREEN_ShowW@files:openwg.utils.dll cdecl setuponly';

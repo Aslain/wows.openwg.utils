@@ -88,18 +88,20 @@ end;
 
 
 // WOT/LauncherSetDefault
-function WOT_LauncherSetDefault_I(LauncherFlavour: Integer): Integer;
+function WOT_LauncherSetDefault_I(VendorFilter: Integer; VendorPriority: Integer): Integer;
 external 'WOT_LauncherSetDefault@files:openwg.utils.dll cdecl setuponly';
 
-function WOT_LauncherSetDefault_U(LauncherFlavour: Integer): Integer;
+function WOT_LauncherSetDefault_U(VendorFilter: Integer; VendorPriority: Integer): Integer;
 external 'WOT_LauncherSetDefault@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
 
-function WOT_LauncherSetDefault(LauncherFlavour: Integer): Integer;
+// filter  : 1 - WG, 2 - Lesta, 3 - WG + Lesta
+// priority: 1 - WG, 2 - Lesta
+function WOT_LauncherSetDefault(VendorFilter: Integer; VendorPriority: Integer): Integer;
 begin
     if IsUninstaller() then
-        Result := WOT_LauncherSetDefault_U(LauncherFlavour)
+        Result := WOT_LauncherSetDefault_U(VendorFilter, VendorPriority)
     else
-        Result := WOT_LauncherSetDefault_I(LauncherFlavour)
+        Result := WOT_LauncherSetDefault_I(VendorFilter, VendorPriority)
 end;
 
 

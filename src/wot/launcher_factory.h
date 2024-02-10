@@ -7,6 +7,6 @@
 
 namespace OpenWG::Utils::WoT {
     namespace LauncherFactory {
-        std::vector<std::shared_ptr<LauncherInterface>> getLaunchers(LauncherFlavour default_flavour);
+        std::vector<std::shared_ptr<LauncherInterface>> getLaunchers(ClientVendor vendor_default);
     }
 }

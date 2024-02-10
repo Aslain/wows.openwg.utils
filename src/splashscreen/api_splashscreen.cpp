@@ -51,3 +51,17 @@ bool SPLASHSCREEN_Close(void* object){
 
     return result;
 }
+
+
+bool SPLASHSCREEN_CloseAfter(void* object, int msecs) {
+    bool result = false;
+
+    if (object) {
+        auto* obj = reinterpret_cast<SplashScreen*>(object);
+        obj->CloseAfter(msecs);
+        delete obj;
+        result = true;
+    }
+
+    return result;
+}

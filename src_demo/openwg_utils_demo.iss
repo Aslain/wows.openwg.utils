@@ -1,8 +1,8 @@
-// SPDX-License-Identifier: MIT
-// Copyright (c) 2017-2022 OpenWG.Utils Contributors
+﻿// SPDX-License-Identifier: MIT
+// Copyright (c) 2017-2024 OpenWG.Utils Contributors
 
 #define APP_WEBSITE    "https://gitlab.com/openwg/openwg.utils"
-#define APP_VERSION    "24.2.2.1"
+#define APP_VERSION    "24.2.10.1"
 #define APP_DIR_UNINST "openwg_uninst"
 
 #define VERSION_PATTERN_WG    "1.23.1.*"
@@ -14,7 +14,7 @@
 #include "..\innosetup\openwg.utils.iss"
 
 [Setup]
-AppCopyright    = "2022 © OpenWG Contributors"
+AppCopyright    = "2017-2024 © OpenWG Contributors"
 AppId           = {{f1810aeb-356e-4b4d-aa6a-b380f67b1a9e}
 AppName         = OpenWG Utils Demo
 AppPublisher    = OpenWG Contributors
@@ -139,9 +139,19 @@ end;
 //
 
 function InitializeSetup: Boolean;
+var
+  SplashHandle: Integer;
 begin
+  // display splash screen
   ExtractTemporaryFile('splashscreen.png');
-  SPLASHSCREEN_ShowSplashScreenW(ExpandConstant('{tmp}\splashscreen.png'), 3);
+  SplashHandle := SPLASHSCREEN_Show(ExpandConstant('{tmp}\splashscreen.png'));
+
+  // set filter
+  WOT_LauncherSetDefault(1, 1);
+
+  // hide splash screen after 3000ms
+  SPLASHSCREEN_CloseAfter(SplashHandle, 3000);
+
   Result := True;
 end;
 
@@ -283,4 +293,3 @@ begin
     wpSelectDir: Result := NextButtonClick_wpSelectDir();
   end;
 end;
-
