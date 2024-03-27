@@ -73,7 +73,7 @@ namespace OpenWG::Utils::Splashscreen {
         }
 
         //swap R and B channels
-        if (path.extension() == L".bmp") {
+        if (path.extension() == L".bmp" || path.extension() == L".png") {
             for (int idx = 0; idx < image_width * image_height * channels; idx += channels) {
                 std::swap(data[idx], data[idx + 2]);
             }
