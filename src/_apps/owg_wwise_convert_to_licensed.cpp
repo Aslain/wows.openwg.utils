@@ -15,7 +15,7 @@
 //
 
 int main(int argc, char* argv[]) {
-    std::cout << "OpenWG.Utils: WWISE license converter" << std::endl;
+    std::cout << "OpenWG.Utils: WWISE license converter (unlicensed->licensed)" << std::endl;
     std::cout << "Converting " << argc - 1 << " files" << std::endl;
     for (size_t idx = 1; idx < argc; idx++) {
         std::filesystem::path filepath(argv[idx]);

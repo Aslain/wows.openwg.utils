@@ -2,7 +2,7 @@
 ###       Test: JSON        ###
 ###############################
 
-function(create_demo name)
+function(create_app name)
   add_executable(${name})
   target_sources(${name} PRIVATE ${name}.cpp)
   target_link_libraries(${name} PRIVATE openwg.utils)
@@ -24,6 +24,8 @@ function(create_demo name)
 endfunction()
 
 
-create_demo(demo_wot)
-create_demo(wwise_convert_to_wg)
-create_demo(wwise_convert_to_unlicensed)
+create_app(owg_bwxml_unpack)
+create_app(owg_wot_detect)
+create_app(owg_wwise_convert_to_unlicensed)
+create_app(owg_wwise_convert_to_licensed)
+

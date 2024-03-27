@@ -21,8 +21,8 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE STRING "MSVC Runtime Library")
 
-option(BUILD_TESTS               "Build Tests"               OFF)
-option(BUILD_DEMOS               "Build Demos"               OFF)
+option(BUILD_TESTS               "Build Tests"              OFF)
+option(BUILD_APPS                "Build Apps"                ON)
 
 option(BUILD_MODULE_BWXML        "Build module BWXML"        ON)
 option(BUILD_MODULE_FS           "Build module FS"           ON)
@@ -232,11 +232,11 @@ set_target_properties(openwg.utils PROPERTIES MINSIZEREL_POSTFIX     ".${XVMEXT_
 
 
 #
-# Demo
+# Apps
 #
 
-if(BUILD_DEMOS)
-    add_subdirectory(_demo)
+if(BUILD_APPS)
+    add_subdirectory(_apps)
 endif()
 
 

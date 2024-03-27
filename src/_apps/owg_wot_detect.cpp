@@ -39,18 +39,31 @@ std::wstring describe_client_type(int32_t type){
     }
 }
 
+std::wstring describe_client_vendor(int32_t type){
+    switch(type) {
+        case ClientVendor::WoT_Vendor_Unknown:
+            return L"unknown";
+        case ClientVendor::WoT_Vendor_WG:
+            return L"WG";
+        case ClientVendor::WoT_Vendor_Lesta:
+            return L"Lesta";
+        default:
+            return std::to_wstring(type);
+    }
+}
+
 std::wstring describe_launcher_flavour(int32_t flavour){
     switch(flavour) {
         case LauncherFlavour::Launcher_Flavour_Unknown:
             return L"unknown";
-        case LauncherFlavour::Launcher_Flavour_WG:
-            return L"WG";
+        case LauncherFlavour::Launcher_Flavour_WGC:
+            return L"WGC";
         case LauncherFlavour::Launcher_Flavour_China360:
             return L"360";
         case LauncherFlavour::Launcher_Flavour_Steam:
             return L"Steam";
-        case LauncherFlavour::Launcher_Flavour_Lesta:
-            return L"Lesta";
+        case LauncherFlavour::Launcher_Flavour_LGC:
+            return L"LGC";
         case LauncherFlavour::Launcher_Flavour_Standalone:
             return L"Standalone";
         default:
@@ -65,27 +78,7 @@ int main() {
 
     wchar_t buffer[1024]{};
 
-    std::wstring version_pattern{L"1.21.1.*"};
-
-    //WOT_LauncherSetDefault(Launcher_Flavour_Standalone);
-
-    std::wcout << L"WoT version pattern              :" << version_pattern << std::endl;
-
     std::wcout << L"WoT clients count                : " << WOT_GetClientsCount() << std::endl;
-
-    std::wcout << L"WoT preferred client (Unknown)   : " << WOT_LauncherGetPreferredClient(Launcher_Flavour_Unknown)
-               << std::endl;
-    std::wcout << L"WoT preferred client (WG)        : " << WOT_LauncherGetPreferredClient(Launcher_Flavour_WG)
-               << std::endl;
-    std::wcout << L"WoT preferred client (360)       : " << WOT_LauncherGetPreferredClient(Launcher_Flavour_China360)
-               << std::endl;
-    std::wcout << L"WoT preferred client (Steam)     : " << WOT_LauncherGetPreferredClient(Launcher_Flavour_Steam)
-               << std::endl;
-    std::wcout << L"WoT preferred client (Lesta)     : " << WOT_LauncherGetPreferredClient(Launcher_Flavour_Lesta)
-               << std::endl;
-    std::wcout << L"WoT preferred client (Standalone): " << WOT_LauncherGetPreferredClient(Launcher_Flavour_Standalone)
-               << std::endl;
-    std::wcout << std::endl;
 
     for (int i = 0; i < WOT_GetClientsCount(); i++) {
 
@@ -101,6 +94,8 @@ int main() {
         WOT_GetClientPathResmodsW(buffer, std::size(buffer), i);
         std::wcout << L"Client Path Resmods : " << buffer << std::endl;
 
+
+        std::wcout << L"Client Vendor       : " << describe_client_vendor(WOT_GetClientVendor(i)) << std::endl;
         std::wcout << L"Client Launcher     : " << describe_launcher_flavour(WOT_GetClientLauncherFlavour(i)) << std::endl;
         std::wcout << L"Client Branch       : " << describe_client_branch(WOT_GetClientBranch(i)) << std::endl;
         std::wcout << L"Client Type         : " << describe_client_type(WOT_GetClientType(i)) << std::endl;
@@ -119,8 +114,6 @@ int main() {
 
         std::wcout << L"Client Started      : " << WOT_ClientIsStarted(i) << std::endl;
         std::wcout << L"Client Terminated   : " << WOT_ClientTerminate(i) << std::endl;
-
-        std::wcout << L"Version match       : " << WOT_ClientIsVersionMatch(i, version_pattern.c_str()) << std::endl;
 
         std::wcout << std::endl;
     }
