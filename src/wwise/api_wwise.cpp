@@ -64,6 +64,21 @@ int32_t WWISE_LicenseGet(void *object) {
     return result;
 }
 
+int32_t WWISE_VersionGet(void* object) {
+    int32_t result = WwiseLicense_Unknown;
+    if (object) {
+        auto* obj = reinterpret_cast<Bank*>(object);
+        SectionBKHD bkhd = obj->BKHD();
+        for (auto& license : g_licenses) {
+            if (bkhd.Decrypt(license.second)) {
+                result = bkhd.GetVersion();
+                break;
+            }
+        }
+    }
+    return result;
+}
+
 bool WWISE_LicenseSet(void *object, int32_t license) {
     if(!object){
         return false;

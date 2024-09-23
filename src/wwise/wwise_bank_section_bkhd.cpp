@@ -56,7 +56,8 @@ namespace OpenWG::Utils::WWISE {
     }
 
     bool SectionBKHD::Decrypt(const License &license) {
-        if ((dwBankGeneratorVersion ^ license.m_key[0]) != 0x87) {
+        if ((dwBankGeneratorVersion ^ license.m_key[0]) != 135  //v2019.2
+            && (dwBankGeneratorVersion ^ license.m_key[0]) != 150) { //v2023.1
             return false;
         }
 

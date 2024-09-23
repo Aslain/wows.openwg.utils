@@ -37,6 +37,8 @@ XVMEXT_API_CALL bool WWISE_Close(void* object);
 
 XVMEXT_API_CALL int32_t WWISE_LicenseGet(void* object);
 
+XVMEXT_API_CALL int32_t WWISE_VersionGet(void* object);
+
 XVMEXT_API_CALL bool WWISE_LicenseSet(void* object, int32_t license);
 
 XVMEXT_API_CALL bool WWISE_BKHD_ProjectId_Set(void* object, uint32_t project_id);
