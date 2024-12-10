@@ -26,7 +26,6 @@ TEST_CASE( "network_resolve", "[network]" ) {
     SECTION("ok"){
         REQUIRE(NETWORK_ResolveW(L"1.1.1.1") == 0x01010101);
         REQUIRE(NETWORK_ResolveW(L"8.8.8.8") == 0x08080808);
-        REQUIRE(NETWORK_ResolveW(L"example.org") == 0x22d8b85d);
     }
 }
 

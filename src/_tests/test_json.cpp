@@ -132,8 +132,9 @@ TEST_CASE( "json_get_string", "[json]"){
 
     SECTION("level_1") {
         auto *ptr = JSON_OpenStringW(L"{\"meow\":\"meow\"}");
-        wchar_t buf[256]{};
+        REQUIRE(ptr);
 
+        wchar_t buf[256]{};
         REQUIRE_FALSE(JSON_GetStringW(ptr, L"gaw", buf, sizeof(buf)));
         REQUIRE(JSON_GetStringW(ptr, L"meow", buf, sizeof(buf)));
         REQUIRE(wcscmp(buf, L"meow") == 0);
