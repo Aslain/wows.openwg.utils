@@ -26,7 +26,7 @@ option(BUILD_APPS                "Build Apps"                ON)
 
 option(BUILD_MODULE_BWXML        "Build module BWXML"        ON)
 option(BUILD_MODULE_FS           "Build module FS"           ON)
-option(BUILD_MODULE_IMAGEDRAW    "Build module ImageDraw"    ON)
+option(BUILD_MODULE_IMAGE        "Build module Image"        ON)
 option(BUILD_MODULE_JSON         "Build module JSON"         ON)
 option(BUILD_MODULE_NETWORK      "Build module Network"      ON)
 option(BUILD_MODULE_PROCESS      "Build module Process"      ON)
@@ -43,7 +43,9 @@ option(BUILD_MODULE_XML          "Build module XML"          ON)
 # Library
 #
 
-add_library(openwg.utils SHARED)
+add_library(openwg.utils SHARED
+        image/image_winapi.h
+        image/image_winapi.cpp)
 
 # Common
 file(GLOB srcs CONFIGURE_DEPENDS
@@ -88,16 +90,17 @@ if(BUILD_MODULE_FS)
     file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
 endif()
 
-# ImageDraw
-if(BUILD_MODULE_IMAGEDRAW)
+# Image
+if(BUILD_MODULE_IMAGE)
     file(GLOB srcs CONFIGURE_DEPENDS
-        "imagedraw/*.cpp"
-        "imagedraw/*.h"
+        "image/*.cpp"
+        "image/*.h"
     )
     target_sources(openwg.utils PRIVATE ${srcs})
     include(_cmake/cpm-lodepng.cmake)
     target_link_libraries(openwg.utils PUBLIC lodepng)
-    file(READ imagedraw/api_imagedraw.iss CONTENTS)
+    target_link_libraries(openwg.utils PUBLIC stb)
+    file(READ image/api_image.iss CONTENTS)
     file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
 endif()
 
@@ -156,7 +159,6 @@ if(BUILD_MODULE_SPLASHSCREEN)
     )
     target_sources(openwg.utils PRIVATE ${srcs})
     include(_cmake/cpm-stb.cmake)
-    target_link_libraries(openwg.utils PUBLIC stb)
     file(READ splashscreen/api_splashscreen.iss CONTENTS)
     file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
 endif()

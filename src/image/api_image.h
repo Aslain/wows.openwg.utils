@@ -11,6 +11,10 @@ extern "C" {
 
 XVMEXT_API_CALL void IMAGEDRAW_PngToBmp(_In_ const wchar_t* filename);
 
+XVMEXT_API_CALL void* IMAGE_LoadBitmapW(_In_ const wchar_t* filename);
+
+XVMEXT_API_CALL bool IMAGE_FreeBitmapW(_In_ void* bitmap);
+
 #ifdef __cplusplus
 }
 #endif

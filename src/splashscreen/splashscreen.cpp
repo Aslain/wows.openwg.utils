@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
-
-#define STBI_WINDOWS_UTF8
-#include <stb_image.h>
-
 #include <thread>
 
 #include "splashscreen/splashscreen.h"
+#include "image/image_winapi.h"
 
 
 namespace OpenWG::Utils::Splashscreen {
@@ -57,32 +54,17 @@ namespace OpenWG::Utils::Splashscreen {
 
     SplashScreen::~SplashScreen() {
         Close();
+        Image::FreeBitmap(m_bitmap);
     }
 
-    bool SplashScreen::Load(const std::filesystem::path &path) {
-        int image_width = 0, image_height = 0, channels = 0;
-
-        char buffer[500]{};
-#if defined(_MSC_VER)
-        stbi_convert_wchar_to_utf8(buffer, sizeof(buffer), path.wstring().c_str());
-#endif
-
-        unsigned char *data = stbi_load(buffer, &image_width, &image_height, &channels, 4);
-        if (!data) {
-            return false;
+    bool SplashScreen::Load(const std::filesystem::path &path)
+    {
+        if (m_bitmap)
+        {
+            Image::FreeBitmap(m_bitmap);
         }
-
-        //swap R and B channels
-        if (path.extension() == L".bmp" || path.extension() == L".png") {
-            for (int idx = 0; idx < image_width * image_height * channels; idx += channels) {
-                std::swap(data[idx], data[idx + 2]);
-            }
-        }
-
-        m_bitmap = CreateBitmap(image_width, image_height, 1, 32, data);
-        stbi_image_free(data);
-
-        return true;
+        m_bitmap = static_cast<HBITMAP>(Image::LoadToBitmap(path));
+        return m_bitmap != nullptr;
     }
 
     bool SplashScreen::Show() {

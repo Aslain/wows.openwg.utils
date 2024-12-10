@@ -3,14 +3,9 @@
 
 #pragma once
 
-#include "api_imagedraw.h"
-
 #include <string>
 
-class ImageDraw
+namespace OpenWG::Utils::Image
 {
-public:
-
-    static void PngToBmp(const std::wstring& filename);
-
+    void PngToBmp(const std::wstring& filename);
 };
