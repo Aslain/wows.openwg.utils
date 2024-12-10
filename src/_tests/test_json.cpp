@@ -135,8 +135,8 @@ TEST_CASE( "json_get_string", "[json]"){
         REQUIRE(ptr);
 
         wchar_t buf[256]{};
-        REQUIRE_FALSE(JSON_GetStringW(ptr, L"gaw", buf, sizeof(buf)));
-        REQUIRE(JSON_GetStringW(ptr, L"meow", buf, sizeof(buf)));
+        REQUIRE_FALSE(JSON_GetStringW(ptr, L"gaw", buf, std::size(buf)));
+        REQUIRE(JSON_GetStringW(ptr, L"meow", buf, std::size(buf)));
         REQUIRE(wcscmp(buf, L"meow") == 0);
     }
 }
