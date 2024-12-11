@@ -6,6 +6,7 @@
 //
 
 // stdlib
+#include <array>
 #include <filesystem>
 
 // winapi
@@ -25,17 +26,150 @@
 
 namespace OpenWG::Utils::Image
 {
-    void* LoadToBitmap(const wchar_t* filename)
+    //
+    // Bitmap
+    //
+
+    bool BitmapAlphaPremultiply(HBITMAP h_bitmap)
+    {
+        if (!h_bitmap)
+        {
+            return false;
+        }
+
+        auto h_dc = GetDC(nullptr);
+        if (!h_dc)
+        {
+            return false;
+        }
+
+        BITMAP bm{};
+        GetObjectW(h_bitmap, sizeof(bm), &bm);
+
+        std::vector<uint8_t> bitmap_info_arr( 256 * sizeof(RGBQUAD));
+        auto* bitmap_info = reinterpret_cast<BITMAPINFO*>(bitmap_info_arr.data());
+        bitmap_info->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+
+        BOOL bRes = GetDIBits(h_dc, h_bitmap, 0, bm.bmHeight, nullptr, bitmap_info, DIB_RGB_COLORS);
+        if (!bRes || bitmap_info->bmiHeader.biBitCount != 32) {
+            ReleaseDC(nullptr, h_dc);
+            return false;
+        }
+
+        std::vector<DWORD> bit_data(bm.bmWidth * bm.bmHeight);
+
+        LPBYTE pData = reinterpret_cast<LPBYTE>(bit_data.data());
+
+        GetDIBits(h_dc, h_bitmap, 0, bm.bmHeight, pData, bitmap_info, DIB_RGB_COLORS);
+        for (int y = 0; y < bm.bmHeight; y++) {
+            for (int x = 0; x < bm.bmWidth; x++) {
+                pData[0] = (BYTE) ((DWORD) pData[0] * pData[3] / 255);
+                pData[1] = (BYTE) ((DWORD) pData[1] * pData[3] / 255);
+                pData[2] = (BYTE) ((DWORD) pData[2] * pData[3] / 255);
+                pData += 4;
+            }
+        }
+
+        if (SetDIBits(h_dc, h_bitmap, 0, bm.bmHeight, bit_data.data(), bitmap_info, DIB_RGB_COLORS) != bm.bmHeight)
+        {
+            ReleaseDC(nullptr, h_dc);
+            return false;
+        }
+
+        ReleaseDC(nullptr, h_dc);
+        return true;
+    }
+
+    HBITMAP BitmapBlend(HBITMAP im1_bitmap, HBITMAP im2_bitmap)
+    {
+        if (!im1_bitmap || !im2_bitmap)
+        {
+            return nullptr;
+        }
+
+        // Get the dimensions of the bitmaps
+        int im1_w, im1_h, im2_w, im2_h, im3_w, im3_h;
+        if (!BitmapGetSize(im1_bitmap, &im1_w, &im1_h))
+        {
+            return nullptr;
+        }
+        if (!BitmapGetSize(im2_bitmap, &im2_w, &im2_h))
+        {
+            return nullptr;
+        }
+        im3_w = std::max(im1_w, im2_w);
+        im3_h = std::max(im1_h, im2_h);
+
+        // Create a compatible DC
+        HDC hdcScreen = GetDC(nullptr);
+        HDC im1_dc = CreateCompatibleDC(hdcScreen);
+        HDC im2_dc = CreateCompatibleDC(hdcScreen);
+        HDC im3_dc = CreateCompatibleDC(hdcScreen);
+
+        // Select the bitmaps into the DCs
+        HBITMAP im1_bitmap_old = (HBITMAP)SelectObject(im1_dc, im1_bitmap);
+        HBITMAP im2_bitmap_old = (HBITMAP)SelectObject(im2_dc, im2_bitmap);
+
+        // Create a new bitmap for the result
+        HBITMAP im3_bitmap = CreateCompatibleBitmap(hdcScreen, im3_w, im3_h);
+        HBITMAP im3_bitmap_old = (HBITMAP)SelectObject(im3_dc, im3_bitmap);
+
+        // Scale the bitmaps if necessary
+        StretchBlt(im1_dc, 0, 0, im3_w, im3_h, im1_dc, 0, 0, im1_w, im1_h, SRCCOPY);
+        StretchBlt(im2_dc, 0, 0, im3_w, im3_h, im2_dc, 0, 0, im2_w, im2_h, SRCCOPY);
+
+        // Blend the bitmaps
+        BLENDFUNCTION blendFunction;
+        blendFunction.BlendOp = AC_SRC_OVER;
+        blendFunction.BlendFlags = 0;
+        blendFunction.SourceConstantAlpha = 255;
+        blendFunction.AlphaFormat = AC_SRC_ALPHA;
+
+        GdiAlphaBlend(im3_dc, 0, 0, im3_w, im3_h, im1_dc, 0, 0, im3_w, im3_h, blendFunction);
+        GdiAlphaBlend(im3_dc, 0, 0, im3_w, im3_h, im2_dc, 0, 0, im3_w, im3_h, blendFunction);
+
+        // Clean up
+        SelectObject(im1_dc, im1_bitmap_old);
+        SelectObject(im2_dc, im2_bitmap_old);
+        SelectObject(im3_dc, im3_bitmap_old);
+
+        DeleteDC(im1_dc);
+        DeleteDC(im2_dc);
+        DeleteDC(im3_dc);
+        ReleaseDC(nullptr, hdcScreen);
+
+        return im3_bitmap;
+    }
+
+    bool BitmapGetSize(HBITMAP h_bitmap, int* width, int* height)
+    {
+        if (!h_bitmap || !width || !height)
+        {
+            return false;
+        }
+
+        BITMAP bm{};
+        if (GetObjectW(h_bitmap, sizeof(bm), &bm) == 0)
+        {
+            return false;
+        }
+
+        *width = bm.bmWidth;
+        *height = bm.bmHeight;
+        return true;
+    }
+
+    HBITMAP BitmapLoad(const wchar_t* filename)
     {
         if (!filename)
         {
             return nullptr;
         }
 
-        return LoadToBitmap(std::filesystem::path(filename));
+        return BitmapLoad(std::filesystem::path(filename));
     }
 
-    void* LoadToBitmap(const std::filesystem::path& path)
+    HBITMAP BitmapLoad(const std::filesystem::path& path)
     {
         if (!std::filesystem::exists(path))
         {
@@ -65,7 +199,7 @@ namespace OpenWG::Utils::Image
         return result;
     }
 
-    bool FreeBitmap(void* bitmap)
+    bool BitmapFree(HBITMAP bitmap)
     {
         if (!bitmap)
         {
@@ -73,5 +207,28 @@ namespace OpenWG::Utils::Image
         }
 
         return DeleteObject(bitmap) != FALSE;
+    }
+
+    //
+    // Brush
+    //
+
+    HBRUSH BrushCreate(HBITMAP bitmap)
+    {
+        if (!bitmap)
+        {
+            return nullptr;
+        }
+        return CreatePatternBrush(bitmap);
+    }
+
+    bool BrushFree(HBRUSH brush)
+    {
+        if (!brush)
+        {
+            return false;
+        }
+
+        return DeleteObject(brush) != FALSE;
     }
 }

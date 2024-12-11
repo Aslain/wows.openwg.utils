@@ -25,7 +25,7 @@
 Push-Location $PSScriptRoot
 $root = (Get-Location).Path -replace "\\","/"
 
-#Remove-Item -Path ./~output/ -Force -Recurse -ErrorAction SilentlyContinue
+Remove-Item -Path ./~output/ -Force -Recurse -ErrorAction SilentlyContinue
 
 function Build-CppProject($Toolset, $Architecture) {
     New-Item -ItemType Directory -Path ./~build/$Architecture/ -ErrorAction SilentlyContinue

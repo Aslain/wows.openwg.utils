@@ -10,6 +10,9 @@
 // stdlib
 #include <filesystem>
 
+// windows
+#include <windows.h>
+
 
 
 //
@@ -18,7 +21,15 @@
 
 namespace OpenWG::Utils::Image
 {
-    void* LoadToBitmap(const wchar_t* filename);
-    void* LoadToBitmap(const std::filesystem::path& filename);
-    bool FreeBitmap(void* bitmap);
+    // Bitmap
+    bool BitmapAlphaPremultiply(HBITMAP h_bitmap);
+    HBITMAP BitmapBlend(HBITMAP im1_bitmap, HBITMAP im2_bitmap);
+    bool BitmapFree(HBITMAP bitmap);
+    bool BitmapGetSize(HBITMAP h_bitmap, int* width, int* height);
+    HBITMAP BitmapLoad(const wchar_t* filename);
+    HBITMAP BitmapLoad(const std::filesystem::path& filename);
+
+    // Brush
+    HBRUSH BrushCreate(HBITMAP bitmap);
+    bool BrushFree(HBRUSH brush);
 }
