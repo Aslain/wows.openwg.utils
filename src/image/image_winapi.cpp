@@ -209,6 +209,42 @@ namespace OpenWG::Utils::Image
         return DeleteObject(bitmap) != FALSE;
     }
 
+    HBITMAP BitmapResize(HBITMAP bitmap, int width, int height)
+    {
+        // Get the dimensions
+        int width_old, height_old;
+        if (!BitmapGetSize(bitmap, &width_old, &height_old))
+        {
+            return nullptr;
+        }
+
+        // Create a compatible DC for the source bitmap
+        HDC hdcScreen = GetDC(nullptr);
+        HDC hdcSource = CreateCompatibleDC(hdcScreen);
+        HDC hdcDest = CreateCompatibleDC(hdcScreen);
+
+        // Select the source bitmap into the source DC
+        HBITMAP hOldSourceBitmap = (HBITMAP)SelectObject(hdcSource, bitmap);
+
+        // Create a new bitmap for the destination with the desired dimensions
+        HBITMAP hBitmapDest = CreateCompatibleBitmap(hdcScreen, width, height);
+        HBITMAP hOldDestBitmap = (HBITMAP)SelectObject(hdcDest, hBitmapDest);
+
+        // Use StretchBlt to copy and resize the source bitmap into the destination bitmap
+        StretchBlt(hdcDest, 0, 0, width, height, hdcSource, 0, 0, width_old, height_old, SRCCOPY);
+
+        // Clean up and release resources
+        SelectObject(hdcSource, hOldSourceBitmap);
+        SelectObject(hdcDest, hOldDestBitmap);
+        DeleteDC(hdcSource);
+        DeleteDC(hdcDest);
+        ReleaseDC(nullptr, hdcScreen);
+
+        return hBitmapDest;
+    }
+
+
+
     //
     // Brush
     //

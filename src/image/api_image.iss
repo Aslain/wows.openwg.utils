@@ -109,6 +109,23 @@ end;
 
 
 
+// IMAGE/BitmapResize
+function IMAGE_BitmapResize_I(Bitmap: Integer; Width: Integer; Height: Integer): Integer;
+external 'IMAGE_BitmapResize@files:openwg.utils.dll cdecl setuponly';
+
+function IMAGE_BitmapResize_U(Bitmap: Integer; Width: Integer; Height: Integer): Integer;
+external 'IMAGE_BitmapResize@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function IMAGE_BitmapResize(Bitmap: Integer; Width: Integer; Height: Integer): Integer;
+begin
+    if IsUninstaller() then
+        Result := IMAGE_BitmapResize_U(Bitmap, Width, Height)
+    else
+        Result := IMAGE_BitmapResize_I(Bitmap, Width, Height)
+end;
+
+
+
 // IMAGE/BrushCreate
 function IMAGE_BrushCreate_I(Bitmap: Integer): Integer;
 external 'IMAGE_BrushCreate@files:openwg.utils.dll cdecl setuponly';

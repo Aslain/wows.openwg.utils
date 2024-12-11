@@ -53,6 +53,11 @@ XVMEXT_API_CALL void* IMAGE_BitmapLoadW(_In_ const wchar_t* filename){
     return OpenWG::Utils::Image::BitmapLoad(filename);
 }
 
+void* IMAGE_BitmapResize(void* bitmap, int width, int height)
+{
+    return OpenWG::Utils::Image::BitmapResize(static_cast<HBITMAP>(bitmap), width, height);
+}
+
 
 
 //
