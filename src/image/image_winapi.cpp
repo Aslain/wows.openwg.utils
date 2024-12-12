@@ -80,43 +80,32 @@ namespace OpenWG::Utils::Image
         return true;
     }
 
-    HBITMAP BitmapBlend(HBITMAP im1_bitmap, HBITMAP im2_bitmap)
+    bool BitmapBlend(HBITMAP im1_bitmap, HBITMAP im2_bitmap, int dst_x, int dst_y)
     {
         if (!im1_bitmap || !im2_bitmap)
         {
-            return nullptr;
+            return false;
         }
 
         // Get the dimensions of the bitmaps
-        int im1_w, im1_h, im2_w, im2_h, im3_w, im3_h;
+        int im1_w, im1_h, im2_w, im2_h;
         if (!BitmapGetSize(im1_bitmap, &im1_w, &im1_h))
         {
-            return nullptr;
+            return false;
         }
         if (!BitmapGetSize(im2_bitmap, &im2_w, &im2_h))
         {
-            return nullptr;
+            return false;
         }
-        im3_w = std::max(im1_w, im2_w);
-        im3_h = std::max(im1_h, im2_h);
 
         // Create a compatible DC
         HDC hdcScreen = GetDC(nullptr);
         HDC im1_dc = CreateCompatibleDC(hdcScreen);
         HDC im2_dc = CreateCompatibleDC(hdcScreen);
-        HDC im3_dc = CreateCompatibleDC(hdcScreen);
 
         // Select the bitmaps into the DCs
         HBITMAP im1_bitmap_old = (HBITMAP)SelectObject(im1_dc, im1_bitmap);
         HBITMAP im2_bitmap_old = (HBITMAP)SelectObject(im2_dc, im2_bitmap);
-
-        // Create a new bitmap for the result
-        HBITMAP im3_bitmap = CreateCompatibleBitmap(hdcScreen, im3_w, im3_h);
-        HBITMAP im3_bitmap_old = (HBITMAP)SelectObject(im3_dc, im3_bitmap);
-
-        // Scale the bitmaps if necessary
-        StretchBlt(im1_dc, 0, 0, im3_w, im3_h, im1_dc, 0, 0, im1_w, im1_h, SRCCOPY);
-        StretchBlt(im2_dc, 0, 0, im3_w, im3_h, im2_dc, 0, 0, im2_w, im2_h, SRCCOPY);
 
         // Blend the bitmaps
         BLENDFUNCTION blendFunction;
@@ -125,20 +114,23 @@ namespace OpenWG::Utils::Image
         blendFunction.SourceConstantAlpha = 255;
         blendFunction.AlphaFormat = AC_SRC_ALPHA;
 
-        GdiAlphaBlend(im3_dc, 0, 0, im3_w, im3_h, im1_dc, 0, 0, im3_w, im3_h, blendFunction);
-        GdiAlphaBlend(im3_dc, 0, 0, im3_w, im3_h, im2_dc, 0, 0, im3_w, im3_h, blendFunction);
+        GdiAlphaBlend(im1_dc, dst_x, dst_y, im2_w, im2_h, im2_dc, 0, 0, im2_w, im2_h, blendFunction);
 
         // Clean up
         SelectObject(im1_dc, im1_bitmap_old);
         SelectObject(im2_dc, im2_bitmap_old);
-        SelectObject(im3_dc, im3_bitmap_old);
 
         DeleteDC(im1_dc);
         DeleteDC(im2_dc);
-        DeleteDC(im3_dc);
+
         ReleaseDC(nullptr, hdcScreen);
 
-        return im3_bitmap;
+        return true;
+    }
+
+    HBITMAP BitmapClone(HBITMAP bitmap)
+    {
+        return static_cast<HBITMAP>(CopyImage(bitmap, IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR));
     }
 
     bool BitmapGetSize(HBITMAP h_bitmap, int* width, int* height)

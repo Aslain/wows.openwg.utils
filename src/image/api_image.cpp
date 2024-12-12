@@ -20,9 +20,14 @@ XVMEXT_API_CALL bool IMAGE_BitmapAlphaPremultiply(void* bitmap)
     return OpenWG::Utils::Image::BitmapAlphaPremultiply(static_cast<HBITMAP>(bitmap));
 }
 
-XVMEXT_API_CALL void* IMAGE_BitmapBlend(_In_ void* bitmap_1, _In_ void* bitmap_2)
+XVMEXT_API_CALL bool IMAGE_BitmapBlend(_In_ void* bitmap_1, _In_ void* bitmap_2, int dst_x, int dst_y)
 {
-    return OpenWG::Utils::Image::BitmapBlend(static_cast<HBITMAP>(bitmap_1), static_cast<HBITMAP>(bitmap_2));
+    return OpenWG::Utils::Image::BitmapBlend(static_cast<HBITMAP>(bitmap_1), static_cast<HBITMAP>(bitmap_2), dst_x, dst_y);
+}
+
+XVMEXT_API_CALL void* IMAGE_BitmapClone(_In_ void* bitmap)
+{
+    return OpenWG::Utils::Image::BitmapClone(static_cast<HBITMAP>(bitmap));
 }
 
 XVMEXT_API_CALL bool IMAGE_BitmapFree(_In_ void* bitmap)

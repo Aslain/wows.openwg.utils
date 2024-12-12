@@ -23,7 +23,8 @@ namespace OpenWG::Utils::Image
 {
     // Bitmap
     bool BitmapAlphaPremultiply(HBITMAP h_bitmap);
-    HBITMAP BitmapBlend(HBITMAP im1_bitmap, HBITMAP im2_bitmap);
+    bool BitmapBlend(HBITMAP im1_bitmap, HBITMAP im2_bitmap, int dst_x, int dst_y);
+    HBITMAP BitmapClone(HBITMAP bitmap);
     bool BitmapFree(HBITMAP bitmap);
     bool BitmapGetSize(HBITMAP h_bitmap, int* width, int* height);
     HBITMAP BitmapLoad(const wchar_t* filename);

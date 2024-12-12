@@ -22,7 +22,9 @@ extern "C" {
 
 XVMEXT_API_CALL bool IMAGE_BitmapAlphaPremultiply(_In_ void* bitmap);
 
-XVMEXT_API_CALL void* IMAGE_BitmapBlend(_In_ void* bitmap_1, _In_ void* bitmap_2);
+XVMEXT_API_CALL bool IMAGE_BitmapBlend(_In_ void* bitmap_dst, _In_ void* bitmap_alpha, int dst_x, int dst_y);
+
+XVMEXT_API_CALL void* IMAGE_BitmapClone(_In_ void* bitmap);
 
 XVMEXT_API_CALL bool IMAGE_BitmapFree(_In_ void* bitmap);
 

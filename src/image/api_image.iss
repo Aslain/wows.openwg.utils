@@ -25,20 +25,35 @@ end;
 
 
 // IMAGE/BitmapBlend
-function IMAGE_BitmapBlend_I(Bitmap1: Integer; Bitmap2: Integer): Integer;
+function IMAGE_BitmapBlend_I(Bitmap1: Integer; Bitmap2: Integer; DstX: Integer; DstY: Integer): Boolean;
 external 'IMAGE_BitmapBlend@files:openwg.utils.dll cdecl setuponly';
 
-function IMAGE_BitmapBlend_U(Bitmap1: Integer; Bitmap2: Integer): Integer;
+function IMAGE_BitmapBlend_U(Bitmap1: Integer; Bitmap2: Integer; DstX: Integer; DstY: Integer): Boolean;
 external 'IMAGE_BitmapBlend@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
 
-function IMAGE_BitmapBlend(Bitmap1: Integer; Bitmap2: Integer): Integer;
+function IMAGE_BitmapBlend(Bitmap1: Integer; Bitmap2: Integer; DstX: Integer; DstY: Integer): Boolean;
 begin
     if IsUninstaller() then
-        Result := IMAGE_BitmapBlend_U(Bitmap1, Bitmap2)
+        Result := IMAGE_BitmapBlend_U(Bitmap1, Bitmap2, DstX, DstY)
     else
-        Result := IMAGE_BitmapBlend_I(Bitmap1, Bitmap2)
+        Result := IMAGE_BitmapBlend_I(Bitmap1, Bitmap2, DstX, DstY)
 end;
 
+
+// IMAGE/BitmapClone
+function IMAGE_BitmapClone_I(Bitmap: Integer): Integer;
+external 'IMAGE_BitmapClone@files:openwg.utils.dll cdecl setuponly';
+
+function IMAGE_BitmapClone_U(Bitmap: Integer): Integer;
+external 'IMAGE_BitmapClone@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function IMAGE_BitmapClone(Bitmap: Integer): Integer;
+begin
+    if IsUninstaller() then
+        Result := IMAGE_BitmapClone_U(Bitmap)
+    else
+        Result := IMAGE_BitmapClone_I(Bitmap)
+end;
 
 
 // IMAGE/BitmapFree
