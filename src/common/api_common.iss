@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 // Copyright (c) 2017-2024 OpenWG.Utils Contributors
 
 // directory with OpenWG.Utils installation files, relative to the main .iss file
@@ -15,6 +15,16 @@
 #ifndef OPENWGUTILS_BUF_SIZE
 #define OPENWGUTILS_BUF_SIZE 1024
 #endif
+
+#ifndef OPENWGUTILS_LANG_EN
+#define OPENWGUTILS_LANG_EN 1
+#endif
+
+#ifndef OPENWGUTILS_LANG_RU
+#define OPENWGUTILS_LANG_RU 1
+#endif
+
+
 
 [Files]
 Source: "{#OPENWGUTILS_DIR_SRC}\openwg.utils.x86_32.dll"; DestName: openwg.utils.dll; Flags: ignoreversion dontcopy noencryption;

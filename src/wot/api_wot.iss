@@ -6,20 +6,25 @@
 //
 
 [CustomMessages]
+#if OPENWGUTILS_LANG_EN == 1
 en.openwg_browse=Browse...
-ru.openwg_browse=Обзор...
 en.openwg_client_not_found=The game client was not detected in the specified folder.
-ru.openwg_client_not_found=В указанной папке клиент игры не был обнаружен.
 en.openwg_unknown=Unknown
-ru.openwg_unknown=Неизвестно
 en.openwg_branch_release=Release
-ru.openwg_branch_release=Релиз
 en.openwg_branch_ct=Common Test
-ru.openwg_branch_ct=Общий тест
 en.openwg_branch_st=Super Test
-ru.openwg_branch_st=Супертест
 en.openwg_branch_sb=Sandbox
+#endif
+
+#if OPENWGUTILS_LANG_RU == 1
+ru.openwg_browse=Обзор...
+ru.openwg_client_not_found=В указанной папке клиент игры не был обнаружен.
+ru.openwg_unknown=Неизвестно
+ru.openwg_branch_release=Релиз
+ru.openwg_branch_ct=Общий тест
+ru.openwg_branch_st=Супертест
 ru.openwg_branch_sb=Песочница
+#endif
 
 [Code]
 
