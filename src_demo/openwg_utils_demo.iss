@@ -2,11 +2,11 @@
 // Copyright (c) 2017-2024 OpenWG.Utils Contributors
 
 #define APP_WEBSITE    "https://gitlab.com/openwg/openwg.utils"
-#define APP_VERSION    "24.3.27.1"
+#define APP_VERSION    "24.12.12.1"
 #define APP_DIR_UNINST "openwg_uninst"
 
-#define VERSION_PATTERN_WG    "1.24.0.*"
-#define VERSION_PATTERN_LESTA "1.25.0.*"
+#define VERSION_PATTERN_WG    "1.27.0.*"
+#define VERSION_PATTERN_LESTA "1.30.0.*"
 
 #define OPENWGUTILS_DIR_SRC    "..\bin"
 #define OPENWGUTILS_DIR_UNINST APP_DIR_UNINST
