@@ -97,8 +97,6 @@ if(BUILD_MODULE_IMAGE)
         "image/*.h"
     )
     target_sources(openwg.utils PRIVATE ${srcs})
-    include(_cmake/cpm-lodepng.cmake)
-    target_link_libraries(openwg.utils PUBLIC lodepng)
     target_link_libraries(openwg.utils PUBLIC stb)
     file(READ image/api_image.iss CONTENTS)
     file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
