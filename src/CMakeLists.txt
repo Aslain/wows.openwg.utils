@@ -44,9 +44,7 @@ option(BUILD_MODULE_XML          "Build module XML"          ON)
 # Library
 #
 
-add_library(openwg.utils SHARED
-        image/image_winapi.h
-        image/image_winapi.cpp)
+add_library(openwg.utils SHARED)
 
 # Common
 file(GLOB srcs CONFIGURE_DEPENDS

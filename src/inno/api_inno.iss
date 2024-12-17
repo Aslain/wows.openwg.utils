@@ -55,6 +55,22 @@ begin
 end;
 
 
+// INNO/ComponentEntryCompareName
+function INNO_ComponentEntryCompareNameW_I(str1: String; str2: String): Boolean;
+external 'INNO_ComponentEntryCompareNameW@files:openwg.utils.dll cdecl setuponly';
+
+function INNO_ComponentEntryCompareNameW_U(str1: String; str2: String): Boolean;
+external 'INNO_ComponentEntryCompareNameW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function INNO_ComponentEntryCompareName(str1: String; str2: String): Boolean;
+begin
+    if IsUninstaller() then
+        Result := INNO_ComponentEntryCompareNameW_U(str1, str2)
+    else
+        Result := INNO_ComponentEntryCompareNameW_I(str1, str2);
+end;
+
+
 // INNO/ChecklistGetItemName
 function INNO_ChecklistGetItemName(Checklist: TNewCheckListBox; Index: Integer): String;
 begin
@@ -73,10 +89,9 @@ var
     Index: Integer;
 begin
     Result := -1;
-
     for Index := 0 to Checklist.Items.Count - 1 do
     begin
-        if CompareStr(INNO_ChecklistGetItemName(Checklist, Index), Name) = 0 then
+        if INNO_ComponentEntryCompareName(INNO_ChecklistGetItemName(Checklist, Index), Name) then
         begin
             Result := Index;
             Exit;
