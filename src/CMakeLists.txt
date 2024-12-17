@@ -95,8 +95,13 @@ if(BUILD_MODULE_IMAGE)
         "image/*.cpp"
         "image/*.h"
     )
+
+    include(_cmake/cpm-avir.cmake)
+    include(_cmake/cpm-stb.cmake)
+
     target_sources(openwg.utils PRIVATE ${srcs})
     target_link_libraries(openwg.utils PUBLIC stb)
+    target_link_libraries(openwg.utils PUBLIC avir)
     file(READ image/api_image.iss CONTENTS)
     file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
 endif()
@@ -167,7 +172,6 @@ if(BUILD_MODULE_SPLASHSCREEN)
         "splashscreen/*.h"
     )
     target_sources(openwg.utils PRIVATE ${srcs})
-    include(_cmake/cpm-stb.cmake)
     file(READ splashscreen/api_splashscreen.iss CONTENTS)
     file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
 endif()
