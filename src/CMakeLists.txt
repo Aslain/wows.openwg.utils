@@ -27,6 +27,7 @@ option(BUILD_APPS                "Build Apps"                ON)
 option(BUILD_MODULE_BWXML        "Build module BWXML"        ON)
 option(BUILD_MODULE_FS           "Build module FS"           ON)
 option(BUILD_MODULE_IMAGE        "Build module Image"        ON)
+option(BUILD_MODULE_INNO         "Build module Inno"         ON)
 option(BUILD_MODULE_JSON         "Build module JSON"         ON)
 option(BUILD_MODULE_NETWORK      "Build module Network"      ON)
 option(BUILD_MODULE_PROCESS      "Build module Process"      ON)
@@ -99,6 +100,18 @@ if(BUILD_MODULE_IMAGE)
     target_sources(openwg.utils PRIVATE ${srcs})
     target_link_libraries(openwg.utils PUBLIC stb)
     file(READ image/api_image.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+endif()
+
+# Inno
+if(BUILD_MODULE_INNO)
+    file(GLOB srcs CONFIGURE_DEPENDS
+            "inno/*.cpp"
+            "inno/*.h"
+    )
+    target_sources(openwg.utils PRIVATE ${srcs})
+    target_link_libraries(openwg.utils PUBLIC stb)
+    file(READ inno/api_inno.iss CONTENTS)
     file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
 endif()
 

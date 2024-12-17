@@ -11,8 +11,8 @@
 
 #define VER_PRIVATEBUILD 0x0L
 #define VER_PRERELEASE 0x0L
-#define VER_VERSION             24,12,12,1
-#define VER_VERSION_STR         "24.12.12.1\0"
+#define VER_VERSION             24,12,17,1
+#define VER_VERSION_STR         "24.12.17.1\0"
 
 #ifndef DEBUG
     #define VER_DEBUG                   0

@@ -51,3 +51,17 @@ Result
   "meow" : true
 }
 ```
+
+## Inno
+
+```pascal
+// Get Component Name by Index
+INNO_ChecklistGetItemName(WizardForm.ComponentsList, 3)
+
+// Get Component Description by Index
+INNO_ChecklistGetItemDescription(WizardForm.ComponentsList, 3)
+
+// Get Component Index by Name
+INNO_ChecklistGetItemIndex(WizardForm.ComponentsList, 'test\lesta\sub')
+```
+
