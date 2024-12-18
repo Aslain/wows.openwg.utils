@@ -153,7 +153,7 @@ begin
 
     if Scale then
     begin
-        HandleTemp := IMAGE_BitmapResize(Handle, ScaleX(IMAGE_BitmapGetWidth(Handle)), ScaleY(IMAGE_BitmapGetHeight(Handle)));
+        HandleTemp := IMAGE_BitmapResize(Handle, ScaleX(IMAGE_BitmapGetWidth(Handle)), ScaleX(IMAGE_BitmapGetHeight(Handle)));
         IMAGE_BitmapFree(Handle);
         Handle := HandleTemp;
     end;
