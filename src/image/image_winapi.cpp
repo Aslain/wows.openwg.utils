@@ -15,6 +15,10 @@
 // stb
 #include <stb_image.h>
 
+// avie
+#include <avir.h>
+#include <lancir.h>
+
 // openwg.utils
 #include "image/image_winapi.h"
 
@@ -201,38 +205,56 @@ namespace OpenWG::Utils::Image
         return DeleteObject(bitmap) != FALSE;
     }
 
-    HBITMAP BitmapResize(HBITMAP bitmap, int width, int height)
+    HBITMAP BitmapResize(HBITMAP h_bitmap, int width, int height)
     {
-        // Get the dimensions
-        int width_old, height_old;
-        if (!BitmapGetSize(bitmap, &width_old, &height_old))
+        const int channels = 4;
+
+        if (!h_bitmap)
         {
             return nullptr;
         }
 
-        // Create a compatible DC for the source bitmap
-        HDC hdcScreen = GetDC(nullptr);
-        HDC hdcSource = CreateCompatibleDC(hdcScreen);
-        HDC hdcDest = CreateCompatibleDC(hdcScreen);
+        BITMAP bm{};
+        GetObjectW(h_bitmap, sizeof(bm), &bm);
+        if (width == bm.bmWidth && height == bm.bmHeight)
+        {
+            return BitmapClone(h_bitmap);
+        }
 
-        // Select the source bitmap into the source DC
-        HBITMAP hOldSourceBitmap = (HBITMAP)SelectObject(hdcSource, bitmap);
+        auto h_dc = GetDC(nullptr);
+        if (!h_dc)
+        {
+            return nullptr;
+        }
 
-        // Create a new bitmap for the destination with the desired dimensions
-        HBITMAP hBitmapDest = CreateCompatibleBitmap(hdcScreen, width, height);
-        HBITMAP hOldDestBitmap = (HBITMAP)SelectObject(hdcDest, hBitmapDest);
+        std::vector<uint8_t> bitmap_info_arr(sizeof(BITMAPINFOHEADER)  + 256 * sizeof(RGBQUAD));
+        auto* bitmap_info = reinterpret_cast<BITMAPINFO*>(bitmap_info_arr.data());
+        bitmap_info->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+        bitmap_info->bmiHeader.biWidth = bm.bmWidth;
+        bitmap_info->bmiHeader.biHeight = -bm.bmHeight;  // Negative to indicate top-down
+        bitmap_info->bmiHeader.biPlanes = 1;
+        bitmap_info->bmiHeader.biBitCount = 32;
+        bitmap_info->bmiHeader.biCompression = BI_RGB;
 
-        // Use StretchBlt to copy and resize the source bitmap into the destination bitmap
-        StretchBlt(hdcDest, 0, 0, width, height, hdcSource, 0, 0, width_old, height_old, SRCCOPY);
+        std::vector<uint8_t> bit_data(bm.bmWidth * bm.bmHeight * channels);
+        if (!GetDIBits(h_dc, h_bitmap, 0, bm.bmHeight, bit_data.data(), bitmap_info, DIB_RGB_COLORS))
+        {
+            ReleaseDC(nullptr, h_dc);
+            return nullptr;
+        }
 
-        // Clean up and release resources
-        SelectObject(hdcSource, hOldSourceBitmap);
-        SelectObject(hdcDest, hOldDestBitmap);
-        DeleteDC(hdcSource);
-        DeleteDC(hdcDest);
-        ReleaseDC(nullptr, hdcScreen);
+        ReleaseDC(nullptr, h_dc);
 
-        return hBitmapDest;
+        // resize
+        avir::CLancIR resizer;
+        std::vector<uint8_t> buf(width*height * channels);
+
+        if ( resizer.resizeImage(bit_data.data(), bm.bmWidth, bm.bmHeight, buf.data(), width, height, channels) != height)
+        {
+            return nullptr;
+        }
+
+        return CreateBitmap(width, height, 1, channels * 8, buf.data());
     }
 
 
