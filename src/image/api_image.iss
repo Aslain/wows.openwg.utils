@@ -141,32 +141,6 @@ end;
 
 
 
-// IMAGE/BitmapLoadTBitmap
-function IMAGE_BitmapLoadTBitmap(Filename: String; Scale: Boolean; PremultiplyAlpha: Boolean): TBitmap;
-var
-    Handle: HBITMAP;
-    HandleTemp: HBITMAP;
-begin
-    Handle := IMAGE_BitmapLoad(Filename);
-    if Handle = 0 then
-        Exit;
-
-    if Scale then
-    begin
-        HandleTemp := IMAGE_BitmapResize(Handle, ScaleX(IMAGE_BitmapGetWidth(Handle)), ScaleX(IMAGE_BitmapGetHeight(Handle)));
-        IMAGE_BitmapFree(Handle);
-        Handle := HandleTemp;
-    end;
-
-    if PremultiplyAlpha then
-        IMAGE_BitmapAlphaPremultiply(Handle);
-
-    Result := TBitmap.Create();
-    Result.Handle := Handle;
-end;
-
-
-
 // IMAGE/BrushCreate
 function IMAGE_BrushCreate_I(Bitmap: Integer): Integer;
 external 'IMAGE_BrushCreate@files:openwg.utils.dll cdecl setuponly';
@@ -197,4 +171,74 @@ begin
         Result := IMAGE_BrushFree_U(Brush)
     else
         Result := IMAGE_BrushFree_I(Brush)
+end;
+
+
+
+// IMAGE/TBitmapLoad
+function IMAGE_TBitmapLoad(Filename: String; Scale: Boolean; PremultiplyAlpha: Boolean): TBitmap;
+var
+    Handle: HBITMAP;
+    HandleTemp: HBITMAP;
+begin
+    Handle := IMAGE_BitmapLoad(Filename);
+    if Handle = 0 then
+        Exit;
+
+    if Scale then
+    begin
+        HandleTemp := IMAGE_BitmapResize(Handle, ScaleX(IMAGE_BitmapGetWidth(Handle)), ScaleX(IMAGE_BitmapGetHeight(Handle)));
+        IMAGE_BitmapFree(Handle);
+        Handle := HandleTemp;
+    end;
+
+    if PremultiplyAlpha then
+        IMAGE_BitmapAlphaPremultiply(Handle);
+
+    Result := TBitmap.Create();
+    Result.Handle := Handle;
+end;
+
+
+
+// IMAGE/IMAGE_TBitmapLoadScaled
+function IMAGE_TBitmapLoadScaled(Filename: String; Scale: Extended; PremultiplyAlpha: Boolean): TBitmap;
+var
+    Handle: HBITMAP;
+    HandleTemp: HBITMAP;
+begin
+    Handle := IMAGE_BitmapLoad(Filename);
+    if Handle = 0 then
+        Exit;
+
+    HandleTemp := IMAGE_BitmapResize(Handle, Round(IMAGE_BitmapGetWidth(Handle) * Scale), Round(IMAGE_BitmapGetHeight(Handle) * Scale));
+    IMAGE_BitmapFree(Handle);
+    Handle := HandleTemp;
+
+    if PremultiplyAlpha then
+        IMAGE_BitmapAlphaPremultiply(Handle);
+
+    Result := TBitmap.Create();
+    Result.Handle := Handle;
+end;
+
+
+
+// Image/TBitmapResize
+procedure IMAGE_TBitmapResize(Bitmap: TBitmap; Width: Integer; Height: Integer);
+var
+    HandleTemp: HBITMAP;
+begin
+    HandleTemp := IMAGE_BitmapResize(Bitmap.Handle, Width, Height);
+    if HandleTemp = 0 then
+        Exit;
+    Bitmap.Handle := HandleTemp;
+end;
+
+
+
+// IMAGE/TBitmapScale
+procedure IMAGE_TBitmapScale(Bitmap: TBitmap; Scale: Extended);
+begin
+    IMAGE_TBitmapResize(Bitmap, Round(Bitmap.Width * Scale), Round(Bitmap.Height * Scale));
 end;
