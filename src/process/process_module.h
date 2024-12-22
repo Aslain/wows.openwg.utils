@@ -14,7 +14,7 @@ namespace OpenWG::Utils::Process {
 
     constexpr auto path_maxsize = std::numeric_limits<int16_t>::max();
 
-    std::map<std::filesystem::path, uint32_t> GetProcessList();
+    std::vector<std::pair<std::filesystem::path, uint32_t>> GetProcessList();
 
     std::vector<std::filesystem::path> GetRunningProcessesInDirectory(const std::filesystem::path& directoryPath);
 

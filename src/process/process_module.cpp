@@ -42,8 +42,8 @@ namespace OpenWG::Utils::Process {
         return result;
     }
 
-    std::map<std::filesystem::path, uint32_t> GetProcessList() {
-        std::map<std::filesystem::path, uint32_t> result{};
+    std::vector<std::pair<std::filesystem::path, uint32_t>> GetProcessList() {
+        std::vector<std::pair<std::filesystem::path, uint32_t>> result{};
 
         HANDLE handle_snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
         if (handle_snapshot != INVALID_HANDLE_VALUE) {
@@ -61,7 +61,7 @@ namespace OpenWG::Utils::Process {
                     wchar_t pName[path_maxsize]{};
                     if (GetProcessImageFileNameW(hProcess, pName, sizeof(pName))) {
                         auto path = std::filesystem::path(NormalizeNTPath(pName)).lexically_normal();
-                        result.emplace(path, process_entry.th32ProcessID);
+                        result.emplace_back(path, process_entry.th32ProcessID);
                     }
 
                     CloseHandle(hProcess);
