@@ -189,6 +189,8 @@ begin
     begin
         HandleTemp := IMAGE_BitmapResize(Handle, ScaleX(IMAGE_BitmapGetWidth(Handle)), ScaleX(IMAGE_BitmapGetHeight(Handle)));
         IMAGE_BitmapFree(Handle);
+        if HandleTemp = 0 then
+            Exit;
         Handle := HandleTemp;
     end;
 
@@ -213,6 +215,8 @@ begin
 
     HandleTemp := IMAGE_BitmapResize(Handle, Round(IMAGE_BitmapGetWidth(Handle) * Scale), Round(IMAGE_BitmapGetHeight(Handle) * Scale));
     IMAGE_BitmapFree(Handle);
+    if HandleTemp = 0 then
+        Exit;
     Handle := HandleTemp;
 
     if PremultiplyAlpha then
@@ -225,20 +229,25 @@ end;
 
 
 // Image/TBitmapResize
-procedure IMAGE_TBitmapResize(Bitmap: TBitmap; Width: Integer; Height: Integer);
+function IMAGE_TBitmapResize(Bitmap: TBitmap; Width: Integer; Height: Integer): Boolean;
 var
     HandleTemp: HBITMAP;
 begin
+    if Bitmap.Handle = 0 then
+        Exit;
+
     HandleTemp := IMAGE_BitmapResize(Bitmap.Handle, Width, Height);
     if HandleTemp = 0 then
         Exit;
+
     Bitmap.Handle := HandleTemp;
+    Result := True;
 end;
 
 
 
 // IMAGE/TBitmapScale
-procedure IMAGE_TBitmapScale(Bitmap: TBitmap; Scale: Extended);
+function IMAGE_TBitmapScale(Bitmap: TBitmap; Scale: Extended): Boolean;
 begin
-    IMAGE_TBitmapResize(Bitmap, Round(Bitmap.Width * Scale), Round(Bitmap.Height * Scale));
+    Result := IMAGE_TBitmapResize(Bitmap, Round(Bitmap.Width * Scale), Round(Bitmap.Height * Scale));
 end;
