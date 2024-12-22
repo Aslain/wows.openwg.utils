@@ -25,5 +25,10 @@ int32_t PROCESS_GetRunningInDirectoryW(const wchar_t* directory_path, wchar_t* o
 
 int32_t PROCESS_TerminateProcess(const wchar_t * processName)
 {
+    if (!processName)
+    {
+        return 0;
+    }
+
     return Process::TerminateProcess(processName);
 }

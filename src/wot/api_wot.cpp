@@ -175,7 +175,7 @@ int32_t WOT_ClientIsStarted(int32_t index) {
     if (index < 0) {
         result = 0;
         for (auto &client: g_clients) {
-            result = result || client->IsStarted();
+            result = result || (client && client->IsStarted());
         }
     }
     if (index < g_clients.size() && g_clients[index]) {

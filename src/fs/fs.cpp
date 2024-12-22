@@ -139,6 +139,11 @@ namespace OpenWG::Utils {
         }
 
         bool IsSubpath(const std::filesystem::path &path, const std::filesystem::path &base) {
+            if (path.empty() || base.empty())
+            {
+                return false;
+            }
+
             auto rel = std::filesystem::relative(path, base);
             return !rel.empty() && rel.native()[0] != '.';
         }

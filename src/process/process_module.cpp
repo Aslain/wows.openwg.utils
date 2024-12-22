@@ -16,7 +16,7 @@ namespace OpenWG::Utils::Process {
 
     std::wstring NormalizeNTPath(const wchar_t* str)
     {
-        if(!str){
+        if(!str || wcslen(str) == 0){
             return {};
         }
 
