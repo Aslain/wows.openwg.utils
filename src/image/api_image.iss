@@ -124,8 +124,25 @@ end;
 
 
 
+// IMAGE/IMAGE_BitmapMultiplyColor
+function IMAGE_BitmapMultiplyColor_I(Bitmap: HBITMAP; ScaleR: Single; ScaleG: Single; ScaleB: Single; ScaleA: Single): HBITMAP;
+external 'IMAGE_BitmapMultiplyColor@files:openwg.utils.dll cdecl setuponly';
+
+function IMAGE_BitmapMultiplyColor_U(Bitmap: HBITMAP; ScaleR: Single; ScaleG: Single; ScaleB: Single; ScaleA: Single): HBITMAP;
+external 'IMAGE_BitmapMultiplyColor@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function IMAGE_BitmapMultiplyColor(Bitmap: HBITMAP; ScaleR: Single; ScaleG: Single; ScaleB: Single; ScaleA: Single): HBITMAP;
+begin
+    if IsUninstaller() then
+        Result := IMAGE_BitmapMultiplyColor_U(Bitmap, ScaleR, ScaleG, ScaleB, ScaleA)
+    else
+        Result := IMAGE_BitmapMultiplyColor_I(Bitmap, ScaleR, ScaleG, ScaleB, ScaleA)
+end;
+
+
+
 // IMAGE/BitmapResize
-function IMAGE_BitmapResize_I(Bitmap: HBITMAP; Width: Integer; Height: Integer): Integer;
+function IMAGE_BitmapResize_I(Bitmap: HBITMAP; Width: Integer; Height: Integer): HBITMAP;
 external 'IMAGE_BitmapResize@files:openwg.utils.dll cdecl setuponly';
 
 function IMAGE_BitmapResize_U(Bitmap: HBITMAP; Width: Integer; Height: Integer): HBITMAP;
@@ -224,6 +241,24 @@ begin
 
     Result := TBitmap.Create();
     Result.Handle := Handle;
+end;
+
+
+
+// Image/TBitmapMultiplyColor
+function IMAGE_TBitmapMultiplyColor(Bitmap: TBitmap; ScaleR: Single; ScaleG: Single; ScaleB: Single; ScaleA: Single): Boolean;
+var
+    HandleTemp: HBITMAP;
+begin
+    if Bitmap.Handle = 0 then
+        Exit;
+
+    HandleTemp := IMAGE_BitmapMultiplyColor(Bitmap.Handle, ScaleR, ScaleG, ScaleB, ScaleA);
+    if HandleTemp = 0 then
+        Exit;
+
+    Bitmap.Handle := HandleTemp;
+    Result := True;
 end;
 
 

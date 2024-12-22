@@ -195,6 +195,59 @@ namespace OpenWG::Utils::Image
         return result;
     }
 
+    HBITMAP BitmapMultiplyColor(HBITMAP h_bitmap, float r_scale, float g_scale, float b_scale, float a_scale)
+    {
+        const int channels = 4;
+
+        if (!h_bitmap)
+        {
+            return nullptr;
+        }
+
+        BITMAP bm{};
+        GetObjectW(h_bitmap, sizeof(bm), &bm);
+
+        auto h_dc = GetDC(nullptr);
+        if (!h_dc)
+        {
+            return nullptr;
+        }
+
+        std::vector<uint8_t> bitmap_info_arr(sizeof(BITMAPINFOHEADER)  + 256 * sizeof(RGBQUAD));
+        auto* bitmap_info = reinterpret_cast<BITMAPINFO*>(bitmap_info_arr.data());
+        bitmap_info->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+        bitmap_info->bmiHeader.biWidth = bm.bmWidth;
+        bitmap_info->bmiHeader.biHeight = -bm.bmHeight;  // Negative to indicate top-down
+        bitmap_info->bmiHeader.biPlanes = 1;
+        bitmap_info->bmiHeader.biBitCount = 32;
+        bitmap_info->bmiHeader.biCompression = BI_RGB;
+
+        std::vector<uint8_t> bit_data(bm.bmWidth * bm.bmHeight * channels);
+        if (!GetDIBits(h_dc, h_bitmap, 0, bm.bmHeight, bit_data.data(), bitmap_info, DIB_RGB_COLORS))
+        {
+            ReleaseDC(nullptr, h_dc);
+            return nullptr;
+        }
+
+        ReleaseDC(nullptr, h_dc);
+
+        // change color components
+
+        auto* pData = reinterpret_cast<uint8_t*>(bit_data.data());
+        for (int y = 0; y < bm.bmHeight; y++) {
+            for (int x = 0; x < bm.bmWidth; x++) {
+                //hbitmap uses BGRA
+                pData[0] = std::clamp<uint8_t>(pData[0] * b_scale, 0, 255);
+                pData[1] = std::clamp<uint8_t>(pData[1] * g_scale, 0, 255);
+                pData[2] = std::clamp<uint8_t>(pData[2] * r_scale, 0, 255);
+                pData[3] = std::clamp<uint8_t>(pData[3] * a_scale, 0, 255);
+                pData += 4;
+            }
+        };
+
+        return CreateBitmap(bm.bmWidth, bm.bmHeight, 1, channels * 8, bit_data.data());
+    }
+
     bool BitmapFree(HBITMAP bitmap)
     {
         if (!bitmap)

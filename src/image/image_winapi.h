@@ -29,6 +29,7 @@ namespace OpenWG::Utils::Image
     bool BitmapGetSize(HBITMAP h_bitmap, int* width, int* height);
     HBITMAP BitmapLoad(const wchar_t* filename);
     HBITMAP BitmapLoad(const std::filesystem::path& filename);
+    HBITMAP BitmapMultiplyColor(HBITMAP bitmap, float r_scale, float g_scale, float b_scape, float a_scale);
     HBITMAP BitmapResize(HBITMAP bitmap, int width, int height);
 
     // Brush

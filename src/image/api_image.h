@@ -34,6 +34,8 @@ XVMEXT_API_CALL int IMAGE_BitmapGetWidth(_In_ void* bitmap);
 
 XVMEXT_API_CALL void* IMAGE_BitmapLoadW(_In_ const wchar_t* filename);
 
+XVMEXT_API_CALL void* IMAGE_BitmapMultiplyColor(_In_ void* bitmap, float r_scale, float g_scale, float b_scape, float a_scale);
+
 XVMEXT_API_CALL void* IMAGE_BitmapResize(_In_ void* bitmap, int width, int height);
 
 
