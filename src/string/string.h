@@ -30,7 +30,8 @@ namespace OpenWG::Utils {
         std::wstring Replace(const std::wstring &where, const std::wstring &from, const std::wstring &to);
 
         std::wstring ReplaceRegex(const std::wstring &where, const std::wstring &from, const std::wstring &to);
-
+        
+        size_t ReplaceChar(wchar_t* str, wchar_t from, wchar_t to);
 
         std::wstring Substring(const std::wstring &where, size_t from, size_t to = std::wstring::npos);
 

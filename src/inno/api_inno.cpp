@@ -9,7 +9,7 @@
 #include <cstring>
 
 // OpenWG.Utils
-#include "common/string.h"
+#include "string/string.h"
 #include "inno/api_inno.h"
 
 #include <cstdlib>
@@ -40,7 +40,7 @@ XVMEXT_API_CALL bool INNO_ComponentEntryGetNameW(void* obj, wchar_t* buf, int32_
     }
 
     wcscpy_s(buf, buf_len, static_cast<SetupComponentEntry*>(obj)->name);
-    OpenWG::Utils::Common::String::ReplaceChar(buf, L'\\', L'/');
+    OpenWG::Utils::String::ReplaceChar(buf, L'\\', L'/');
     return true;
 }
 
@@ -66,8 +66,8 @@ XVMEXT_API_CALL bool INNO_ComponentEntryCompareNameW(const wchar_t* name_1, cons
     wchar_t* name_1_copy = _wcsdup(name_1);
     wchar_t* name_2_copy = _wcsdup(name_2);
 
-    OpenWG::Utils::Common::String::ReplaceChar(name_1_copy, L'\\', L'/');
-    OpenWG::Utils::Common::String::ReplaceChar(name_2_copy, L'\\', L'/');
+    OpenWG::Utils::String::ReplaceChar(name_1_copy, L'\\', L'/');
+    OpenWG::Utils::String::ReplaceChar(name_2_copy, L'\\', L'/');
 
     bool result = wcscmp(name_1_copy, name_2_copy) == 0;
 

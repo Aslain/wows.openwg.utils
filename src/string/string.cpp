@@ -122,6 +122,23 @@ namespace OpenWG::Utils {
             return result;
         }
 
+        size_t ReplaceChar(wchar_t* str, wchar_t from, wchar_t to)
+        {
+            size_t result = 0;
+            if (str != nullptr && from != L'\0' && to != L'\0')
+            {
+                for (wchar_t* c = str; *c != L'\0'; c++)
+                {
+                    if (*c == from)
+                    {
+                        *c = to;
+                        result++;
+                    }
+                }
+            }
+            return result;
+        }
+
         std::wstring ReplaceRegex(const std::wstring &where, const std::wstring &from, const std::wstring &to) {
             std::wregex regex(from);
             return std::regex_replace(where, regex, to);
