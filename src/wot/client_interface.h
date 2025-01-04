@@ -14,6 +14,8 @@ namespace OpenWG::Utils::WoT {
 
         [[nodiscard]] virtual ClientBranch GetBranch() const = 0;
 
+        [[nodiscard]] virtual std::wstring GetExeName() const = 0;
+
         [[nodiscard]] virtual LauncherFlavour GetLauncherFlavour() const = 0;
 
         [[nodiscard]] virtual std::wstring GetLocale() const = 0;

@@ -386,6 +386,28 @@ begin
 end;
 
 
+// WOT/GetClientExeNameW
+procedure WOT_GetClientExeNameW_I(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
+external 'WOT_GetClientExeNameW@files:openwg.utils.dll cdecl setuponly';
+
+procedure WOT_GetClientExeNameW_U(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
+external 'WOT_GetClientExeNameW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function WOT_GetClientExeName(ClientIndex: Integer): String;
+var
+    Buffer: String;
+begin
+    SetLength(Buffer, {#OPENWGUTILS_BUF_SIZE});
+
+    if IsUninstaller() then
+        WOT_GetClientExeNameW_U(Buffer, {#OPENWGUTILS_BUF_SIZE}, ClientIndex)
+    else
+        WOT_GetClientExeNameW_I(Buffer, {#OPENWGUTILS_BUF_SIZE}, ClientIndex);
+
+    Result := Copy(Buffer, 1, Pos(#0, Buffer)-1);
+end;
+
+
 // WOT/GetClientExeVersionW
 procedure WOT_GetClientExeVersionW_I(Buffer: String; BufferSize: Integer; ClientIndex: Integer);
 external 'WOT_GetClientExeVersionW@files:openwg.utils.dll cdecl setuponly';

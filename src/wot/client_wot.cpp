@@ -10,23 +10,22 @@
 namespace OpenWG::Utils::WoT {
 
     ClientWoT::ClientWoT(std::filesystem::path path, LauncherFlavour launcherFlavour) : m_path(path.lexically_normal()),
-                                                                                        m_launcherFlavour(
-                                                                                                launcherFlavour) {
+                                                                                        m_launcherFlavour(launcherFlavour) {
         rescan();
     }
 
 
     bool ClientWoT::IsValid() const {
-        return Filesystem::Exists(m_path) &&
-               Filesystem::Exists(m_path / "app_type.xml") &&
-               Filesystem::Exists(m_path / "game_info.xml") &&
-               Filesystem::Exists(m_path / "paths.xml") &&
-               Filesystem::Exists(m_path / "version.xml") &&
-               Filesystem::Exists(m_path / m_exename);
+        return m_valid;
     }
 
     ClientBranch ClientWoT::GetBranch() const {
         return m_branch;
+    }
+
+    std::wstring ClientWoT::GetExeName() const
+    {
+        return m_exe_name;
     }
 
     LauncherFlavour ClientWoT::GetLauncherFlavour() const {
@@ -74,7 +73,7 @@ namespace OpenWG::Utils::WoT {
         for (auto &process: Process::GetProcessList()) {
             if (Filesystem::IsSubpath(process.first, GetPath())) {
                 auto process_name = String::ToLower(process.first.filename().wstring());
-                if (process_name == String::ToLower(m_exename)) {
+                if (process_name == String::ToLower(m_exe_name)) {
                     result = true;
                     break;
                 }
@@ -95,7 +94,7 @@ namespace OpenWG::Utils::WoT {
         for (auto &process: Process::GetProcessList()) {
             if (Filesystem::IsSubpath(process.first, GetPath())) {
                 auto process_name = String::ToLower(process.first.filename().wstring());
-                if (process_name == String::ToLower(m_exename)) {
+                if (process_name == String::ToLower(m_exe_name)) {
                     result = Process::TerminateProcess(process.second);
                 }
             }
@@ -108,16 +107,45 @@ namespace OpenWG::Utils::WoT {
     // Private
     //
 
+    bool ClientWoT::isValid(bool skip_exe)
+    {
+        bool valid = Filesystem::Exists(m_path) &&
+            Filesystem::Exists(m_path / "app_type.xml") &&
+            Filesystem::Exists(m_path / "game_info.xml") &&
+            Filesystem::Exists(m_path / "paths.xml") &&
+            Filesystem::Exists(m_path / "version.xml");
+        
+        if (!skip_exe) {
+            if (m_exe_name.empty()) {
+                valid = false;
+            }
+            else {
+                valid = Filesystem::Exists(m_path / m_exe_name);
+            }
+        }
+        
+        return valid;
+    }
+
     void ClientWoT::rescan() {
-        if (!IsValid()) {
+        m_valid = false;
+
+        if (!isValid(true)) {
             return;
         }
 
         rescanAppType();
-        rescanExe();
         rescanVersion();
+        rescanExe();
+
+        if (!isValid(false)) {
+            return;
+        }
+
         rescanGameInfo();
         rescanPaths();
+
+        m_valid = true;
     }
 
     void ClientWoT::rescanAppType() {
@@ -144,20 +172,28 @@ namespace OpenWG::Utils::WoT {
 
     void ClientWoT::rescanExe() {
         m_versionExe.clear();
+        m_exe_name.clear();
 
-        auto path = m_path / "win64" / m_exename;
+        if (m_vendor == WoT_Vendor_Lesta && m_versionClient >= ClientVersion(L"1.32.0.0")) {
+            m_exe_name = L"Tanki.exe";
+        }
+        else {
+            m_exe_name = L"WorldOfTanks.exe";
+        }
+
+        auto path = m_path / "win64" / m_exe_name;
         if (Filesystem::Exists(path)) {
             m_versionExe = Filesystem::GetExeVersion(path);
             return;
         }
 
-        path = m_path / "win32" / m_exename;
+        path = m_path / "win32" / m_exe_name;
         if (Filesystem::Exists(path)) {
             m_versionExe = Filesystem::GetExeVersion(path);
             return;
         }
 
-        path = m_path / m_exename;
+        path = m_path / m_exe_name;
         if (Filesystem::Exists(path)) {
             m_versionExe = Filesystem::GetExeVersion(path);
             return;

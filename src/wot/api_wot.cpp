@@ -357,6 +357,20 @@ void WOT_GetClientVersionW(wchar_t *buffer, int32_t buffer_size, int32_t index) 
 }
 
 
+void WOT_GetClientExeNameW(wchar_t* buffer, int32_t buffer_size, int32_t index) {
+    launchers_init();
+
+    if (buffer == nullptr || buffer_size <= 0 || index < 0) {
+        return;
+    }
+
+    buffer[0] = '\0';
+    if (index < g_clients.size() && g_clients[index]) {
+        wcscpy_s(buffer, buffer_size, g_clients[index]->GetExeName().c_str());
+    }
+}
+
+
 void WOT_GetClientExeVersionW(wchar_t *buffer, int32_t buffer_size, int32_t index) {
     launchers_init();
 

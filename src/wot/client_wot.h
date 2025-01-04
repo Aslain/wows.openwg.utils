@@ -4,6 +4,7 @@
 
 #include "wot/api_wot.h"
 #include "wot/client_interface.h"
+#include "wot/client_version.h"
 
 namespace OpenWG::Utils::WoT {
     class ClientWoT : public ClientInterface {
@@ -14,6 +15,8 @@ namespace OpenWG::Utils::WoT {
         [[nodiscard]] bool IsValid() const override;
 
         [[nodiscard]] ClientBranch GetBranch() const override;
+
+        [[nodiscard]] std::wstring GetExeName() const override;
 
         [[nodiscard]] LauncherFlavour GetLauncherFlavour() const override;
 
@@ -42,6 +45,8 @@ namespace OpenWG::Utils::WoT {
         bool Terminate() override;
 
     private:
+        bool isValid(bool skip_exe);
+
         void rescan();
 
         void rescanAppType();
@@ -60,6 +65,7 @@ namespace OpenWG::Utils::WoT {
         LauncherFlavour m_launcherFlavour{Launcher_Flavour_Unknown};
         ClientVendor m_vendor{ClientVendor::WoT_Vendor_Unknown};
         std::wstring m_locale{};
+        std::wstring m_exe_name{};
         std::filesystem::path m_path{};
         std::wstring m_path_mods{};
         std::wstring m_path_resmods{};
@@ -67,8 +73,7 @@ namespace OpenWG::Utils::WoT {
         ClientType m_type{ClientType::WoT_Type_Unknown};
         ClientVersion m_versionClient{};
         std::wstring m_versionExe{};
+        bool m_valid{ false };
 
-    private:
-        static constexpr auto m_exename = L"WorldOfTanks.exe";
     };
 }

@@ -190,6 +190,16 @@ XVMEXT_API_CALL int32_t WOT_GetClientVendor(int32_t index);
  */
 XVMEXT_API_CALL void WOT_GetClientVersionW(wchar_t *buffer, int32_t size, int32_t index);
 
+
+/**
+ * Get client main executable name
+ * @param buffer buffer to save string
+ * @param size size of string buffer in wchars
+ * @param index client index
+ */
+XVMEXT_API_CALL void WOT_GetClientExeNameW(wchar_t* buffer, int32_t size, int32_t index);
+
+
 /**
  * Get client main executable version
  * @param buffer buffer to save string
