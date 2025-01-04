@@ -83,37 +83,39 @@ int main() {
     for (int i = 0; i < WOT_GetClientsCount(); i++) {
 
         std::wcout << L"-------------" << std::endl;
-        std::wcout << L"Client Index        : " << i << std::endl;
+        std::wcout << L"Client Index           : " << i << std::endl;
 
         WOT_GetClientPathW(buffer, std::size(buffer), i);
-        std::wcout << L"Client Path         : " << buffer << std::endl;
+        std::wcout << L"Client Path            : " << buffer << std::endl;
 
         WOT_GetClientPathModsW(buffer, std::size(buffer), i);
-        std::wcout << L"Client Path Mods    : " << buffer << std::endl;
+        std::wcout << L"Client Path Mods       : " << buffer << std::endl;
 
         WOT_GetClientPathResmodsW(buffer, std::size(buffer), i);
-        std::wcout << L"Client Path Resmods : " << buffer << std::endl;
+        std::wcout << L"Client Path Resmods    : " << buffer << std::endl;
+        
+        WOT_GetClientExeNameW(buffer, std::size(buffer), i);
+        std::wcout << L"Client Executable Name : " << buffer << std::endl;
 
-
-        std::wcout << L"Client Vendor       : " << describe_client_vendor(WOT_GetClientVendor(i)) << std::endl;
-        std::wcout << L"Client Launcher     : " << describe_launcher_flavour(WOT_GetClientLauncherFlavour(i)) << std::endl;
-        std::wcout << L"Client Branch       : " << describe_client_branch(WOT_GetClientBranch(i)) << std::endl;
-        std::wcout << L"Client Type         : " << describe_client_type(WOT_GetClientType(i)) << std::endl;
+        std::wcout << L"Client Vendor          : " << describe_client_vendor(WOT_GetClientVendor(i)) << std::endl;
+        std::wcout << L"Client Launcher        : " << describe_launcher_flavour(WOT_GetClientLauncherFlavour(i)) << std::endl;
+        std::wcout << L"Client Branch          : " << describe_client_branch(WOT_GetClientBranch(i)) << std::endl;
+        std::wcout << L"Client Type            : " << describe_client_type(WOT_GetClientType(i)) << std::endl;
 
         WOT_GetClientRealmW(buffer, std::size(buffer), i);
-        std::wcout << L"Client Realm        : " << buffer << std::endl;
+        std::wcout << L"Client Realm           : " << buffer << std::endl;
 
         WOT_GetClientLocaleW(buffer, std::size(buffer), i);
-        std::wcout << L"Client Locale       : " << buffer << std::endl;
+        std::wcout << L"Client Locale          : " << buffer << std::endl;
 
         WOT_GetClientVersionW(buffer, std::size(buffer), i);
-        std::wcout << L"Client Ver Client   : " << buffer << std::endl;
+        std::wcout << L"Client Ver Client      : " << buffer << std::endl;
 
         WOT_GetClientExeVersionW(buffer, std::size(buffer), i);
-        std::wcout << L"Client Ver Exe      : " << buffer << std::endl;
+        std::wcout << L"Client Ver Exe         : " << buffer << std::endl;
 
-        std::wcout << L"Client Started      : " << WOT_ClientIsStarted(i) << std::endl;
-        std::wcout << L"Client Terminated   : " << WOT_ClientTerminate(i) << std::endl;
+        std::wcout << L"Client Started         : " << WOT_ClientIsStarted(i) << std::endl;
+        std::wcout << L"Client Terminated      : " << WOT_ClientTerminate(i) << std::endl;
 
         std::wcout << std::endl;
     }
