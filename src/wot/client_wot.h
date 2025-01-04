@@ -65,7 +65,7 @@ namespace OpenWG::Utils::WoT {
         std::wstring m_path_resmods{};
         std::wstring m_realm{};
         ClientType m_type{ClientType::WoT_Type_Unknown};
-        std::wstring m_versionClient{};
+        ClientVersion m_versionClient{};
         std::wstring m_versionExe{};
 
     private:

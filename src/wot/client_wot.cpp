@@ -62,7 +62,7 @@ namespace OpenWG::Utils::WoT {
     }
 
     std::wstring ClientWoT::GetVersionClient() const {
-        return m_versionClient;
+        return m_versionClient.Get();
     }
 
     std::wstring ClientWoT::GetVersionExe() const {
@@ -87,7 +87,7 @@ namespace OpenWG::Utils::WoT {
     bool ClientWoT::IsVersionMatch(const std::wstring &pattern) const {
         std::wregex regex(pattern);
         std::wsmatch match;
-        return std::regex_match(m_versionClient.begin(), m_versionClient.end(), match, regex);
+        return std::regex_match(m_versionClient.Get().begin(), m_versionClient.Get().end(), match, regex);
     }
 
     bool ClientWoT::Terminate() {
