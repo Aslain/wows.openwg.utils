@@ -1,4 +1,4 @@
-﻿// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 // Copyright (c) 2017-2024 OpenWG.Utils Contributors
 
 #define APP_WEBSITE    "https://gitlab.com/openwg/openwg.utils"
@@ -223,11 +223,31 @@ end;
 
 
 //
+// CurStepChanged
+//
+
+procedure CurStepChanged_ssPostInstall();
+begin
+  WOT_ClearClientCache(WotList.ItemIndex, 1); // 1 -- PDC cache
+end;
+
+
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+  case CurStep of
+    ssPostInstall: CurStepChanged_ssPostInstall();
+  end
+end;
+
+
+
+//
 // CurUninstallStepChanged
 //
 
 procedure CurUninstallStepChanged_usUninstall();
 begin
+  WOT_ClearClientCache(WOT_ClientFind(ExpandConstant('{app}')), 1); // 1 -- PDC cache
   OPENWG_DllUnload();
   OPENWG_DllDelete();
 end;
