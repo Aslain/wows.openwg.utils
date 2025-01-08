@@ -40,6 +40,16 @@ namespace OpenWG::Utils::WoT {
 
         [[nodiscard]] virtual bool IsVersionMatch(const std::wstring& pattern) const = 0;
 
+        // Cache
+
+        [[nodiscard]] virtual ClientCache GetCacheSupported() const = 0;
+
+        [[nodiscard]] virtual ClientCache GetCachePresent() const = 0;
+
+        [[nodiscard]] virtual bool ClearCache(ClientCache cache_type) = 0;
+
+
+
         virtual bool Terminate() = 0;
 
     };

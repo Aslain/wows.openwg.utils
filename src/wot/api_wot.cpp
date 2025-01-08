@@ -383,3 +383,50 @@ void WOT_GetClientExeVersionW(wchar_t *buffer, int32_t buffer_size, int32_t inde
         wcscpy_s(buffer, buffer_size, g_clients[index]->GetVersionExe().c_str());
     }
 }
+
+
+//
+// Functions/Client/Cache
+//
+
+int32_t WOT_GetClientCachePresent(int32_t index)
+{
+    int32_t result = -1;
+
+    launchers_init();
+
+    if (index >= 0 && index < g_clients.size() && g_clients[index])
+    {
+        result = g_clients[index]->GetCachePresent();
+    }
+
+    return result;
+}
+
+int32_t WOT_GetClientCacheSupported(int32_t index)
+{
+    int32_t result = -1;
+
+    launchers_init();
+
+    if (index >= 0 && index < g_clients.size() && g_clients[index])
+    {
+        result = g_clients[index]->GetCacheSupported();
+    }
+
+    return result;
+}
+
+int32_t WOT_ClearClientCache(int32_t index, ClientCache cache_type)
+{
+    int32_t result = -1;
+
+    launchers_init();
+
+    if (index >= 0 && index < g_clients.size() && g_clients[index])
+    {
+        result = g_clients[index]->ClearCache(cache_type);
+    }
+
+    return result;
+}

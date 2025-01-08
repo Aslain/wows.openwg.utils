@@ -44,6 +44,14 @@ namespace OpenWG::Utils::WoT {
 
         bool Terminate() override;
 
+        // Cache
+
+        [[nodiscard]] ClientCache GetCacheSupported() const override;
+
+        [[nodiscard]] ClientCache GetCachePresent() const override;
+
+        [[nodiscard]] bool ClearCache(ClientCache cache_type) override;
+
     private:
         bool isValid(bool skip_exe);
 

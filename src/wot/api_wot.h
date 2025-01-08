@@ -33,6 +33,12 @@ enum ClientVendor {
     WoT_Vendor_Lesta   = 1 << 1,
 };
 
+enum ClientCache
+{
+    WoT_Cache_Unknown = 0,
+    WoT_Cache_PDC     = 1 << 0,
+};
+
 enum LauncherFlavour {
     Launcher_Flavour_Unknown    = 0,
     Launcher_Flavour_WGC        = 1,
@@ -42,6 +48,13 @@ enum LauncherFlavour {
     Launcher_Flavour_Standalone = 5,
 };
 
+#if defined(__cplusplus)
+inline ClientCache operator|(ClientCache a, ClientCache b)
+{
+    using underlying_t = typename std::underlying_type<ClientCache>::type;
+    return static_cast<ClientCache>(static_cast<underlying_t>(a) | static_cast<underlying_t>(b));
+}
+#endif
 
 //
 // Functions
@@ -207,6 +220,34 @@ XVMEXT_API_CALL void WOT_GetClientExeNameW(wchar_t* buffer, int32_t size, int32_
  * @param index client index
  */
 XVMEXT_API_CALL void WOT_GetClientExeVersionW(wchar_t *buffer, int32_t size, int32_t index);
+
+//
+// Functions / Client / Cache
+//
+
+/**
+ * Get type of caches which are existed
+ * @param index client index
+ * @return bitmask of ::ClientCache values or -1 in case of error
+ */
+XVMEXT_API_CALL int32_t WOT_GetClientCachePresent(int32_t index);
+
+
+/**
+ * Get type of caches which are supported by client
+ * @param index client index
+ * @return bitmask of ::ClientCache values or -1 in case of error
+ */
+XVMEXT_API_CALL int32_t WOT_GetClientCacheSupported(int32_t index);
+
+/**
+ * Clear given types of client caches
+ * @param index client index
+ * @param cache_type bitmask of ::ClientCache
+ * @return 1 if caches were cleared, 0 if caches were not cleared, -1 in case of error
+ */
+XVMEXT_API_CALL int32_t WOT_ClearClientCache(int32_t index, ClientCache cache_type);
+
 
 #ifdef __cplusplus
 }

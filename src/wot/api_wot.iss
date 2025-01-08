@@ -429,6 +429,62 @@ begin
     Result := Copy(Buffer, 1, Pos(#0, Buffer)-1);
 end;
 
+//
+// Cache
+//
+// Cache Types:
+//   1 -- PDC
+
+// WOT/WOT_GetClientCachePresent
+function WOT_GetClientCachePresent_I(ClientIndex: Integer): Integer;
+external 'WOT_GetClientCachePresent@files:openwg.utils.dll cdecl setuponly';
+
+function WOT_GetClientCachePresent_U(ClientIndex: Integer): Integer;
+external 'WOT_GetClientCachePresent@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function WOT_GetClientCachePresent(ClientIndex: Integer): Integer;
+begin
+    if IsUninstaller() then
+        Result := WOT_GetClientCachePresent_U(ClientIndex)
+    else
+        Result := WOT_GetClientCachePresent_I(ClientIndex)
+end;
+
+
+// WOT/WOT_GetClientCacheSupported
+function WOT_GetClientCacheSupported_I(ClientIndex: Integer): Integer;
+external 'WOT_GetClientCacheSupported@files:openwg.utils.dll cdecl setuponly';
+
+function WOT_GetClientCacheSupported_U(ClientIndex: Integer): Integer;
+external 'WOT_GetClientCacheSupported@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function WOT_GetClientCacheSupported(ClientIndex: Integer): Integer;
+begin
+    if IsUninstaller() then
+        Result := WOT_GetClientCacheSupported_U(ClientIndex)
+    else
+        Result := WOT_GetClientCacheSupported_I(ClientIndex)
+end;
+
+
+// WOT/WOT_GetClientCacheSupported
+function WOT_ClearClientCache_I(ClientIndex: Integer; CacheType: Integer): Integer;
+external 'WOT_ClearClientCache@files:openwg.utils.dll cdecl setuponly';
+
+function WOT_ClearClientCache_U(ClientIndex: Integer; CacheType: Integer): Integer;
+external 'WOT_ClearClientCache@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function WOT_ClearClientCache(ClientIndex: Integer; CacheType: Integer): Integer;
+begin
+    if IsUninstaller() then
+        Result := WOT_ClearClientCache_U(ClientIndex, CacheType)
+    else
+        Result := WOT_ClearClientCache_I(ClientIndex, CacheType)
+end;
+
+//
+// Record
+//
 
 function CLIENT_GetRecord(Index: Integer): ClientRecord;
 begin

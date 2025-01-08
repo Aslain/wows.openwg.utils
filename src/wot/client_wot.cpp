@@ -104,6 +104,49 @@ namespace OpenWG::Utils::WoT {
     }
 
     //
+    // Public/Cache
+    //
+
+    ClientCache ClientWoT::GetCacheSupported() const
+    {
+        ClientCache cache{};
+
+        if (GetVendor() == WoT_Vendor_WG && m_versionClient >= ClientVersion(L"1.27.1"))
+        {
+            cache = cache | WoT_Cache_PDC;
+        }
+
+        return cache;
+    }
+
+    ClientCache ClientWoT::GetCachePresent() const
+    {
+        ClientCache result{};
+
+        if ((GetCacheSupported() & WoT_Cache_PDC) == WoT_Cache_PDC)
+        {
+            if (std::filesystem::exists(GetPath() / L"data.wgpdc"))
+            {
+                result = result | WoT_Cache_PDC;
+            }
+        }
+
+        return result;
+    }
+
+    bool ClientWoT::ClearCache(ClientCache cache_type)
+    {
+        bool result{};
+
+        if ((cache_type & WoT_Cache_PDC) == WoT_Cache_PDC && (GetCachePresent() & WoT_Cache_PDC) == WoT_Cache_PDC)
+        {
+            result = std::filesystem::remove(GetPath() / L"data.wgpdc");
+        }
+
+        return result;
+    }
+
+    //
     // Private
     //
 
