@@ -117,6 +117,21 @@ int main() {
         std::wcout << L"Client Started         : " << WOT_ClientIsStarted(i) << std::endl;
         std::wcout << L"Client Terminated      : " << WOT_ClientTerminate(i) << std::endl;
 
+        auto cache_supported = WOT_GetClientCacheSupported(i);
+        auto cache_present = WOT_GetClientCachePresent(i);
+        std::wcout << L"Client Cache           : " << std::endl;
+        std::wcout << L"    * PDC              : ";
+        if(cache_supported & WoT_Cache_PDC)
+        {
+            std::wcout << L" supported, ";
+            std::wcout << ((cache_present & WoT_Cache_PDC) ? L" exists" : L"wasn't found");
+        }
+        else
+        {
+            std::wcout << L" unsupported";
+        }
+        std::wcout << std::endl;
+
         std::wcout << std::endl;
     }
 
