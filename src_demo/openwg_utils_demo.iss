@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2017-2024 OpenWG.Utils Contributors
+// Copyright (c) 2017-2025 OpenWG.Utils Contributors
 
 #define APP_WEBSITE    "https://gitlab.com/openwg/openwg.utils"
-#define APP_VERSION    "25.1.4.1"
+#define APP_VERSION    "25.5.1.1"
 #define APP_DIR_UNINST "openwg_uninst"
 
-#define VERSION_PATTERN_WG    "1.27.1.*"
-#define VERSION_PATTERN_LESTA "1.31.0.*"
+#define VERSION_PATTERN_WG    "1.28.1.*"
+#define VERSION_PATTERN_LESTA "1.34.0.*"
 
 #define OPENWGUTILS_DIR_SRC    "..\bin"
 #define OPENWGUTILS_DIR_UNINST APP_DIR_UNINST
@@ -14,7 +14,7 @@
 #include "..\innosetup\openwg.utils.iss"
 
 [Setup]
-AppCopyright    = "2017-2024 © OpenWG Contributors"
+AppCopyright    = "2017-2025 © OpenWG Contributors"
 AppId           = {{f1810aeb-356e-4b4d-aa6a-b380f67b1a9e}
 AppName         = OpenWG Utils Demo
 AppPublisher    = OpenWG Contributors

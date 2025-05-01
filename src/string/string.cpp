@@ -100,6 +100,11 @@ namespace OpenWG::Utils {
             return elems;
         }
 
+        bool MatchRegex(const std::wstring& where, const std::wstring& from) {
+            std::wregex regex(from);
+            return std::regex_search(where, regex);
+        }
+
         std::wstring Replace(const std::wstring &where, const std::wstring &from, const std::wstring &to) {
             if (where.empty() || from.empty()) {
                 return {where};

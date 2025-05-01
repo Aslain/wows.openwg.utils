@@ -11,6 +11,16 @@ using namespace OpenWG::Utils;
 // Functions
 //
 
+XVMEXT_API_CALL bool STRING_MatchRegex(_In_ const wchar_t* input, _In_ const wchar_t* pattern_search) {
+    // check ptrs
+    if (!input || !pattern_search) {
+        return false;
+    }
+
+    return String::MatchRegex(input, pattern_search);
+}
+
+
 int32_t STRING_ReplaceRegex(_In_ const wchar_t* input, _In_ const wchar_t* pattern_search, _In_ const wchar_t* pattern_replace, _Out_ wchar_t* output, _In_ int32_t output_len) {
     // check ptrs
     if (!input || !pattern_search || !pattern_replace || !output) {

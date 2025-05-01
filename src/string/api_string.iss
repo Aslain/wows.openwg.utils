@@ -7,6 +7,23 @@
 
 [Code]
 
+// STRING/MatchRegex
+function STRING_MatchRegex_I(Input: String; Search: String): Boolean;
+external 'STRING_MatchRegex@files:openwg.utils.dll cdecl setuponly';
+
+function STRING_MatchRegex_U(Input: String; Search: String): Boolean;
+external 'STRING_MatchRegex@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function STRING_MatchRegex(Input: String; Search: String): Boolean;
+begin
+    if IsUninstaller() then
+        Result := STRING_MatchRegex_U(Input, Search)
+    else
+        Result := STRING_MatchRegex_I(Input, Search);
+end;
+
+
+
 // STRING/ReplaceRegex
 function STRING_ReplaceRegex_I(Input: String; Search: String; Replace: String; Output: String; BufferSize: Integer): Integer;
 external 'STRING_ReplaceRegex@files:openwg.utils.dll cdecl setuponly';

@@ -1,5 +1,5 @@
 ﻿// SPDX-License-Identifier: MIT
-// Copyright (c) 2017-2024 OpenWG.Utils Contributors
+// Copyright (c) 2017-2025 OpenWG.Utils Contributors
 
 // directory with OpenWG.Utils installation files, relative to the main .iss file
 #ifndef OPENWGUTILS_DIR_SRC

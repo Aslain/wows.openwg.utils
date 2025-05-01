@@ -27,6 +27,8 @@ namespace OpenWG::Utils {
 
         std::vector<std::wstring> Split(const std::wstring &s, wchar_t delim, size_t limit);
 
+        bool MatchRegex(const std::wstring& where, const std::wstring& from);
+
         std::wstring Replace(const std::wstring &where, const std::wstring &from, const std::wstring &to);
 
         std::wstring ReplaceRegex(const std::wstring &where, const std::wstring &from, const std::wstring &to);

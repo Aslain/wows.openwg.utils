@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
 //
@@ -8,6 +8,31 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <string/api_string.h>
+
+
+//
+// STRING_MatchRegex
+//
+
+TEST_CASE("string_match_regex", "[string]") {
+    SECTION("nullptr") {
+        const wchar_t* str = L"";
+        REQUIRE(STRING_MatchRegex(nullptr, nullptr) == 0);
+        REQUIRE(STRING_MatchRegex(str, nullptr) == 0);
+        REQUIRE(STRING_MatchRegex(nullptr, str) == 0);
+    }
+
+    SECTION("cyr") {
+        const wchar_t* str_1 = L"abcdef";
+        const wchar_t* str_2 = L"абвгдеsda";
+        const wchar_t* str_3 = L"ІЎіў";
+        const wchar_t* patt = L"[\x0400-\x04FF\x0500-\x052F\xA640-\xA69F\x1C80-\x1C8F]";
+        REQUIRE_FALSE(STRING_MatchRegex(str_1, patt));
+        REQUIRE(STRING_MatchRegex(str_2, patt));
+        REQUIRE(STRING_MatchRegex(str_3, patt));
+    }
+}
+
 
 
 //

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2017-2022 OpenWG.Utils Contributors
+// Copyright (c) 2017-2025 OpenWG.Utils Contributors
 
 #pragma once
 
@@ -7,7 +7,21 @@
 extern "C" {
 #endif
 
+#include <stdbool.h>
+
 #include "common/api_common.h"
+
+/**
+ * Match pattern in a string using regexpr
+ * @param input input string
+ * @param pattern_search search pattern
+ * @return
+ *   * 1   -- martch
+ *   * 0   -- error or no matchinvalid pointer
+ *   * -X  -- output buffer is too small, X wchar_t units are required
+ */
+XVMEXT_API_CALL bool STRING_MatchRegex(_In_ const wchar_t* input, _In_ const wchar_t* pattern_search);
+
 
 /**
  * Replace pattern in a string using regexpr
