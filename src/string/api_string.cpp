@@ -2,6 +2,9 @@
 // Includes
 //
 
+// windows
+#include <windows.h>
+
 #include "string/api_string.h"
 #include "string/string.h"
 
@@ -17,7 +20,13 @@ XVMEXT_API_CALL bool STRING_MatchRegex(_In_ const wchar_t* input, _In_ const wch
         return false;
     }
 
-    return String::MatchRegex(input, pattern_search);
+    try {
+        return String::MatchRegex(input, pattern_search);
+    }
+    catch (std::exception &e) {
+        OutputDebugStringA(e.what());
+        return false;
+    }
 }
 
 
@@ -30,10 +39,17 @@ int32_t STRING_ReplaceRegex(_In_ const wchar_t* input, _In_ const wchar_t* patte
     // clear input string
     output[0] = L'\0';
 
-    auto result_w = String::ReplaceRegex(input, pattern_search, pattern_replace);
-    if (output_len > result_w.size()) {
-        wcscpy_s(output, output_len, result_w.c_str());
-        return 1;
+    std::wstring result_w{};
+    try {
+        result_w = String::ReplaceRegex(input, pattern_search, pattern_replace);
+        if (output_len > result_w.size()) {
+            wcscpy_s(output, output_len, result_w.c_str());
+            return 1;
+        }
+    }
+    catch (std::exception& e) {
+        OutputDebugStringA(e.what());
+        return 0;
     }
 
     return -static_cast<int>(result_w.size());

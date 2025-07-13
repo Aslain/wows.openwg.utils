@@ -106,3 +106,18 @@ TEST_CASE( "string_replace_regex", "[string]" ) {
         }
     }
 }
+
+
+TEST_CASE( "string_replace_regex_sk", "[string]" ) {
+    SECTION("tg_1470694134_148287"){
+        std::wstring input{L"\n{\n  \"enable\": false\n}"};
+        std::wstring pattern{L"((\\n|\\r|\\r\\n){(.|\\s)+?\"enable\"\\s*:\\s*)(true|false)"};
+        std::wstring replacement{L"$1true"};
+        std::wstring output{};
+        output.resize(input.size());
+        int result = STRING_ReplaceRegex(input.c_str(), pattern.c_str(), replacement.c_str(), output.data(), output.size() + 1);
+        REQUIRE(result > 0);
+        output.resize(wcslen(output.data()));
+        REQUIRE(output == L"\n{\n  \"enable\": true\n}");
+    }
+}
