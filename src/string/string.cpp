@@ -113,7 +113,10 @@ namespace OpenWG::Utils {
         }
 
         bool MatchRegex(const std::wstring& where, const std::wstring& from) {
-            std::wregex regex(from);
+            auto from_modified = Replace(from, L"{",L"\\{");
+            from_modified = Replace(from_modified, L"}",L"\\}");
+            std::wregex regex(from_modified);
+
             return std::regex_search(where, regex);
         }
 
