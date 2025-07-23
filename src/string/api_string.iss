@@ -23,50 +23,6 @@ begin
 end;
 
 
-
-// STRING/ReplaceRegex
-function STRING_ReplaceRegex_I(Input: String; Search: String; Replace: String; Output: String; BufferSize: Integer): Integer;
-external 'STRING_ReplaceRegex@files:openwg.utils.dll cdecl setuponly';
-
-function STRING_ReplaceRegex_U(Input: String; Search: String; Replace: String; Output: String; BufferSize: Integer): Integer;
-external 'STRING_ReplaceRegex@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
-
-function STRING_ReplaceRegex(Input: String; Search: String; Replace: String): String;
-var
-    ResultSize: Integer;
-    ErrorCode: Integer;
-begin
-    ResultSize := Length(Input)*2;
-    SetLength(Result, ResultSize);
-
-    if IsUninstaller() then
-        ErrorCode := STRING_ReplaceRegex_U(Input, Search, Replace, Result, ResultSize)
-    else
-        ErrorCode := STRING_ReplaceRegex_I(Input, Search, Replace, Result, ResultSize);
-
-    // not enough space
-    if (ErrorCode < 0) then
-    begin
-        ResultSize := -ErrorCode;
-        SetLength(Result, ResultSize);
-        if IsUninstaller() then
-            ErrorCode := STRING_ReplaceRegex_U(Input, Search, Replace, Result, ResultSize)
-        else
-            ErrorCode := STRING_ReplaceRegex_I(Input, Search, Replace, Result, ResultSize);
-    end;
-
-    // general error
-    if (ErrorCode = 0) then
-    begin
-        Result := Input;
-        Exit;
-    end;
-
-    // crop result
-    Result := Copy(Result, 1, Pos(#0, Result)-1);
-end;
-
-
 // STRING/ReplaceRegexEx
 function STRING_ReplaceRegexEx_I(Input: String; Search: String; Replace: String; Output: String; BufferSize: Integer; FirstOnly: Boolean): Integer;
 external 'STRING_ReplaceRegexEx@files:openwg.utils.dll cdecl setuponly';
@@ -107,6 +63,13 @@ begin
 
     // crop result
     Result := Copy(Result, 1, Pos(#0, Result)-1);
+end;
+
+
+// STRING/ReplaceRegex
+function STRING_ReplaceRegex(Input: String; Search: String; Replace: String): String;
+begin
+    Result := STRING_ReplaceRegexEx(Input, Search, Replace, Output, BufferSize, False);
 end;
 
 

@@ -172,3 +172,44 @@ TEST_CASE("string_replace_regex_ex_jove_1", "[string]") {
     output.resize(wcslen(output.data()));
     REQUIRE(output == after_expected);
 }
+
+TEST_CASE("string_replace_regex_ex_jove_2", "[string]") {
+    std::wstring before;
+    std::wstring after_expected;
+    {
+        std::ifstream fin(std::filesystem::path(ASSETS_FOLDER) / "string_replace_2_before.txt", std::ios::binary);
+        fin.seekg(0, std::ios::end);
+        size_t size = (size_t)fin.tellg();
+        //skip BOM
+
+        fin.seekg(2, std::ios::beg);
+        size -= 2;
+
+        before.resize(size / 2 + 1);
+        fin.read((char*)before.data(), size);
+    }
+    {
+        std::ifstream fin(std::filesystem::path(ASSETS_FOLDER) / "string_replace_2_after.txt", std::ios::binary);
+        fin.seekg(0, std::ios::end);
+        size_t size = (size_t)fin.tellg();
+        //skip BOM
+
+        fin.seekg(2, std::ios::beg);
+        size -= 2;
+
+        after_expected.resize(size / 2);
+        fin.read((char*)after_expected.data(), size);
+    }
+
+    std::wstring output{};
+    output.resize(before.size() * 16);
+    auto result = STRING_ReplaceRegex(before.c_str(),
+        L"(<loadBanks>)",
+        L"$1<bank><name>extended_sounds.bnk</name></bank><bank><name>hangar_h04_remday_2015.bnk</name></bank>",
+        output.data(),
+        output.size()
+    );
+    REQUIRE(result > 0);
+    output.resize(wcslen(output.data()));
+    REQUIRE(output == after_expected);
+}
