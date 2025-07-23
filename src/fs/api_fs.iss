@@ -23,6 +23,22 @@ begin
 end;
 
 
+// FS/FileSize
+function FS_FileSize_I(Path: String): Integer;
+external 'FS_FileSizeW@files:openwg.utils.dll cdecl setuponly';
+
+function FS_FileSize_U(Path: String): Integer;
+external 'FS_FileSizeW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function FS_FileSize(Path: String): Integer;
+begin
+    if IsUninstaller() then
+        Result := FS_FileSize_U(Path)
+    else
+        Result := FS_FileSize_I(Path)
+end;
+
+
 // FS/FileEqual
 function FS_FileEqual_I(Path1: String; Path2: String): Integer;
 external 'FS_FileEqualW@files:openwg.utils.dll cdecl setuponly';

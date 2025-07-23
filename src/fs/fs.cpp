@@ -171,6 +171,11 @@ namespace OpenWG::Utils {
             return !rel.empty() && rel.native()[0] != '.';
         }
 
+        size_t Size(const std::filesystem::path& path)
+        {
+            return std::filesystem::file_size(path);
+        }
+
         bool IsEqual(const std::filesystem::path &path_1, const std::filesystem::path &path_2) {
             if (!std::filesystem::exists(path_1) || !std::filesystem::exists(path_2)) {
                 return false;

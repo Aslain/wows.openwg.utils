@@ -25,6 +25,7 @@ extern "C" {
 
 // File
 XVMEXT_API_CALL bool FS_FileEqualW(const wchar_t* path_1, const wchar_t* path_2);
+XVMEXT_API_CALL uint32_t FS_FileSizeW(const wchar_t* path_1);
 XVMEXT_API_CALL bool FS_FileExistsW(const wchar_t* path);
 
 // Sarch

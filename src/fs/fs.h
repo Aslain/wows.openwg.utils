@@ -23,5 +23,7 @@ namespace OpenWG::Utils {
         [[nodiscard]] bool IsEqual(const std::filesystem::path& path_1, const std::filesystem::path& path_2);
 
         [[nodiscard]] bool IsSubpath(const std::filesystem::path &path, const std::filesystem::path &base);
+
+        [[nodiscard]] size_t Size(const std::filesystem::path &path);
     }
 }

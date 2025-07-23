@@ -30,6 +30,15 @@ bool FS_FileExistsW(const wchar_t* path) {
     return OpenWG::Utils::Filesystem::Exists(path);
 }
 
+uint32_t FS_FileSizeW(const wchar_t* path_1)
+{
+    if(FS_FileExistsW(path_1)){
+        return 0;
+    }
+    return Filesystem::Size(path_1);
+}
+
+
 void* FS_Search_QueryFolderW(const wchar_t* path, uint32_t max_depth){
     void *result = nullptr;
 
