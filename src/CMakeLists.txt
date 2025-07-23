@@ -47,6 +47,8 @@ option(BUILD_MODULE_XML          "Build module XML"          ON)
 
 add_library(openwg.utils SHARED)
 
+file(COPY_FILE test/test_prolog.iss "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.test.iss")
+
 # Common
 file(GLOB srcs CONFIGURE_DEPENDS
         "common/*.cpp"
@@ -56,6 +58,9 @@ file(GLOB srcs CONFIGURE_DEPENDS
 target_sources(openwg.utils PRIVATE ${srcs})
 file(COPY_FILE common/api_common.iss "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss")
 
+file(READ common/test_common.iss CONTENTS)
+file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.test.iss" "${CONTENTS}")
+
 # BWXML
 if(BUILD_MODULE_BWXML)
     file(GLOB srcs CONFIGURE_DEPENDS
@@ -63,8 +68,12 @@ if(BUILD_MODULE_BWXML)
         "bwxml/*.h"
     )
     target_sources(openwg.utils PRIVATE ${srcs})
+
     file(READ bwxml/api_bwxml.iss CONTENTS)
     file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+
+    file(READ bwxml/test_bwxml.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.test.iss" "${CONTENTS}")
 endif()
 
 # Wine
@@ -74,8 +83,12 @@ if(BUILD_MODULE_WINE)
             "wine/*.h"
     )
     target_sources(openwg.utils PRIVATE ${srcs})
+    
     file(READ wine/api_wine.iss CONTENTS)
     file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+
+    file(READ wine/test_wine.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.test.iss" "${CONTENTS}")
 endif()
 
 # FS
@@ -86,8 +99,12 @@ if(BUILD_MODULE_FS)
         "fs/*.h"
     )
     target_sources(openwg.utils PRIVATE ${srcs})
+
     file(READ fs/api_fs.iss CONTENTS)
     file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+
+    file(READ fs/test_fs.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.test.iss" "${CONTENTS}")
 endif()
 
 # Image
@@ -103,8 +120,12 @@ if(BUILD_MODULE_IMAGE)
     target_sources(openwg.utils PRIVATE ${srcs})
     target_link_libraries(openwg.utils PUBLIC stb)
     target_link_libraries(openwg.utils PUBLIC avir)
+
     file(READ image/api_image.iss CONTENTS)
     file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+
+    file(READ image/test_image.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.test.iss" "${CONTENTS}")
 endif()
 
 # Inno
@@ -115,8 +136,12 @@ if(BUILD_MODULE_INNO)
     )
     target_sources(openwg.utils PRIVATE ${srcs})
     target_link_libraries(openwg.utils PUBLIC stb)
+
     file(READ inno/api_inno.iss CONTENTS)
     file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+    
+    file(READ inno/test_inno.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.test.iss" "${CONTENTS}")
 endif()
 
 # JSON
@@ -128,8 +153,12 @@ if(BUILD_MODULE_JSON)
     target_sources(openwg.utils PRIVATE ${srcs})
     include(_cmake/cpm-jsoncpp.cmake)
     target_link_libraries(openwg.utils PUBLIC jsoncpp_static)
+
     file(READ json/api_json.iss CONTENTS)
     file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+
+    file(READ json/test_json.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.test.iss" "${CONTENTS}")
 endif()
 
 # Network
@@ -139,8 +168,12 @@ if(BUILD_MODULE_NETWORK)
         "network/*.h"
     )
     target_sources(openwg.utils PRIVATE ${srcs})
+    
     file(READ network/api_network.iss CONTENTS)
     file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+
+    file(READ network/test_network.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.test.iss" "${CONTENTS}")
 endif()
 
 # String
@@ -150,8 +183,12 @@ if(BUILD_MODULE_STRING)
         "string/*.h"
     )
     target_sources(openwg.utils PRIVATE ${srcs})
+    
     file(READ string/api_string.iss CONTENTS)
     file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+
+    file(READ string/test_string.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.test.iss" "${CONTENTS}")
 endif()
 
 # Process
@@ -164,6 +201,9 @@ if(BUILD_MODULE_PROCESS)
     target_sources(openwg.utils PRIVATE ${srcs})
     file(READ process/api_process.iss CONTENTS)
     file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+
+    file(READ process/test_process.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.test.iss" "${CONTENTS}")
 endif()
 
 # Splashscreen
@@ -175,6 +215,9 @@ if(BUILD_MODULE_SPLASHSCREEN)
     target_sources(openwg.utils PRIVATE ${srcs})
     file(READ splashscreen/api_splashscreen.iss CONTENTS)
     file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+
+    file(READ splashscreen/test_splashscreen.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.test.iss" "${CONTENTS}")
 endif()
 
 # WoT
@@ -184,8 +227,12 @@ if(BUILD_MODULE_WOT)
         "wot/*.h"
     )
     target_sources(openwg.utils PRIVATE ${srcs})
+    
     file(READ wot/api_wot.iss CONTENTS)
     file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+
+    file(READ wot/test_wot.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.test.iss" "${CONTENTS}")
 endif()
 
 # WWISE
@@ -195,8 +242,12 @@ if(BUILD_MODULE_WWISE)
         "wwise/*.h"
     )
     target_sources(openwg.utils PRIVATE ${srcs})
+
     file(READ wwise/api_wwise.iss CONTENTS)
     file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+
+    file(READ wwise/test_wwise.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.test.iss" "${CONTENTS}")
 endif()
 
 # XML
@@ -208,10 +259,16 @@ if(BUILD_MODULE_XML)
     target_sources(openwg.utils PRIVATE ${srcs})
     include(_cmake/cpm-pugixml.cmake)
     target_link_libraries(openwg.utils PUBLIC pugixml::pugixml)
+
     file(READ xml/api_xml.iss CONTENTS)
     file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss" "${CONTENTS}")
+
+    file(READ xml/test_xml.iss CONTENTS)
+    file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.test.iss" "${CONTENTS}")
 endif()
 
+file(READ test/test_epilog.iss CONTENTS)
+file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.test.iss" "${CONTENTS}")
 
 target_include_directories(openwg.utils PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 
@@ -287,4 +344,9 @@ install(
 install(
     FILES "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.iss"
     DESTINATION innosetup
+)
+
+install(
+    FILES "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.test.iss"
+    DESTINATION test
 )

@@ -22,13 +22,13 @@ begin
     ResultSize := FS_FileSize(FilePath);
     if ResultSize = 0 then
         Exit;
-    ResultSize = ResultSize * 2;
-    SetLength(Result, Size);
+    ResultSize := ResultSize * 2;
+    SetLength(Result, ResultSize);
 
     if IsUninstaller() then
-        ErrorCode := STRING_LoadFromFile_U(FilePath, Result, Size)
+        ErrorCode := STRING_LoadFromFile_U(FilePath, Result, ResultSize)
     else
-        ErrorCode := STRING_LoadFromFile_I(FilePath, Result, Size);
+        ErrorCode := STRING_LoadFromFile_I(FilePath, Result, ResultSize);
 
     // not enough space
     if (ErrorCode < 0) then
@@ -36,9 +36,9 @@ begin
             ResultSize := -ErrorCode;
             SetLength(Result, ResultSize);
             if IsUninstaller() then
-                ErrorCode := STRING_LoadFromFile_U(FilePath, Result, Size)
+                ErrorCode := STRING_LoadFromFile_U(FilePath, Result, ResultSize)
             else
-                ErrorCode := STRING_LoadFromFile_I(FilePath, Result, Size);
+                ErrorCode := STRING_LoadFromFile_I(FilePath, Result, ResultSize);
         end;
 
     // general error
@@ -112,7 +112,7 @@ end;
 // STRING/ReplaceRegex
 function STRING_ReplaceRegex(Input: String; Search: String; Replace: String): String;
 begin
-    Result := STRING_ReplaceRegexEx(Input, Search, Replace, Output, BufferSize, False);
+    Result := STRING_ReplaceRegexEx(Input, Search, Replace, False);
 end;
 
 

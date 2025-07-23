@@ -1,6 +1,6 @@
 #!/usr/bin/env pwsh
 
-# Copyright (c) 2017-2021, Mikhail Paulyshka.
+# Copyright (c) 2017-2025, OpenWG Contributors
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -54,5 +54,8 @@ else{
 
 New-Item -ItemType Directory -Path ~output/demo -ErrorAction SilentlyContinue
 Copy-Item -Path src_demo/* -Destination ~output/demo -Recurse
-
 iscc  ~output/demo/openwg_utils_demo.iss
+
+New-Item -ItemType Directory -Path ~output/test -ErrorAction SilentlyContinue
+Copy-Item -Path src_test/* -Destination ~output/test -Recurse
+iscc  ~output/test/openwg_utils_test.iss
