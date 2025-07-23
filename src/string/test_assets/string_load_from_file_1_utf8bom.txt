@@ -1,0 +1,3 @@
+﻿<audio_mods.xml><disableSpecials/>
+  <loadBanks></loadBanks>
+</audio_mods.xml>

@@ -16,6 +16,7 @@ target_sources(openwg.utils.test PRIVATE
 )
 
 target_compile_definitions(openwg.utils.test PRIVATE "ASSETS_FOLDER=\"${CMAKE_CURRENT_SOURCE_DIR}/assets/\"")
+target_compile_definitions(openwg.utils.test PRIVATE "ROOT_FOLDER=\"${CMAKE_CURRENT_SOURCE_DIR}/../\"")
 
 target_link_libraries(openwg.utils.test PRIVATE openwg.utils)
 target_link_libraries(openwg.utils.test PRIVATE Catch2::Catch2WithMain)

@@ -350,3 +350,7 @@ install(
     FILES "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.test.iss"
     DESTINATION test
 )
+install(
+    FILES "${CMAKE_CURRENT_SOURCE_DIR}/test/test_report.html"
+    DESTINATION test
+)

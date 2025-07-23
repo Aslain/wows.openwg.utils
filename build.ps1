@@ -56,6 +56,4 @@ New-Item -ItemType Directory -Path ~output/demo -ErrorAction SilentlyContinue
 Copy-Item -Path src_demo/* -Destination ~output/demo -Recurse
 iscc  ~output/demo/openwg_utils_demo.iss
 
-New-Item -ItemType Directory -Path ~output/test -ErrorAction SilentlyContinue
-Copy-Item -Path src_test/* -Destination ~output/test -Recurse
-iscc  ~output/test/openwg_utils_test.iss
+iscc  ~output/test/openwg.utils.test.iss
