@@ -270,11 +270,13 @@ int32_t STRING_ReplaceRegexEx(_In_ const wchar_t* input, _In_ const wchar_t* pat
     output[0] = L'\0';
 
     std::wstring result_w{};
+    int32_t size_bytes{};
     try {
         result_w = String::ReplaceRegex(input, pattern_search, pattern_replace, first_only);
-        if (output_len > result_w.size()) {
-            wcscpy_s(output, output_len, result_w.c_str());
-            return 1;
+        size_bytes = (result_w.size()+1)*sizeof(wchar_t);
+        if (output_len >= size_bytes) {
+            wcscpy_s(output, output_len/sizeof(wchar_t), result_w.c_str());
+            return size_bytes;
         }
     }
     catch (std::exception& e) {
@@ -284,6 +286,6 @@ int32_t STRING_ReplaceRegexEx(_In_ const wchar_t* input, _In_ const wchar_t* pat
         return 0;
     }
 
-    return -static_cast<int>(result_w.size());
+    return -static_cast<int>(size_bytes);
 }
 
