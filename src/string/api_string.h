@@ -11,6 +11,10 @@ extern "C" {
 
 #include "common/api_common.h"
 
+
+XVMEXT_API_CALL int32_t STRING_LoadFromFile(_In_ const wchar_t* filepath, _Out_ wchar_t* output, _In_ int32_t output_len);
+
+
 /**
  * Match pattern in a string using regexpr
  * @param input input string

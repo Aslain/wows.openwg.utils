@@ -7,6 +7,49 @@
 
 [Code]
 
+// String/LoadFromFile
+function STRING_LoadFromFile_I(FilePath: String; Buffer: String; BufferSize: Integer): Integer;
+external 'STRING_LoadFromFile@files:openwg.utils.dll cdecl setuponly';
+
+function STRING_LoadFromFile_U(FilePath: String; Buffer: String; BufferSize: Integer): Integer;
+external 'STRING_LoadFromFile_U@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function STRING_LoadFromFile(FilePath: String): String;
+var
+    ResultSize: Integer;
+    ErrorCode: Integer;
+begin
+    ResultSize := FS_FileSize(FilePath);
+    if ResultSize = 0 then
+        Exit;
+    ResultSize = ResultSize * 2;
+    SetLength(Result, Size);
+
+    if IsUninstaller() then
+        ErrorCode := STRING_LoadFromFile_U(FilePath, Result, Size)
+    else
+        ErrorCode := STRING_LoadFromFile_I(FilePath, Result, Size);
+
+    // not enough space
+    if (ErrorCode < 0) then
+        begin
+            ResultSize := -ErrorCode;
+            SetLength(Result, ResultSize);
+            if IsUninstaller() then
+                ErrorCode := STRING_LoadFromFile_U(FilePath, Result, Size)
+            else
+                ErrorCode := STRING_LoadFromFile_I(FilePath, Result, Size);
+        end;
+
+    // general error
+    if (ErrorCode = 0) then
+        Exit;
+
+    // crop result
+    Result := Copy(Result, 1, Pos(#0, Result)-1);
+end;
+
+
 // STRING/MatchRegex
 function STRING_MatchRegex_I(Input: String; Search: String): Boolean;
 external 'STRING_MatchRegex@files:openwg.utils.dll cdecl setuponly';
