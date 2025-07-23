@@ -12,7 +12,7 @@ function STRING_LoadFromFile_I(FilePath: String; Buffer: String; BufferSize: Int
 external 'STRING_LoadFromFile@files:openwg.utils.dll cdecl setuponly';
 
 function STRING_LoadFromFile_U(FilePath: String; Buffer: String; BufferSize: Integer): Integer;
-external 'STRING_LoadFromFile_U@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+external 'STRING_LoadFromFile@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
 
 function STRING_LoadFromFile(FilePath: String): String;
 var

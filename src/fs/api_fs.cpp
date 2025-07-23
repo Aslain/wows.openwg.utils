@@ -32,7 +32,7 @@ bool FS_FileExistsW(const wchar_t* path) {
 
 uint32_t FS_FileSizeW(const wchar_t* path_1)
 {
-    if(FS_FileExistsW(path_1)){
+    if(!FS_FileExistsW(path_1)){
         return 0;
     }
     return Filesystem::Size(path_1);
