@@ -42,7 +42,7 @@ namespace OpenWG::Utils::WoT {
                 auto wgcpath_file = path_programdata / "data" / info.path_filename;
 
                 if (Filesystem::Exists(wgcpath_file)) {
-                    auto path_wgc = std::filesystem::path(Filesystem::GetFileContent(wgcpath_file));
+                    auto path_wgc = std::filesystem::path(Filesystem::GetFileContent(wgcpath_file.wstring()));
                     if (Filesystem::Exists(path_wgc / info.exe_filename)) {
                         return std::make_shared<LauncherWgc>(info, path_programdata, path_wgc);
                     }

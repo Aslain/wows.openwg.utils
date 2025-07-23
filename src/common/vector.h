@@ -3,10 +3,22 @@
 
 #pragma once
 
+//
+// Includes
+//
+
+// stdlib
 #include <algorithm>
 #include <cstdint>
+#include <cstring>
 #include <vector>
 #include <string>
+
+
+
+//
+// Class
+//
 
 namespace OpenWG::Utils::Common {
     namespace Vector {
@@ -32,7 +44,7 @@ namespace OpenWG::Utils::Common {
 
         inline void *VecToPtr(std::vector<uint8_t> &vec) {
             void *ptr = nullptr;
-            memcpy(&ptr, vec.data(), sizeof(ptr));
+            std::memcpy(&ptr, vec.data(), sizeof(ptr));
             return ptr;
         }
     }

@@ -20,6 +20,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE STRING "MSVC Runtime Library")
+set(CMAKE_POSITION_INDEPENDENT_CODE  ON)
 
 option(BUILD_TESTS               "Build Tests"              OFF)
 option(BUILD_APPS                "Build Apps"                ON)
@@ -214,8 +215,9 @@ endif()
 
 target_include_directories(openwg.utils PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 
-target_link_libraries(openwg.utils PRIVATE "Version" "Kernel32" "Psapi" "Shell32" "Advapi32" "Gdi32" "Iphlpapi" "Ws2_32")
-
+if(WIN32)
+    target_link_libraries(openwg.utils PRIVATE "Version" "Kernel32" "Psapi" "Shell32" "Advapi32" "Gdi32" "Iphlpapi" "Ws2_32")
+endif()
 
 target_compile_definitions(openwg.utils PRIVATE "-DBUILD_OPENWGUTILS")
 target_compile_definitions(openwg.utils PRIVATE "-DNOMINMAX")

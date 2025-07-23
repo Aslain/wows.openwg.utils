@@ -6,9 +6,11 @@
 //
 
 // windows
+#if defined(_WIN32)
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <windows.h>
+#endif
 
 // openwg
 #include "network/network_ping.h"
@@ -16,6 +18,7 @@
 
 namespace OpenWG::Utils::Network {
     uint32_t Resolve(const std::wstring &host) {
+#if defined(_WIN32)
         if (host.empty()) {
             return 0U;
         }
@@ -38,5 +41,8 @@ namespace OpenWG::Utils::Network {
         WSACleanup();
 
         return ipaddr;
+#else
+        return {};
+#endif
     }
 }

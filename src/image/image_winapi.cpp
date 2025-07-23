@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2024 OpenWG.Utils Contributors
 
+#if defined(_WIN32)
+
 //
 // Includes
 //
@@ -128,7 +130,6 @@ namespace OpenWG::Utils::Image
         DeleteDC(im2_dc);
 
         ReleaseDC(nullptr, hdcScreen);
-
         return true;
     }
 
@@ -191,7 +192,6 @@ namespace OpenWG::Utils::Image
 
         auto* result = CreateBitmap(image_width, image_height, 1, channels_desired * 8, data);
         stbi_image_free(data);
-
         return result;
     }
 
@@ -335,3 +335,5 @@ namespace OpenWG::Utils::Image
         return DeleteObject(brush) != FALSE;
     }
 }
+
+#endif

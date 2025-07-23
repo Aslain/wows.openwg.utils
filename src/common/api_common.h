@@ -9,10 +9,14 @@ extern "C" {
 
 #include <stdint.h>
 
-#ifdef BUILD_OPENWGUTILS
-#define XVMEXT_API_CALL extern "C" __declspec(dllexport)
+#if defined(_WIN32)
+    #ifdef BUILD_OPENWGUTILS
+        #define XVMEXT_API_CALL extern "C" __declspec(dllexport)
+    #else
+        #define XVMEXT_API_CALL extern "C" __declspec(dllimport)
+    #endif
 #else
-#define XVMEXT_API_CALL extern "C" __declspec(dllimport)
+    #define XVMEXT_API_CALL
 #endif
 
 #ifndef _In_

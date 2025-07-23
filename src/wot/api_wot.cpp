@@ -16,6 +16,15 @@
 using namespace OpenWG::Utils::WoT;
 
 
+//
+// Linux
+//
+
+#if !defined(_WIN32)
+    #define wcscpy_s(a,b,c) wcscpy(a,c)
+#endif
+
+
 
 //
 // globals
@@ -270,7 +279,7 @@ void WOT_GetClientPathW(wchar_t *buffer, int32_t buffer_size, int32_t index) {
 
     buffer[0] = '\0';
     if (index < g_clients.size() && g_clients[index]) {
-        wcscpy_s(buffer, buffer_size, g_clients[index]->GetPath().c_str());
+        wcscpy_s(buffer, buffer_size, g_clients[index]->GetPath().wstring().c_str());
     }
 }
 

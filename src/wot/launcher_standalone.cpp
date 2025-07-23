@@ -1,11 +1,26 @@
+//
+// Includes
+//
+
+// stdlib
 #include <array>
 
+// windows
+#if defined(_WIN32)
 #include <Windows.h>
+#endif
 
+// openwg.utils
 #include "fs/fs.h"
 #include "wine/wine.h"
 #include "wot/client_wot.h"
 #include "wot/launcher_standalone.h"
+
+
+
+//
+// Implementation
+//
 
 namespace OpenWG::Utils::WoT {
 
@@ -73,8 +88,9 @@ namespace OpenWG::Utils::WoT {
         // WoT OSX edition (Wargaming.net wine wrapper)
         if(Wine::GetStatus().running_on) {
             std::array<wchar_t, 256> buf{};
+#if defined(_WIN32)
             GetEnvironmentVariableW(L"USERNAME", buf.data(), 256);
-
+#endif
             std::wstring wot_osx = std::wstring(L"Z:\\Users\\") + std::wstring(buf.data()) + std::wstring(
                     L"\\Library\\Application Support\\World of Tanks\\Bottles\\worldoftanks\\drive_c\\Games\\World_of_Tanks\\");
             if (Filesystem::Exists(wot_osx)) {

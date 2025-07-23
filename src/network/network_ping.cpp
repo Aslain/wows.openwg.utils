@@ -9,11 +9,13 @@
 #include <vector>
 
 // windows
+#if defined(_WIN32)
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <iphlpapi.h>
 #include <icmpapi.h>
 #include <windows.h>
+#endif
 
 // openwg
 #include "network/network_ping.h"
@@ -21,6 +23,7 @@
 
 namespace OpenWG::Utils::Network {
     int32_t Ping(uint32_t addr, int32_t timeout) {
+#if defined(_WIN32)
         HANDLE handle_icmp{};
 
         handle_icmp = IcmpCreateFile();
@@ -49,5 +52,8 @@ namespace OpenWG::Utils::Network {
         }
 
         return reply->RoundTripTime;
+#else
+        return {};
+#endif
     }
 }

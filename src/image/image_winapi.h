@@ -3,6 +3,8 @@
 
 #pragma once
 
+#if defined(_WIN32)
+
 //
 // Includes
 //
@@ -36,3 +38,5 @@ namespace OpenWG::Utils::Image
     HBRUSH BrushCreate(HBITMAP bitmap);
     bool BrushFree(HBRUSH brush);
 }
+
+#endif

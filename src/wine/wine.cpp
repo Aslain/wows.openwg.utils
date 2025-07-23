@@ -1,13 +1,23 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
+//
+// Includes
+//
+
+// stdlib
 #include <iostream>
+
+// windows
+#if defined(_WIN32)
 #include <Windows.h>
+#endif
 #include "wine.h"
 
 namespace OpenWG::Utils::Wine {
 
     WineStatus GetStatus() {
+#if defined(_WIN32)
         typedef char *(__cdecl *t_wine_get_build_id)(void);
         typedef void (__cdecl *t_wine_get_host_version)(const char **sysname, const char **release);
 
@@ -45,5 +55,8 @@ namespace OpenWG::Utils::Wine {
         }
 
         return st;
+#else
+        return {};
+#endif
     }
 }

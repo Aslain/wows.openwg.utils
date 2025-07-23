@@ -18,7 +18,7 @@ namespace OpenWG::Utils::WoT {
         m_raw = str;
         m_components.clear();
         for (const auto& tok : String::Split(m_raw, L'.')) {
-            m_components.push_back(_wtoi64(tok.c_str()));
+            m_components.push_back(std::stoi(tok));
         }
     }
 

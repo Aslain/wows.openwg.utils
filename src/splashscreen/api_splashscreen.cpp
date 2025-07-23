@@ -6,7 +6,7 @@
 
 using namespace OpenWG::Utils::Splashscreen;
 
-XVMEXT_API_CALL int32_t __cdecl SPLASHSCREEN_ShowSplashScreenW(const wchar_t *file_path, int32_t seconds) {
+XVMEXT_API_CALL int32_t SPLASHSCREEN_ShowSplashScreenW(const wchar_t *file_path, int32_t seconds) {
     if (!file_path) {
         return false;
     }

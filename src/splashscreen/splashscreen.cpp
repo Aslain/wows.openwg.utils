@@ -20,11 +20,14 @@ namespace OpenWG::Utils::Splashscreen
     SplashScreen::~SplashScreen()
     {
         Close();
+#if defined(_WIN32)
         Image::BitmapFree(m_bitmap);
+#endif
     }
 
     bool SplashScreen::Load(const std::filesystem::path& path)
     {
+#if defined(_WIN32)
         if (m_bitmap)
         {
             Image::BitmapFree(m_bitmap);
@@ -32,6 +35,7 @@ namespace OpenWG::Utils::Splashscreen
 
         m_bitmap = Image::BitmapLoad(path);
         Image::BitmapAlphaPremultiply(m_bitmap);
+#endif
 
         return m_bitmap != nullptr;
     }
@@ -69,7 +73,9 @@ namespace OpenWG::Utils::Splashscreen
 
     bool SplashScreen::Close()
     {
+#if defined(_WIN32)
         DestroyWindow(m_window);
+#endif
         m_window = nullptr;
         return true;
     }
@@ -88,23 +94,31 @@ namespace OpenWG::Utils::Splashscreen
 
     bool SplashScreen::registerClass()
     {
+#if defined(_WIN32)
         WNDCLASSW windowClass{};
         windowClass.lpfnWndProc = DefWindowProcW;
         windowClass.lpszClassName = m_className;
         return RegisterClassW(&windowClass) != 0U;
+#else
+        return false;
+#endif
     }
 
 
     bool SplashScreen::createWindow()
     {
+#if defined(_WIN32)
         HWND hwndOwner = CreateWindowW(m_className, nullptr, WS_POPUP, 0, 0, 0, 0, nullptr, nullptr, nullptr, nullptr);
         m_window = CreateWindowExW(WS_EX_LAYERED, m_className, nullptr, WS_POPUP | WS_VISIBLE, 0, 0, 0, 0, hwndOwner,
                                    NULL, NULL, NULL);
+#endif
+
         return m_window != nullptr;
     }
 
     bool SplashScreen::setBitmap()
     {
+#if defined(_WIN32)
         // get the size of the bitmap
         int splash_width, splash_height;
         if (!Image::BitmapGetSize(m_bitmap, &splash_width, &splash_height))
@@ -149,6 +163,7 @@ namespace OpenWG::Utils::Splashscreen
         SelectObject(hdcMem, hbmpOld);
         DeleteDC(hdcMem);
         ReleaseDC(nullptr, hdcScreen);
+#endif
 
         return true;
     }

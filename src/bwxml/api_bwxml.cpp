@@ -2,7 +2,7 @@
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
 #include "api_bwxml.h"
-#include "bwxml.h"
+#include "BwXml.h"
 
 XVMEXT_API_CALL int32_t BWXML_UnpackW(const wchar_t* xml_in, const wchar_t* xml_out)
 {

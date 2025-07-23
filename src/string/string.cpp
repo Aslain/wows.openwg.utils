@@ -1,15 +1,27 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
+//
+// Includes
+//
+
+// stdlib
 #include <algorithm>
+#include <cstring>
 #include <iterator>
 #include <locale>
 #include <regex>
 #include <string>
 #include <sstream>
 
+// openwg.utils
 #include "string/string.h"
 
+
+
+//
+// Implementation
+//
 
 namespace OpenWG::Utils {
     namespace String {
@@ -215,7 +227,5 @@ namespace OpenWG::Utils {
             transform(result.begin(), result.end(), result.begin(), ::towlower);
             return result;
         }
-
-
     }
 }

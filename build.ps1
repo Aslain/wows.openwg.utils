@@ -1,3 +1,5 @@
+#!/usr/bin/env pwsh
+
 # Copyright (c) 2017-2021, Mikhail Paulyshka.
 # All rights reserved.
 #
@@ -27,15 +29,28 @@ $root = (Get-Location).Path -replace "\\","/"
 
 Remove-Item -Path ./~output/ -Force -Recurse -ErrorAction SilentlyContinue
 
-function Build-CppProject($Toolset, $Architecture) {
-    New-Item -ItemType Directory -Path ./~build/$Architecture/ -ErrorAction SilentlyContinue
-    Push-Location ./~build/$Architecture/ -ErrorAction Stop
-    cmake -T $Toolset -A $Architecture $root/src/ -DCMAKE_INSTALL_PREFIX="$root/~output/"
-    cmake --build . --config Release --target Install
-    Pop-Location
-}
+if($IsLinux) {
+    function Build-CppProject() {
+        New-Item -ItemType Directory -Path ./~build/lnx/ -ErrorAction SilentlyContinue
+        Push-Location ./~build/lnx/ -ErrorAction Stop
+        cmake $root/src/ -DCMAKE_INSTALL_PREFIX="$root/~output/"
+        cmake --build . --config Release --target Install
+        Pop-Location
+    }
 
-Build-CppProject -Toolset v143 -Architecture Win32
+    Build-CppProject
+}
+else{
+    function Build-CppProject($Toolset, $Architecture) {
+        New-Item -ItemType Directory -Path ./~build/$Architecture/ -ErrorAction SilentlyContinue
+        Push-Location ./~build/$Architecture/ -ErrorAction Stop
+        cmake -T $Toolset -A $Architecture $root/src/ -DCMAKE_INSTALL_PREFIX="$root/~output/"
+        cmake --build . --config Release --target Install
+        Pop-Location
+    }
+
+    Build-CppProject -Toolset v143 -Architecture Win32
+}
 
 New-Item -ItemType Directory -Path ~output/demo -ErrorAction SilentlyContinue
 Copy-Item -Path src_demo/* -Destination ~output/demo -Recurse

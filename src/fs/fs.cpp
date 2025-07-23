@@ -1,17 +1,31 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
-#include "fs.h"
+//
+// Includes
+//
 
+// stdlib
 #include <array>
 #include <codecvt>
 #include <fstream>
 #include <locale>
 
-
+// windows
+#if defined(_WIN32)
 #include <Windows.h>
 #include <ShlObj.h>
+#endif
+
+// openwg.utils
+#include "fs.h"
 #include "wine/wine.h"
+
+
+
+//
+// Implementation
+//
 
 namespace OpenWG::Utils {
     namespace Filesystem {
@@ -19,6 +33,7 @@ namespace OpenWG::Utils {
         std::wstring GetExeVersion(const std::wstring &filepath) {
             std::wstring result;
 
+#if defined(_WIN32)
             unsigned long verHandle = 0;
             unsigned int size = 0;
             unsigned char *lpBuffer = nullptr;
@@ -45,6 +60,7 @@ namespace OpenWG::Utils {
             }
 
             delete[] verData;
+#endif
             return result;
         }
 
@@ -53,7 +69,7 @@ namespace OpenWG::Utils {
 
             std::wifstream in(std::filesystem::path(filepath), std::wifstream::in);
             if (!in.is_open()) {
-                return std::wstring();
+                return {};
             }
             in.imbue(std::locale(in.getloc(), new std::codecvt_utf8_utf16<wchar_t, 0x10FFFF, std::consume_header>()));
 
@@ -64,16 +80,22 @@ namespace OpenWG::Utils {
         }
 
         std::filesystem::path GetProgramDataPath() {
+#if defined(_WIN32)
             wchar_t szProgramDataPath[MAX_PATH]{0};
             if (!SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_COMMON_APPDATA, NULL, 0, szProgramDataPath))) {
                 return std::filesystem::path();
             }
             return std::filesystem::path(szProgramDataPath);
+#else
+            return {};
+#endif
         }
 
         std::vector<std::wstring> GetLogicalDrives() {
             std::vector<std::wstring> drives;
 
+
+#if defined(_WIN32)
             const unsigned int buffer_length = 1024;
             wchar_t *buffer = new wchar_t[buffer_length];
 
@@ -123,6 +145,7 @@ namespace OpenWG::Utils {
                 }
 
             }
+#endif
 
             return drives;
         }

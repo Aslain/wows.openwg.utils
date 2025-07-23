@@ -1,9 +1,24 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2017-2022 OpenWG.Utils Contributors
 
+//
+// Includes
+//
+
+// stdlib
+#include <fstream>
+
+// pugixml
 #include <pugixml.hpp>
 
+// openwg.utils
 #include "bwxml/BwXml.h"
+
+
+
+//
+// Implementation
+//
 
 bool BwXml::Read(const wchar_t* input_filename)
 {
@@ -31,7 +46,7 @@ bool BwXml::SaveXml(const wchar_t* output_filename)
 
     _root_section.SaveXml(node, _string_table);
 
-    auto stream = std::ofstream(output_filename);
+    auto stream = std::ofstream(std::filesystem::path(output_filename));
     doc.save(stream);
     return true;
 }

@@ -3,8 +3,20 @@
 
 #pragma once
 
+//
+// Includes
+//
+
+// stdlib
+#include <cstdint>
 #include <string>
 #include <vector>
+
+
+
+//
+// Class
+//
 
 namespace OpenWG::Utils {
     namespace String {

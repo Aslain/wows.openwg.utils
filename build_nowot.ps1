@@ -1,3 +1,5 @@
+#!/usr/bin/env pwsh
+
 # Copyright (c) 2017-2021, Mikhail Paulyshka.
 # All rights reserved.
 #

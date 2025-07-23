@@ -22,7 +22,7 @@ void *JSON_OpenFileW(const wchar_t *path, bool allow_creation) {
     return result;
 }
 
-void *__cdecl JSON_OpenStringW(const wchar_t* value) {
+void * JSON_OpenStringW(const wchar_t* value) {
     void *result = nullptr;
 
     if (value != nullptr) {

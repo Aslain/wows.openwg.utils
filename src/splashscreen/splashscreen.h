@@ -3,12 +3,29 @@
 
 #pragma once
 
+//
+// Includes
+//
+
+// stdlib
 #include <chrono>
 #include <filesystem>
 #include <string>
 #include <vector>
 
-#include <Windows.h>
+// windows
+#if defined(_WIN32)
+    #include <Windows.h>
+#else
+    typedef void* HWND;
+    typedef void* HBITMAP;
+#endif
+
+
+
+//
+// Class
+//
 
 namespace OpenWG::Utils::Splashscreen {
 

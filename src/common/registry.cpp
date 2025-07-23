@@ -3,10 +3,13 @@
 
 #include "registry.h"
 
+#if defined(_WIN32)
 #include <Windows.h>
+#endif
 
 std::wstring Registry::GetStringValue(const wchar_t* subkey, const wchar_t* value)
 {
+#if defined(_WIN32)
     HKEY hKey = 0;
     wchar_t val[1024] { 0 };
     DWORD value_length = 1024;
@@ -25,4 +28,7 @@ std::wstring Registry::GetStringValue(const wchar_t* subkey, const wchar_t* valu
     }
 
     return std::wstring(val);
+#else
+    return {};
+#endif
 }

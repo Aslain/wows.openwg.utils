@@ -66,7 +66,7 @@ uint32_t FS_Search_GetCount(void* object) {
     return result;
 }
 
-uint32_t FS_Search_GetPathW(void* object, uint32_t index, wchar_t* buf, size_t buf_len) {
+uint32_t FS_Search_GetPathW(void* object, uint32_t index, wchar_t* buf, uint32_t buf_len) {
     uint32_t result = 0;
     if(!object) {
         return result;

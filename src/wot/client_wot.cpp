@@ -226,19 +226,19 @@ namespace OpenWG::Utils::WoT {
 
         auto path = m_path / "win64" / m_exe_name;
         if (Filesystem::Exists(path)) {
-            m_versionExe = Filesystem::GetExeVersion(path);
+            m_versionExe = Filesystem::GetExeVersion(path.wstring());
             return;
         }
 
         path = m_path / "win32" / m_exe_name;
         if (Filesystem::Exists(path)) {
-            m_versionExe = Filesystem::GetExeVersion(path);
+            m_versionExe = Filesystem::GetExeVersion(path.wstring());
             return;
         }
 
         path = m_path / m_exe_name;
         if (Filesystem::Exists(path)) {
-            m_versionExe = Filesystem::GetExeVersion(path);
+            m_versionExe = Filesystem::GetExeVersion(path.wstring());
             return;
         }
     }

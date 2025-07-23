@@ -3,9 +3,11 @@
 
 #include <algorithm>
 
+#if defined(_WIN32)
 #include <Windows.h>
 #include <TlHelp32.h>
 #include <Psapi.h>
+#endif
 
 #include "fs/fs.h"
 #include "process/process_module.h"
@@ -16,6 +18,7 @@ namespace OpenWG::Utils::Process {
 
     std::wstring NormalizeNTPath(const wchar_t* str)
     {
+#if defined(_WIN32)
         if(!str || wcslen(str) == 0){
             return {};
         }
@@ -40,11 +43,14 @@ namespace OpenWG::Utils::Process {
         }
 
         return result;
+#else
+        return {str};
+#endif
     }
 
     std::vector<std::pair<std::filesystem::path, uint32_t>> GetProcessList() {
         std::vector<std::pair<std::filesystem::path, uint32_t>> result{};
-
+#if defined(_WIN32)
         HANDLE handle_snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
         if (handle_snapshot != INVALID_HANDLE_VALUE) {
 
@@ -70,7 +76,7 @@ namespace OpenWG::Utils::Process {
 
             CloseHandle(handle_snapshot);
         }
-
+#endif
         return result;
     }
 
@@ -89,6 +95,8 @@ namespace OpenWG::Utils::Process {
         return result;
     }
 
+
+#if defined(_WIN32)
     BOOL CALLBACK TerminateProcessCallback(
             _In_ HWND hwnd,
             _In_ LPARAM lParam
@@ -104,10 +112,12 @@ namespace OpenWG::Utils::Process {
             return true;
         }
     }
+#endif
 
     bool TerminateProcess(uint32_t processID) {
         bool result{false};
 
+#if defined(_WIN32)
         HANDLE hProcess = OpenProcess(
                 PROCESS_TERMINATE | PROCESS_CREATE_THREAD | PROCESS_QUERY_INFORMATION | SYNCHRONIZE, FALSE,
                 processID);
@@ -125,6 +135,7 @@ namespace OpenWG::Utils::Process {
             ::TerminateProcess(hProcess, 9);
             result = true;
         }
+#endif
 
         return result;
     }
@@ -132,11 +143,13 @@ namespace OpenWG::Utils::Process {
     bool TerminateProcess(const std::wstring &processName) {
         bool result{false};
 
+#if defined(_WIN32)
         for (auto &process: GetProcessList()) {
             if (String::ToLower(process.first) == String::ToLower(processName)) {
                 result = TerminateProcess(process.second);
             }
         }
+#endif
 
         return result;
     }

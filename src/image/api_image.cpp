@@ -17,106 +17,144 @@
 
 XVMEXT_API_CALL bool IMAGE_BitmapAlphaPremultiply(void* bitmap)
 {
-    if (!bitmap)
-    {
-        return false;
-    }
+    bool result = false;
 
-    return OpenWG::Utils::Image::BitmapAlphaPremultiply(static_cast<HBITMAP>(bitmap));
+#if defined(_WIN32)
+    if (bitmap)
+    {
+        result = OpenWG::Utils::Image::BitmapAlphaPremultiply(static_cast<HBITMAP>(bitmap));
+    }
+#endif
+
+    return result;
 }
 
 XVMEXT_API_CALL bool IMAGE_BitmapBlend(_In_ void* bitmap_1, _In_ void* bitmap_2, int dst_x, int dst_y)
 {
-    if (!bitmap_1 || !bitmap_2)
-    {
-        return false;
-    }
+    bool result = false;
 
-    return OpenWG::Utils::Image::BitmapBlend(static_cast<HBITMAP>(bitmap_1), static_cast<HBITMAP>(bitmap_2), dst_x, dst_y);
+#if defined(_WIN32)
+    if (bitmap_1 && bitmap_2)
+    {
+        result = OpenWG::Utils::Image::BitmapBlend(static_cast<HBITMAP>(bitmap_1), static_cast<HBITMAP>(bitmap_2), dst_x, dst_y);
+    }
+#endif
+
+    return result;
 }
 
 XVMEXT_API_CALL void* IMAGE_BitmapClone(_In_ void* bitmap)
 {
-    if (!bitmap)
-    {
-        return nullptr;
-    }
+    void* result = nullptr;
 
-    return OpenWG::Utils::Image::BitmapClone(static_cast<HBITMAP>(bitmap));
+#if defined(_WIN32)
+    if (bitmap)
+    {
+        result = OpenWG::Utils::Image::BitmapClone(static_cast<HBITMAP>(bitmap));
+    }
+#endif
+
+    return result;
 }
 
 XVMEXT_API_CALL bool IMAGE_BitmapFree(_In_ void* bitmap)
 {
-    if (!bitmap)
-    {
-        return false;
-    }
+    bool result = false;
 
-    return OpenWG::Utils::Image::BitmapFree(static_cast<HBITMAP>(bitmap));
+#if defined(_WIN32)
+    if (bitmap)
+    {
+        result = OpenWG::Utils::Image::BitmapFree(static_cast<HBITMAP>(bitmap));
+    }
+#endif
+
+    return result;
 }
 
 XVMEXT_API_CALL int IMAGE_BitmapGetWidth(_In_ void* bitmap)
 {
-    if (!bitmap)
-    {
-        return 0;
-    }
-
     int width = 0, height = 0;
-    OpenWG::Utils::Image::BitmapGetSize(static_cast<HBITMAP>(bitmap), &width, &height);
+
+#if defined(_WIN32)
+    if (bitmap)
+    {
+        OpenWG::Utils::Image::BitmapGetSize(static_cast<HBITMAP>(bitmap), &width, &height);
+    }
+#endif
+
     return width;
 }
 
 XVMEXT_API_CALL int IMAGE_BitmapGetHeight(_In_ void* bitmap)
 {
-    if (!bitmap)
-    {
-        return false;
-    }
-
     int width = 0, height = 0;
-    OpenWG::Utils::Image::BitmapGetSize(static_cast<HBITMAP>(bitmap), &width, &height);
+
+#if defined(_WIN32)
+    if (bitmap)
+    {
+        OpenWG::Utils::Image::BitmapGetSize(static_cast<HBITMAP>(bitmap), &width, &height);
+    }
+#endif
+
     return height;
 }
 
 XVMEXT_API_CALL bool IMAGE_BitmapGetSize(_In_ void* bitmap, _Out_ int* width, _Out_ int* height)
 {
-    if (!bitmap)
+    bool result = false;
+
+    if (bitmap && width && height)
     {
-        return false;
+        *width = 0;
+        *height = 0;
+#if defined(_WIN32)
+        result = OpenWG::Utils::Image::BitmapGetSize(static_cast<HBITMAP>(bitmap), width, height);
+#endif
     }
 
-    return OpenWG::Utils::Image::BitmapGetSize(static_cast<HBITMAP>(bitmap), width, height);
+    return result;
 }
 
 XVMEXT_API_CALL void* IMAGE_BitmapLoadW(_In_ const wchar_t* filename){
-    if (!filename)
-    {
-        return nullptr;
-    }
+    void* result = nullptr;
 
-    return OpenWG::Utils::Image::BitmapLoad(filename);
+#if defined(_WIN32)
+    if (filename)
+    {
+        result = OpenWG::Utils::Image::BitmapLoad(filename);
+    }
+#endif
+
+    return result;
 }
 
 XVMEXT_API_CALL void* IMAGE_BitmapMultiplyColor(_In_ void* bitmap, float r_scale, float g_scale, float b_scape, float a_scale)
 {
-    if (!bitmap)
-    {
-        return nullptr;
-    }
+    void* result = nullptr;
 
-    return OpenWG::Utils::Image::BitmapMultiplyColor(static_cast<HBITMAP>(bitmap), r_scale, g_scale, b_scape, a_scale);
+#if defined(_WIN32)
+    if (bitmap)
+    {
+        result = OpenWG::Utils::Image::BitmapMultiplyColor(static_cast<HBITMAP>(bitmap), r_scale, g_scale, b_scape, a_scale);
+    }
+#endif
+
+    return result;
 }
 
 
 void* IMAGE_BitmapResize(void* bitmap, int width, int height)
 {
-    if (!bitmap)
-    {
-        return nullptr;
-    }
+    void* result = nullptr;
 
-    return OpenWG::Utils::Image::BitmapResize(static_cast<HBITMAP>(bitmap), width, height);
+#if defined(_WIN32)
+    if (bitmap)
+    {
+        result = OpenWG::Utils::Image::BitmapResize(static_cast<HBITMAP>(bitmap), width, height);
+    }
+#endif
+
+    return result;
 }
 
 
@@ -127,20 +165,28 @@ void* IMAGE_BitmapResize(void* bitmap, int width, int height)
 
 XVMEXT_API_CALL void* IMAGE_BrushCreate(_In_ void* bitmap)
 {
-    if (!bitmap)
-    {
-        return nullptr;
-    }
+    void* result = nullptr;
 
-    return OpenWG::Utils::Image::BrushCreate(static_cast<HBITMAP>(bitmap));
+#if defined(_WIN32)
+    if (bitmap)
+    {
+        result = OpenWG::Utils::Image::BrushCreate(static_cast<HBITMAP>(bitmap));
+    }
+#endif
+
+    return result;
 }
 
 XVMEXT_API_CALL bool IMAGE_BrushFree(_In_ void* brush)
 {
-    if (!brush)
-    {
-        return false;
-    }
+    bool result = false;
 
-    return OpenWG::Utils::Image::BrushFree(static_cast<HBRUSH>(brush));
+#if defined(_WIN32)
+    if (brush)
+    {
+        result = OpenWG::Utils::Image::BrushFree(static_cast<HBRUSH>(brush));
+    }
+#endif
+
+    return result;
 }

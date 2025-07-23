@@ -11,6 +11,10 @@ extern "C" {
 // Includes
 //
 
+// stdlib
+#include <stdint.h>
+
+//openwg.utils
 #include "common/api_common.h"
 
 
@@ -27,7 +31,7 @@ XVMEXT_API_CALL bool FS_FileExistsW(const wchar_t* path);
 XVMEXT_API_CALL void* FS_Search_QueryFolderW(const wchar_t* path, uint32_t max_depth);
 XVMEXT_API_CALL bool FS_Search_Close(void* object);
 XVMEXT_API_CALL uint32_t FS_Search_GetCount(void* object);
-XVMEXT_API_CALL uint32_t FS_Search_GetPathW(void* object, uint32_t index, wchar_t* buf, size_t buf_len);
+XVMEXT_API_CALL uint32_t FS_Search_GetPathW(void* object, uint32_t index, wchar_t* buf, uint32_t buf_len);
 
 
 #ifdef __cplusplus

@@ -29,6 +29,17 @@ struct SetupComponentEntry {
 
 
 //
+// Linux
+//
+
+#if !defined(_WIN32)
+#define _wcsdup wcsdup
+#define wcscpy_s(a,b,c) wcscpy(a,c)
+#endif
+
+
+
+//
 // Functions
 //
 
@@ -62,6 +73,7 @@ XVMEXT_API_CALL bool INNO_ComponentEntryCompareNameW(const wchar_t* name_1, cons
     {
         return false;
     }
+
 
     wchar_t* name_1_copy = _wcsdup(name_1);
     wchar_t* name_2_copy = _wcsdup(name_2);
