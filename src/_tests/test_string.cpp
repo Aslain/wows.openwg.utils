@@ -5,9 +5,17 @@
 // Includes
 //
 
+// stdlib
+#include <fstream>
+#include <filesystem>
+#include <string>
+
+// catch2
 #include <catch2/catch_test_macros.hpp>
 
+// openwg.utils
 #include <string/api_string.h>
+
 
 
 //
@@ -120,4 +128,47 @@ TEST_CASE( "string_replace_regex_sk", "[string]" ) {
         output.resize(wcslen(output.data()));
         REQUIRE(output == L"\n{\n  \"enable\": true\n}");
     }
+}
+
+
+TEST_CASE("string_replace_regex_ex_jove_1", "[string]") {
+    std::wstring before;
+    std::wstring after_expected;
+    {
+        std::ifstream fin(std::filesystem::path(ASSETS_FOLDER) / "string_replace_1_before.txt", std::ios::binary);
+        fin.seekg(0, std::ios::end);
+        size_t size = (size_t)fin.tellg();
+        //skip BOM
+
+        fin.seekg(2, std::ios::beg);
+        size -= 2;
+
+        before.resize(size / 2 + 1);
+        fin.read((char*)before.data(), size);
+    }
+    {
+        std::ifstream fin(std::filesystem::path(ASSETS_FOLDER) / "string_replace_1_after.txt", std::ios::binary);
+        fin.seekg(0, std::ios::end);
+        size_t size = (size_t)fin.tellg();
+        //skip BOM
+
+        fin.seekg(2, std::ios::beg);
+        size -= 2;
+
+        after_expected.resize(size / 2);
+        fin.read((char*)after_expected.data(), size);
+    }
+
+    std::wstring output{};
+    output.resize(before.size()*2);
+    auto result = STRING_ReplaceRegexEx(before.c_str(), 
+        L"(\"enable\"\\s*:\\s*)(true|false)(.*)",
+        L"$1true$3", 
+        output.data(),
+        output.size(),
+        true
+    );
+    REQUIRE(result > 0);
+    output.resize(wcslen(output.data()));
+    REQUIRE(output == after_expected);
 }

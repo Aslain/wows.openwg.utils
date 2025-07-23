@@ -144,12 +144,12 @@ namespace OpenWG::Utils {
             return result;
         }
 
-        std::wstring ReplaceRegex(const std::wstring &where, const std::wstring &from, const std::wstring &to) {
+        std::wstring ReplaceRegex(const std::wstring& where, const std::wstring& from, const std::wstring& to, bool first_only) {
             auto from_modified = Replace(from, L"{",L"\\{");
             from_modified = Replace(from_modified, L"}",L"\\}");
 
             std::wregex regex(from_modified);
-            return std::regex_replace(where, regex, to);
+            return std::regex_replace(where, regex, to, first_only ? std::regex_constants::format_first_only : std::regex_constants::match_default);
         }
 
         std::wstring Substring(const std::wstring &where, size_t from, size_t to) {

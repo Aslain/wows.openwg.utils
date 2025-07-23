@@ -67,6 +67,50 @@ begin
 end;
 
 
+// STRING/ReplaceRegexEx
+function STRING_ReplaceRegexEx_I(Input: String; Search: String; Replace: String; Output: String; BufferSize: Integer; FirstOnly: Boolean): Integer;
+external 'STRING_ReplaceRegexEx@files:openwg.utils.dll cdecl setuponly';
+
+function STRING_ReplaceRegexEx_U(Input: String; Search: String; Replace: String; Output: String; BufferSize: Integer; FirstOnly: Boolean): Integer;
+external 'STRING_ReplaceRegexEx@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function STRING_ReplaceRegexEx(Input: String; Search: String; Replace: String; FirstOnly: Boolean): String;
+var
+    ResultSize: Integer;
+    ErrorCode: Integer;
+begin
+    ResultSize := Length(Input)*2;
+    SetLength(Result, ResultSize);
+
+    if IsUninstaller() then
+        ErrorCode := STRING_ReplaceRegexEx_U(Input, Search, Replace, Result, ResultSize, FirstOnly)
+    else
+        ErrorCode := STRING_ReplaceRegexEx_I(Input, Search, Replace, Result, ResultSize, FirstOnly);
+
+    // not enough space
+    if (ErrorCode < 0) then
+    begin
+        ResultSize := -ErrorCode;
+        SetLength(Result, ResultSize);
+        if IsUninstaller() then
+            ErrorCode := STRING_ReplaceRegexEx_U(Input, Search, Replace, Result, ResultSize, FirstOnly)
+        else
+            ErrorCode := STRING_ReplaceRegexEx_I(Input, Search, Replace, Result, ResultSize, FirstOnly);
+    end;
+
+    // general error
+    if (ErrorCode = 0) then
+    begin
+        Result := Input;
+        Exit;
+    end;
+
+    // crop result
+    Result := Copy(Result, 1, Pos(#0, Result)-1);
+end;
+
+
+// String/Split
 function STRING_Split(const Value: string; Delimiter: Char): TStringList;
 var
     S: string;

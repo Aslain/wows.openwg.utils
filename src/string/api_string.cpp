@@ -31,6 +31,10 @@ XVMEXT_API_CALL bool STRING_MatchRegex(_In_ const wchar_t* input, _In_ const wch
 
 
 int32_t STRING_ReplaceRegex(_In_ const wchar_t* input, _In_ const wchar_t* pattern_search, _In_ const wchar_t* pattern_replace, _Out_ wchar_t* output, _In_ int32_t output_len) {
+    return STRING_ReplaceRegexEx(input, pattern_search, pattern_replace, output, output_len, false);
+}
+
+int32_t STRING_ReplaceRegexEx(_In_ const wchar_t* input, _In_ const wchar_t* pattern_search, _In_ const wchar_t* pattern_replace, _Out_ wchar_t* output, _In_ int32_t output_len, _In_ bool first_only) {
     // check ptrs
     if (!input || !pattern_search || !pattern_replace || !output) {
         return 0;
@@ -41,7 +45,7 @@ int32_t STRING_ReplaceRegex(_In_ const wchar_t* input, _In_ const wchar_t* patte
 
     std::wstring result_w{};
     try {
-        result_w = String::ReplaceRegex(input, pattern_search, pattern_replace);
+        result_w = String::ReplaceRegex(input, pattern_search, pattern_replace, first_only);
         if (output_len > result_w.size()) {
             wcscpy_s(output, output_len, result_w.c_str());
             return 1;
