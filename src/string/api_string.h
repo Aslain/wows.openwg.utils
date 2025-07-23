@@ -12,7 +12,7 @@ extern "C" {
 #include "common/api_common.h"
 
 
-XVMEXT_API_CALL int32_t STRING_LoadFromFile(_In_ const wchar_t* filepath, _Out_ wchar_t* output, _In_ int32_t output_len);
+XVMEXT_API_CALL int32_t STRING_LoadFromFile(_In_ const wchar_t* filepath, _Out_ wchar_t* output, _In_ uint32_t output_len);
 
 
 /**
@@ -33,11 +33,11 @@ XVMEXT_API_CALL bool STRING_MatchRegex(_In_ const wchar_t* input, _In_ const wch
  * @param pattern_search search pattern
  * @param pattern_replace replace pattern
  * @param output output buffer
- * @param output_len output length in wchar_t units
+ * @param output_len output length in bytes
  * @return
  *   * 1   -- success
  *   * 0   -- invalid pointer
- *   * -X  -- output buffer is too small, X wchar_t units are required
+ *   * -X  -- output buffer is too small, X bytes are required
  */
 XVMEXT_API_CALL int32_t STRING_ReplaceRegex(_In_ const wchar_t* input, _In_ const wchar_t* pattern_search, _In_ const wchar_t* pattern_replace, _Out_ wchar_t* output, _In_ int32_t output_len);
 
@@ -47,12 +47,12 @@ XVMEXT_API_CALL int32_t STRING_ReplaceRegex(_In_ const wchar_t* input, _In_ cons
  * @param pattern_search search pattern
  * @param pattern_replace replace pattern
  * @param output output buffer
- * @param output_len output length in wchar_t units
+ * @param output_len output buffer length in bytes
  * @param first_only replace only the first occurrence
  * @return
  *   * 1   -- success
  *   * 0   -- invalid pointer
- *   * -X  -- output buffer is too small, X wchar_t units are required
+ *   * -X  -- output buffer is too small, X bytes are required
  */
 XVMEXT_API_CALL int32_t STRING_ReplaceRegexEx(_In_ const wchar_t* input, _In_ const wchar_t* pattern_search, _In_ const wchar_t* pattern_replace, _Out_ wchar_t* output, _In_ int32_t output_len, _In_ bool first_only);
 

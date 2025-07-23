@@ -30,6 +30,10 @@ begin
     else
         ErrorCode := STRING_LoadFromFile_I(FilePath, Result, ResultSize);
 
+    // Fatal Error
+    if (ErrorCode = -2147483648) then
+        Exit;
+
     // not enough space
     if (ErrorCode < 0) then
         begin
@@ -41,7 +45,7 @@ begin
                 ErrorCode := STRING_LoadFromFile_I(FilePath, Result, ResultSize);
         end;
 
-    // general error
+    // empty string
     if (ErrorCode = 0) then
         Exit;
 
