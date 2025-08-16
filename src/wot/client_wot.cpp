@@ -111,9 +111,11 @@ namespace OpenWG::Utils::WoT {
     {
         ClientCache cache{};
 
-        if (GetVendor() == WoT_Vendor_WG && m_versionClient >= ClientVersion(L"1.27.1"))
-        {
-            cache = cache | WoT_Cache_PDC;
+        if (GetVendor() == WoT_Vendor_WG) {
+            if (m_versionClient >= ClientVersion(L"1.27.1") || std::filesystem::exists(GetPath() / L"data.wgpdc"))
+            {
+                cache = cache | WoT_Cache_PDC;
+            }
         }
 
         return cache;
@@ -339,6 +341,11 @@ namespace OpenWG::Utils::WoT {
                         m_branch = WoT_Branch_SuperTest;
                     } else if (type == L"SB") {
                         m_branch = WoT_Branch_Sandbox;
+                    }
+                    else if (type == L"Test") {
+                        if (version_tokens[0] == L"Closed") {
+                            m_branch = WoT_Branch_ClosedTest;
+                        }
                     }
                     if(m_realm == L"RPT"){
                         m_branch  = WoT_Branch_CommonTest;

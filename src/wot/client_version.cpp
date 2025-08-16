@@ -1,3 +1,5 @@
+#include <stdexcept>
+
 #include "string/string.h"
 #include "wot/client_version.h"
 
@@ -18,7 +20,13 @@ namespace OpenWG::Utils::WoT {
         m_raw = str;
         m_components.clear();
         for (const auto& tok : String::Split(m_raw, L'.')) {
-            m_components.push_back(std::stoi(tok));
+            try {
+                m_components.push_back(std::stoi(tok));
+            }
+            catch (std::invalid_argument& ex) {
+                Set(L"0.0.0.0");
+                return;
+            }
         }
     }
 

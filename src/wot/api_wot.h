@@ -19,6 +19,7 @@ enum ClientBranch {
     WoT_Branch_CommonTest = 2,
     WoT_Branch_SuperTest = 3,
     WoT_Branch_Sandbox = 4,
+    WoT_Branch_ClosedTest = 5,
 };
 
 enum ClientType {

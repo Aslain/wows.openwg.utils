@@ -6,6 +6,12 @@ Source: "../../src/string/test_assets/string_load_from_file_1_utf16le.txt"; Flag
 Source: "../../src/string/test_assets/string_replace_regex_1_before.txt"; Flags: dontcopy noencryption
 Source: "../../src/string/test_assets/string_replace_regex_1_after.txt"; Flags: dontcopy noencryption
 
+Source: "../../src/string/test_assets/string_replace_regex_2_before.json"; Flags: dontcopy noencryption
+Source: "../../src/string/test_assets/string_replace_regex_2_after.json"; Flags: dontcopy noencryption
+
+Source: "../../src/string/test_assets/string_replace_regex_3_before.json"; Flags: dontcopy noencryption
+Source: "../../src/string/test_assets/string_replace_regex_3_after.json"; Flags: dontcopy noencryption
+
 [Code]
 
 //
@@ -87,6 +93,63 @@ end;
 
 
 //
+// TEST/STRING/ReplaceRegex/2
+//
+
+function TEST_STRING_ReplaceRegex_2(): Boolean;
+var
+    TextBefore: String;
+    TextAfter: String;
+    TextAfterExpected: String;
+begin
+    Result := False;
+
+    ExtractTemporaryFile('string_replace_regex_2_before.json');
+    TextBefore := STRING_LoadFromFile(ExpandConstant('{tmp}/string_replace_regex_2_before.json'));
+
+    ExtractTemporaryFile('string_replace_regex_2_after.json');
+    TextAfterExpected := STRING_LoadFromFile(ExpandConstant('{tmp}/string_replace_regex_2_after.json'));
+
+    TextAfter := STRING_ReplaceRegex(TextBefore, '((\n|\r|\r\n){(.|\s)+?"enable"\s*:\s*)(true|false)', '$1true');
+
+    if CompareText(TextAfter, TextAfterExpected) <> 0 then
+        Exit;
+
+    Result := True;
+end;
+
+
+
+
+//
+// TEST/STRING/ReplaceRegex/3
+//
+
+function TEST_STRING_ReplaceRegex_3(): Boolean;
+var
+    TextBefore: String;
+    TextAfter: String;
+    TextAfterExpected: String;
+begin
+    Result := False;
+
+    ExtractTemporaryFile('string_replace_regex_3_before.json');
+    TextBefore := STRING_LoadFromFile(ExpandConstant('{tmp}/string_replace_regex_3_before.json'));
+
+    ExtractTemporaryFile('string_replace_regex_3_after.json');
+    TextAfterExpected := STRING_LoadFromFile(ExpandConstant('{tmp}/string_replace_regex_3_after.json'));
+
+    TextAfter := STRING_ReplaceRegex(TextAfter, '(module[.\s]*"enable"\s*:\s*)(true|false)', '$1true');
+    TextAfter := STRING_ReplaceRegex(TextAfter, '("resultInformer"\s*:\s*{((.|\s)*?)"enable"\s*:\s*)(true|false)', '$1true');
+    SaveStringToFile('meow.txt', TextAfter, False);
+    if CompareText(TextAfter, TextAfterExpected) <> 0 then
+        Exit;
+
+    Result := True;
+end;
+
+
+//
 // TEST/STRING
 //
 
@@ -95,6 +158,10 @@ begin
     TEST_SetResult('/string/load_from_file/1/utf8', TEST_STRING_LoadFromFile_1_utf8());
     TEST_SetResult('/string/load_from_file/1/utf8bom', TEST_STRING_LoadFromFile_1_utf8bom());
     TEST_SetResult('/string/load_from_file/1/utf16le', TEST_STRING_LoadFromFile_1_utf16le());
-      
+
     TEST_SetResult('/string/replace_regex/1', TEST_STRING_ReplaceRegex_1());
+
+    TEST_SetResult('/string/replace_regex/2', TEST_STRING_ReplaceRegex_2());
+    
+    TEST_SetResult('/string/replace_regex/3', TEST_STRING_ReplaceRegex_2());
 end;

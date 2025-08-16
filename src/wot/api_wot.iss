@@ -14,6 +14,7 @@ en.openwg_branch_release=Release
 en.openwg_branch_ct=Common Test
 en.openwg_branch_st=Super Test
 en.openwg_branch_sb=Sandbox
+en.openwg_branch_closed=Closed Test
 #endif
 
 #if OPENWGUTILS_LANG_RU == 1
@@ -24,6 +25,7 @@ ru.openwg_branch_release=Релиз
 ru.openwg_branch_ct=Общий тест
 ru.openwg_branch_st=Супертест
 ru.openwg_branch_sb=Песочница
+ru.openwg_branch_closed=Закрытый тест
 #endif
 
 [Code]
@@ -534,6 +536,7 @@ begin
      2: Result := Result + ExpandConstant('/{cm:openwg_branch_ct}');
      3: Result := Result + ExpandConstant('/{cm:openwg_branch_st}');
      4: Result := Result + ExpandConstant('/{cm:openwg_branch_sb}');
+     5: Result := Result + ExpandConstant('/{cm:openwg_branch_closed}');
   end;
 
   Result := Result + '] - ' + Client.Path;

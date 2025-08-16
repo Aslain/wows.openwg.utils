@@ -21,6 +21,8 @@ std::wstring describe_client_branch(int32_t branch){
             return L"super test";
         case ClientBranch::WoT_Branch_Sandbox:
             return L"sandbox";
+        case ClientBranch::WoT_Branch_ClosedTest:
+            return L"closed test";
         default:
             return std::to_wstring(branch);
     }
