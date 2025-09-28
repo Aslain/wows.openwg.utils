@@ -14,6 +14,8 @@ namespace OpenWG::Utils::WoT {
         rescan();
     }
 
+    ClientWoT::~ClientWoT() = default;
+
 
     bool ClientWoT::IsValid() const {
         return m_valid;
@@ -58,6 +60,10 @@ namespace OpenWG::Utils::WoT {
 
     std::wstring ClientWoT::GetPathResmods() const {
         return m_path_resmods;
+    }
+
+    const std::vector<ClientWoT::PackageDefinition>& ClientWoT::GetPackages() const {
+        return m_packages;
     }
 
     std::wstring ClientWoT::GetVersionClient() const {
@@ -273,22 +279,59 @@ namespace OpenWG::Utils::WoT {
     void ClientWoT::rescanPaths() {
         m_path_mods.clear();
         m_path_resmods.clear();
+        m_packages.clear();
+
+        auto normalizeRelativePath = [](std::wstring value) {
+            value = String::Trim(value);
+            value = String::Replace(value, L"\\", L"/");
+            while (value.starts_with(L"./")) {
+                value = value.substr(2);
+            }
+            return value;
+        };
 
         auto pathsxml = m_path / L"paths.xml";
         if (Filesystem::Exists(pathsxml)) {
             pugi::xml_document doc;
             if (doc.load_file(pathsxml.wstring().c_str())) {
-                auto nodes = doc.select_nodes(L"/root/Paths/Path");
-                for (auto node: nodes) {
-                    std::wstring path = node.node().first_child().value();
-                    path = String::Replace(path, L"\\", L"/");
-                    path = String::Replace(path, L"./", L"");
-
-                    if (m_path_resmods.empty() && path.starts_with(L"res_mods/")) {
-                        m_path_resmods = path;
-                    } else if (m_path_mods.empty() && path.starts_with(L"mods/")) {
-                        m_path_mods = path;
+                auto pathNodes = doc.select_nodes(L"/root/Paths/Path");
+                for (const auto& pathNode : pathNodes) {
+                    const auto& xmlNode = pathNode.node();
+                    std::wstring relativePath = normalizeRelativePath(std::wstring(xmlNode.text().as_string()));
+                    if (relativePath.empty()) {
+                        continue;
                     }
+
+                    if (m_path_resmods.empty() && relativePath.starts_with(L"res_mods/")) {
+                        m_path_resmods = relativePath;
+                    } else if (m_path_mods.empty() && relativePath.starts_with(L"mods/")) {
+                        m_path_mods = relativePath;
+                    }
+                }
+
+                auto packageNodes = doc.select_nodes(L"/root/Paths/Packages/Package");
+                for (const auto& packageNode : packageNodes) {
+                    const auto& xmlNode = packageNode.node();
+                    std::wstring relativePath = normalizeRelativePath(std::wstring(xmlNode.text().as_string()));
+                    if (relativePath.empty()) {
+                        continue;
+                    }
+
+                    PackageDefinition definition{};
+                    definition.relativePath = relativePath;
+
+                    if (auto attribute = xmlNode.attribute(L"type")) {
+                        auto tokens = String::Split(std::wstring(attribute.as_string()), L',');
+                        definition.types.reserve(tokens.size());
+                        for (auto& token : tokens) {
+                            std::wstring trimmed = String::Trim(token);
+                            if (!trimmed.empty()) {
+                                definition.types.emplace_back(trimmed);
+                            }
+                        }
+                    }
+
+                    m_packages.emplace_back(definition);
                 }
             }
         }

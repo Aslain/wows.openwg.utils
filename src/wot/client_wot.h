@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "wot/api_wot.h"
 #include "wot/client_interface.h"
@@ -9,6 +10,13 @@
 namespace OpenWG::Utils::WoT {
     class ClientWoT : public ClientInterface {
     public:
+        ~ClientWoT() override;
+
+        struct PackageDefinition {
+            std::wstring relativePath{};
+            std::vector<std::wstring> types{};
+        };
+
         ClientWoT(std::filesystem::path path, LauncherFlavour launcherFlavour);
 
     public:
@@ -25,8 +33,10 @@ namespace OpenWG::Utils::WoT {
         [[nodiscard]] std::filesystem::path GetPath() const override;
 
         [[nodiscard]] std::wstring GetPathMods() const override;
-
+ 
         [[nodiscard]] std::wstring GetPathResmods() const override;
+ 
+        [[nodiscard]] const std::vector<PackageDefinition>& GetPackages() const;
 
         [[nodiscard]] std::wstring GetRealm() const override;
 
@@ -77,6 +87,7 @@ namespace OpenWG::Utils::WoT {
         std::filesystem::path m_path{};
         std::wstring m_path_mods{};
         std::wstring m_path_resmods{};
+        std::vector<PackageDefinition> m_packages{};
         std::wstring m_realm{};
         ClientType m_type{ClientType::WoT_Type_Unknown};
         ClientVersion m_versionClient{};
