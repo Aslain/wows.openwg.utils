@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <filesystem>
+#include <limits>
 #include <system_error>
 
 #include "archive/api_archive.h"
@@ -152,4 +153,65 @@ bool ARCHIVE_ExtractToFileW(void *archive_ptr, const wchar_t *entry, const wchar
     auto destination_u8 = Encoding::wstring_to_utf8(destination_path.wstring());
     mz_bool result = mz_zip_reader_extract_to_file(archive, file_index, destination_u8.c_str(), 0);
     return result == MZ_TRUE;
+}
+
+bool ARCHIVE_ExtractToMemory(void *archive_ptr,
+                             const wchar_t *entry,
+                             void *destination,
+                             uint64_t destination_size,
+                             uint64_t *bytes_written) {
+    if (!archive_ptr) {
+        return false;
+    }
+    if (!entry) {
+        return false;
+    }
+
+    auto *archive = static_cast<mz_zip_archive *>(archive_ptr);
+    auto entry_u8 = Encoding::wstring_to_utf8(entry);
+
+    mz_uint32 file_index = 0;
+    if (mz_zip_reader_locate_file_v2(archive, entry_u8.c_str(), nullptr, 0, &file_index) != MZ_TRUE) {
+        return false;
+    }
+
+    mz_zip_archive_file_stat stat{};
+    if (mz_zip_reader_file_stat(archive, file_index, &stat) != MZ_TRUE) {
+        return false;
+    }
+
+    if (!stat.m_is_supported || stat.m_is_directory) {
+        if (bytes_written) {
+            *bytes_written = 0;
+        }
+        return false;
+    }
+
+    if (bytes_written) {
+        *bytes_written = stat.m_uncomp_size;
+    }
+
+    if (stat.m_uncomp_size == 0) {
+        return true;
+    }
+
+    if (stat.m_uncomp_size > std::numeric_limits<size_t>::max()) {
+        return false;
+    }
+
+    size_t required_size = static_cast<size_t>(stat.m_uncomp_size);
+    if (!destination || destination_size < stat.m_uncomp_size || required_size == 0) {
+        return false;
+    }
+
+    mz_bool result = mz_zip_reader_extract_to_mem(archive, file_index, destination, required_size, 0);
+    if (result != MZ_TRUE) {
+        return false;
+    }
+
+    if (bytes_written) {
+        *bytes_written = stat.m_uncomp_size;
+    }
+
+    return true;
 }

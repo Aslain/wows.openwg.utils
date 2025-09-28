@@ -41,6 +41,7 @@ XVMEXT_API_CALL void* ARCHIVE_OpenW(const wchar_t* filepath);
 XVMEXT_API_CALL bool  ARCHIVE_EntryExistsW(void* archive, const wchar_t* entry);
 XVMEXT_API_CALL bool  ARCHIVE_GetEntryInfoW(void* archive, const wchar_t* entry, ARCHIVE_FileContext* context);
 XVMEXT_API_CALL bool  ARCHIVE_ExtractToFileW(void* archive, const wchar_t* entry, const wchar_t* destination);
+XVMEXT_API_CALL bool  ARCHIVE_ExtractToMemory(void* archive, const wchar_t* entry, void* destination, uint64_t destination_size, uint64_t* bytes_written);
 XVMEXT_API_CALL bool  ARCHIVE_Close(void* archive);
 
 #ifdef __cplusplus
