@@ -10,6 +10,7 @@
 
 #include "wot/api_wot.h"
 #include "wot/client_interface.h"
+#include "wot/client_wot.h"
 #include "wot/launcher_factory.h"
 #include "wot/launcher_standalone.h"
 
@@ -468,4 +469,75 @@ int32_t WOT_ClientExtractPackageFileToFileW(int32_t index,
                                                     entry_path,
                                                     destination);
     return success ? 1 : 0;
+}
+
+int32_t WOT_ClientGetPackagesCount(int32_t index)
+{
+    launchers_init();
+
+    if (index < 0 || index >= g_clients.size())
+    {
+        return -1;
+    }
+
+    auto& client = g_clients[index];
+    if (!client)
+    {
+        return -1;
+    }
+
+    auto client_wot = std::dynamic_pointer_cast<ClientWoT>(client);
+    if (!client_wot)
+    {
+        return 0;
+    }
+
+    return static_cast<int32_t>(client_wot->GetPackages().size());
+}
+
+int32_t WOT_ClientGetPackagePathW(int32_t index,
+                                  int32_t package_index,
+                                  wchar_t* buffer,
+                                  int32_t buffer_size)
+{
+    launchers_init();
+
+    if (buffer == nullptr || buffer_size <= 0)
+    {
+        return -1;
+    }
+
+    buffer[0] = L'\0';
+
+    if (index < 0 || index >= g_clients.size())
+    {
+        return -1;
+    }
+
+    auto& client = g_clients[index];
+    if (!client)
+    {
+        return -1;
+    }
+
+    auto client_wot = std::dynamic_pointer_cast<ClientWoT>(client);
+    if (!client_wot)
+    {
+        return 0;
+    }
+
+    const auto& packages = client_wot->GetPackages();
+    if (package_index < 0 || package_index >= static_cast<int32_t>(packages.size()))
+    {
+        return 0;
+    }
+
+    const auto& package_path = packages[package_index].relativePath;
+    if (package_path.size() + 1 > static_cast<size_t>(buffer_size))
+    {
+        return 0;
+    }
+
+    wcscpy_s(buffer, buffer_size, package_path.c_str());
+    return 1;
 }

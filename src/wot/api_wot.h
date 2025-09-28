@@ -262,6 +262,26 @@ XVMEXT_API_CALL int32_t WOT_ClientExtractPackageFileToFileW(int32_t index,
                                                             const wchar_t* entry_path,
                                                             const wchar_t* destination_path);
 
+/**
+ * Get number of package definitions for the client.
+ * @param index client index
+ * @return number of packages, or -1 in case of error
+ */
+XVMEXT_API_CALL int32_t WOT_ClientGetPackagesCount(int32_t index);
+
+/**
+ * Get package path by index.
+ * @param index client index
+ * @param package_index zero-based package index
+ * @param buffer destination buffer for package path
+ * @param buffer_size size of buffer in wchars
+ * @return 1 on success, 0 if package index is invalid, -1 in case of error
+ */
+XVMEXT_API_CALL int32_t WOT_ClientGetPackagePathW(int32_t index,
+                                                  int32_t package_index,
+                                                  wchar_t* buffer,
+                                                  int32_t buffer_size);
+
 
 #ifdef __cplusplus
 }

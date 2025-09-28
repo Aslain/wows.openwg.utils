@@ -29,5 +29,4 @@ create_app(owg_wot_detect)
 create_app(owg_wwise_convert_to_unlicensed)
 create_app(owg_wwise_convert_to_licensed)
 create_app(owg_wwise_info)
-
-
+create_app(owg_wot_extract_file)
