@@ -25,6 +25,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE  ON)
 option(BUILD_TESTS               "Build Tests"              OFF)
 option(BUILD_APPS                "Build Apps"                ON)
 
+option(BUILD_MODULE_ARCHIVE      "Build module archive"      ON)
 option(BUILD_MODULE_BWXML        "Build module BWXML"        ON)
 option(BUILD_MODULE_FS           "Build module FS"           ON)
 option(BUILD_MODULE_IMAGE        "Build module Image"        ON)
@@ -49,6 +50,7 @@ add_library(openwg.utils SHARED)
 
 file(COPY_FILE test/test_prolog.iss "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.test.iss")
 
+
 # Common
 file(GLOB srcs CONFIGURE_DEPENDS
         "common/*.cpp"
@@ -60,6 +62,10 @@ file(COPY_FILE common/api_common.iss "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.i
 
 file(READ common/test_common.iss CONTENTS)
 file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/openwg.utils.test.iss" "${CONTENTS}")
+
+if(BUILD_MODULE_ARCHIVE)
+    add_subdirectory(archive)
+endif()
 
 # BWXML
 if(BUILD_MODULE_BWXML)
