@@ -1,7 +1,9 @@
 #include <regex>
+#include <memory>
 
 #include <pugixml.hpp>
 
+#include "archive/api_archive.h"
 #include "fs/fs.h"
 #include "string/string.h"
 #include "process/process_module.h"
@@ -64,6 +66,119 @@ namespace OpenWG::Utils::WoT {
 
     const std::vector<ClientWoT::PackageDefinition>& ClientWoT::GetPackages() const {
         return m_packages;
+    }
+
+    bool ClientWoT::ExtractPackageFileToFile(const std::wstring& package_relative_path,
+                                             const std::wstring& entry_path,
+                                             const std::filesystem::path& destination) {
+        if (package_relative_path.empty() || entry_path.empty() || destination.empty()) {
+            return false;
+        }
+
+        auto package_path = resolvePackagePath(package_relative_path);
+        if (package_path.empty()) {
+            return false;
+        }
+
+        const std::wstring package_w = package_path.wstring();
+        void* archive_handle = ARCHIVE_OpenW(package_w.c_str());
+        if (!archive_handle) {
+            return false;
+        }
+
+        auto archive_closer = [](void* handle) {
+            ARCHIVE_Close(handle);
+        };
+        std::unique_ptr<void, decltype(archive_closer)> archive_guard(archive_handle, archive_closer);
+
+        std::filesystem::path destination_normalized = destination;
+        destination_normalized = destination_normalized.lexically_normal();
+        const std::wstring destination_w = destination_normalized.wstring();
+
+        return ARCHIVE_ExtractToFileW(archive_guard.get(), entry_path.c_str(), destination_w.c_str());
+    }
+
+    bool ClientWoT::ExtractPackageFileToMemory(const std::wstring& package_relative_path,
+                                               const std::wstring& entry_path,
+                                               void* destination,
+                                               uint64_t destination_size,
+                                               uint64_t* bytes_written) {
+        if (bytes_written) {
+            *bytes_written = 0;
+        }
+
+        if (package_relative_path.empty() || entry_path.empty()) {
+            return false;
+        }
+
+        auto package_path = resolvePackagePath(package_relative_path);
+        if (package_path.empty()) {
+            return false;
+        }
+
+        const std::wstring package_w = package_path.wstring();
+        void* archive_handle = ARCHIVE_OpenW(package_w.c_str());
+        if (!archive_handle) {
+            return false;
+        }
+
+        auto archive_closer = [](void* handle) {
+            ARCHIVE_Close(handle);
+        };
+        std::unique_ptr<void, decltype(archive_closer)> archive_guard(archive_handle, archive_closer);
+
+        ARCHIVE_FileContext context{};
+        if (!ARCHIVE_GetEntryInfoW(archive_guard.get(), entry_path.c_str(), &context)) {
+            return false;
+        }
+
+        if (context.is_directory) {
+            return false;
+        }
+
+        if (context.uncompressed_size == 0) {
+            if (!destination && destination_size == 0) {
+                return true;
+            }
+
+            if (!destination) {
+                return false;
+            }
+
+            if (bytes_written) {
+                *bytes_written = 0;
+            }
+            return true;
+        }
+
+        if (!destination) {
+            if (bytes_written) {
+                *bytes_written = context.uncompressed_size;
+            }
+            return false;
+        }
+
+        if (destination_size < context.uncompressed_size) {
+            if (bytes_written) {
+                *bytes_written = context.uncompressed_size;
+            }
+            return false;
+        }
+
+        uint64_t extracted_bytes = 0;
+        if (!ARCHIVE_ExtractToMemory(archive_guard.get(),
+                                     entry_path.c_str(),
+                                     destination,
+                                     destination_size,
+                                     &extracted_bytes)) {
+            return false;
+        }
+
+        if (bytes_written) {
+            *bytes_written = extracted_bytes;
+        }
+
+        return true;
     }
 
     std::wstring ClientWoT::GetVersionClient() const {
@@ -396,6 +511,36 @@ namespace OpenWG::Utils::WoT {
                 }
             }
         }
+    }
+
+    std::filesystem::path ClientWoT::resolvePackagePath(const std::wstring& package_relative_path) const {
+        if (package_relative_path.empty()) {
+            return {};
+        }
+
+        std::filesystem::path relative_path(package_relative_path);
+        std::filesystem::path combined = relative_path.is_absolute()
+                                         ? relative_path
+                                         : (m_path / relative_path);
+        combined = combined.lexically_normal();
+
+        if (!Filesystem::IsSubpath(combined, m_path)) {
+            return {};
+        }
+
+        if (!Filesystem::Exists(combined)) {
+            return {};
+        }
+
+        std::error_code ec;
+        if (std::filesystem::is_directory(combined, ec)) {
+            return {};
+        }
+        if (ec) {
+            return {};
+        }
+
+        return combined;
     }
 
 }

@@ -249,6 +249,19 @@ XVMEXT_API_CALL int32_t WOT_GetClientCacheSupported(int32_t index);
  */
 XVMEXT_API_CALL int32_t WOT_ClearClientCache(int32_t index, ClientCache cache_type);
 
+/**
+ * Extract a file from a package to destination path on disk.
+ * @param index client index
+ * @param package_relative_path path to package, relative to client root
+ * @param entry_path entry path inside the package
+ * @param destination_path destination path on disk
+ * @return 1 if extraction succeeded, 0 if extraction failed, -1 in case of error
+ */
+XVMEXT_API_CALL int32_t WOT_ClientExtractPackageFileToFileW(int32_t index,
+                                                            const wchar_t* package_relative_path,
+                                                            const wchar_t* entry_path,
+                                                            const wchar_t* destination_path);
+
 
 #ifdef __cplusplus
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <vector>
 
@@ -37,6 +38,16 @@ namespace OpenWG::Utils::WoT {
         [[nodiscard]] std::wstring GetPathResmods() const override;
  
         [[nodiscard]] const std::vector<PackageDefinition>& GetPackages() const;
+
+        [[nodiscard]] bool ExtractPackageFileToFile(const std::wstring& package_relative_path,
+                                                    const std::wstring& entry_path,
+                                                    const std::filesystem::path& destination) override;
+
+        [[nodiscard]] bool ExtractPackageFileToMemory(const std::wstring& package_relative_path,
+                                                      const std::wstring& entry_path,
+                                                      void* destination,
+                                                      uint64_t destination_size,
+                                                      uint64_t* bytes_written) override;
 
         [[nodiscard]] std::wstring GetRealm() const override;
 
@@ -93,6 +104,8 @@ namespace OpenWG::Utils::WoT {
         ClientVersion m_versionClient{};
         std::wstring m_versionExe{};
         bool m_valid{ false };
+
+        [[nodiscard]] std::filesystem::path resolvePackagePath(const std::wstring& package_relative_path) const;
 
     };
 }

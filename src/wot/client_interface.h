@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <filesystem>
 #include <string>
 
@@ -39,6 +40,16 @@ namespace OpenWG::Utils::WoT {
         [[nodiscard]] virtual bool IsStarted() const = 0;
 
         [[nodiscard]] virtual bool IsVersionMatch(const std::wstring& pattern) const = 0;
+
+        [[nodiscard]] virtual bool ExtractPackageFileToFile(const std::wstring& package_relative_path,
+                                                            const std::wstring& entry_path,
+                                                            const std::filesystem::path& destination) = 0;
+
+        [[nodiscard]] virtual bool ExtractPackageFileToMemory(const std::wstring& package_relative_path,
+                                                              const std::wstring& entry_path,
+                                                              void* destination,
+                                                              uint64_t destination_size,
+                                                              uint64_t* bytes_written) = 0;
 
         // Cache
 

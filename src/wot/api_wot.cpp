@@ -439,3 +439,33 @@ int32_t WOT_ClearClientCache(int32_t index, ClientCache cache_type)
 
     return result;
 }
+
+int32_t WOT_ClientExtractPackageFileToFileW(int32_t index,
+                                            const wchar_t* package_relative_path,
+                                            const wchar_t* entry_path,
+                                            const wchar_t* destination_path)
+{
+    launchers_init();
+
+    if (index < 0 || index >= g_clients.size())
+    {
+        return -1;
+    }
+
+    if (!package_relative_path || !entry_path || !destination_path)
+    {
+        return -1;
+    }
+
+    auto& client = g_clients[index];
+    if (!client)
+    {
+        return -1;
+    }
+
+    std::filesystem::path destination(destination_path);
+    bool success = client->ExtractPackageFileToFile(package_relative_path,
+                                                    entry_path,
+                                                    destination);
+    return success ? 1 : 0;
+}
