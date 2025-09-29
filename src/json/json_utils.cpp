@@ -1,4 +1,6 @@
 #include <fstream>
+#include <sstream>
+#include <sstream>
 
 #include "json/json_utils.h"
 #include "json/value.h"
@@ -16,10 +18,10 @@ namespace OpenWG::Utils::JSON {
         }
     }
 
-    Json::Json(const wchar_t *value) {
+    Json::Json(const wchar_t *value, bool wrapRoot) {
         if (value) {
             auto value_u8 = Encoding::wstring_to_utf8(value);
-            if(!value_u8.starts_with('{')) {
+            if(wrapRoot && !value_u8.starts_with('{')) {
                 value_u8 = '{' + value_u8 + '}';
             }
             std::stringstream stream(value_u8);
@@ -107,4 +109,22 @@ namespace OpenWG::Utils::JSON {
         return result;
     }
 
-}
+    const ::Json::Value& Json::GetRoot() const {
+        return m_json;
+    }
+
+    ::Json::Value& Json::GetRoot() {
+        return m_json;
+    }
+
+    std::optional<::Json::Value> ParseJsonUtf8(const std::string& content, bool wrapRoot) {
+        std::wstring wide = Encoding::utf8_to_wstring(content);
+        Json json(wide.c_str(), wrapRoot);
+        const auto& root = json.GetRoot();
+        if (root.isNull()) {
+            return std::nullopt;
+        }
+        return root;
+    }
+
+ }

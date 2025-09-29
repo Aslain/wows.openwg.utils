@@ -16,7 +16,7 @@
 namespace OpenWG::Utils::JSON {
     class Json {
     public:
-        explicit Json(const wchar_t* value);
+        explicit Json(const wchar_t* value, bool wrapRoot = true);
         explicit Json(const std::filesystem::path& path);
         ~Json();
 
@@ -44,8 +44,13 @@ namespace OpenWG::Utils::JSON {
 
         bool Save();
 
+        [[nodiscard]] const ::Json::Value& GetRoot() const;
+        [[nodiscard]] ::Json::Value& GetRoot();
+
     private:
         std::filesystem::path m_path;
         ::Json::Value m_json;
     };
+
+    std::optional<::Json::Value> ParseJsonUtf8(const std::string& content, bool wrapRoot = false);
 }
