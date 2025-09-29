@@ -265,6 +265,8 @@ XVMEXT_API_CALL int32_t WOT_GetClientCacheSupported(int32_t index);
  */
 XVMEXT_API_CALL int32_t WOT_ClearClientCache(int32_t index, ClientCache cache_type);
 
+XVMEXT_API_CALL int32_t WOT_ClientBuildResMap(int32_t index);
+
 /**
  * Extract a file from a package to destination path on disk.
  * @param index client index

@@ -501,6 +501,20 @@ begin
 end;
 
 
+function WOT_ClientBuildResMap_I(ClientIndex: Integer): Integer;
+external 'WOT_ClientBuildResMap@files:openwg.utils.dll cdecl setuponly';
+
+function WOT_ClientBuildResMap_U(ClientIndex: Integer): Integer;
+external 'WOT_ClientBuildResMap@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function WOT_ClientBuildResMap(ClientIndex: Integer): Integer;
+begin
+    if IsUninstaller() then
+        Result := WOT_ClientBuildResMap_U(ClientIndex)
+    else
+        Result := WOT_ClientBuildResMap_I(ClientIndex)
+end;
+
 //
 // Record
 //

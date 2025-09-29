@@ -446,6 +446,30 @@ int32_t WOT_ClearClientCache(int32_t index, ClientCache cache_type)
     return result;
 }
 
+int32_t WOT_ClientBuildResMap(int32_t index)
+{
+    launchers_init();
+
+    if (index < 0 || index >= static_cast<int32_t>(g_clients.size()))
+    {
+        return -1;
+    }
+
+    auto& client = g_clients[index];
+    if (!client)
+    {
+        return -1;
+    }
+
+    auto client_wot = std::dynamic_pointer_cast<ClientWoT>(client);
+    if (!client_wot)
+    {
+        return 0;
+    }
+
+    return client_wot->BuildResMapFromMods() ? 1 : 0;
+}
+
 int32_t WOT_ClientExtractPackageFileToFileW(int32_t index,
                                             const wchar_t* package_relative_path,
                                             const wchar_t* entry_path,

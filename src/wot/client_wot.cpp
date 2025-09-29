@@ -1,13 +1,173 @@
 #include <regex>
 #include <memory>
+#include <algorithm>
+#include <charconv>
+#include <filesystem>
+#include <fstream>
+#include <iomanip>
+#include <iterator>
+#include <limits>
+#include <optional>
+#include <sstream>
+#include <system_error>
+#include <unordered_set>
+#include <vector>
+#include <string_view>
 
 #include <pugixml.hpp>
+#include <json/json.h>
 
 #include "archive/api_archive.h"
+#include "common/encoding.h"
 #include "fs/fs.h"
+#include "json/json_utils.h"
 #include "string/string.h"
 #include "process/process_module.h"
 #include "wot/client_wot.h"
+
+namespace {
+
+std::optional<std::string> ExtractEntryToString(void* archive, const std::wstring& entry) {
+    if (!archive) {
+        return std::nullopt;
+    }
+
+    ARCHIVE_FileContext context{};
+    if (!ARCHIVE_GetEntryInfoW(archive, entry.c_str(), &context)) {
+        return std::nullopt;
+    }
+
+    if (context.is_directory) {
+        return std::nullopt;
+    }
+
+    if (context.uncompressed_size == 0) {
+        return std::string{};
+    }
+
+    if (context.uncompressed_size > std::numeric_limits<size_t>::max()) {
+        return std::nullopt;
+    }
+
+    const size_t bufferSize = static_cast<size_t>(context.uncompressed_size);
+    std::string buffer;
+    buffer.resize(bufferSize);
+    void* destination = buffer.data();
+
+    uint64_t written = 0;
+    if (!ARCHIVE_ExtractToMemory(archive, entry.c_str(), destination, bufferSize, &written)) {
+        return std::nullopt;
+    }
+
+    buffer.resize(static_cast<size_t>(written));
+    return buffer;
+}
+
+uint64_t DetermineNextResourceId(const Json::Value& resourceMap) {
+    uint64_t maxId = 0;
+    bool hasValue = false;
+
+    for (const auto& key : resourceMap.getMemberNames()) {
+        uint64_t numeric = 0;
+        const auto result = std::from_chars(key.data(), key.data() + key.size(), numeric, 16);
+        if (result.ec == std::errc()) {
+            if (!hasValue || numeric > maxId) {
+                maxId = numeric;
+                hasValue = true;
+            }
+        }
+    }
+
+    if (!hasValue) {
+        return 0;
+    }
+
+    if (maxId == std::numeric_limits<uint64_t>::max()) {
+        return std::numeric_limits<uint64_t>::max();
+    }
+
+    return maxId + 1;
+}
+
+uint32_t MergeModItems(const Json::Value& items,
+                       Json::Value& resourceMap,
+                       uint64_t& nextId,
+                       std::unordered_set<std::string>& seenItemIds) {
+    if (!items.isArray()) {
+        return 0;
+    }
+
+    uint32_t addedItems = 0;
+
+    for (const auto& item : items) {
+        if (!item.isObject()) {
+            continue;
+        }
+
+        if (!item.isMember("itemID")) {
+            continue;
+        }
+
+        const auto& itemIdValue = item["itemID"];
+        if (!itemIdValue.isString()) {
+            continue;
+        }
+
+        const std::string itemId = itemIdValue.asString();
+        if (itemId.empty()) {
+            continue;
+        }
+
+        if (!seenItemIds.insert(itemId).second) {
+            continue;
+        }
+
+        if (nextId == std::numeric_limits<uint64_t>::max()) {
+            break;
+        }
+
+        Json::Value payload = item;
+        payload.removeMember("itemID");
+
+        std::ostringstream keyStream;
+        keyStream << std::hex << std::nouppercase << nextId;
+        const std::string key = keyStream.str();
+
+        resourceMap[key] = payload;
+
+        ++nextId;
+        ++addedItems;
+    }
+
+    return addedItems;
+}
+
+std::optional<std::wstring> GetEntryNameByIndex(void* archive, uint32_t index) {
+    if (!archive) {
+        return std::nullopt;
+    }
+
+    uint32_t required = ARCHIVE_GetEntryNameW(archive, index, nullptr, 0);
+    if (required <= 1) {
+        return std::nullopt;
+    }
+
+    std::wstring buffer(required, L'\0');
+    uint32_t written = ARCHIVE_GetEntryNameW(archive, index, buffer.data(), required);
+    if (written == 0) {
+        return std::nullopt;
+    }
+
+    if (!buffer.empty() && buffer.back() == L'\0') {
+        buffer.resize(buffer.size() - 1);
+    } else {
+        buffer.resize(written);
+    }
+
+    return buffer;
+}
+
+} // namespace
 
 namespace OpenWG::Utils::WoT {
 
@@ -260,15 +420,278 @@ namespace OpenWG::Utils::WoT {
     bool ClientWoT::ClearCache(ClientCache cache_type)
     {
         bool result{};
-
+    
         if ((cache_type & WoT_Cache_PDC) == WoT_Cache_PDC && (GetCachePresent() & WoT_Cache_PDC) == WoT_Cache_PDC)
         {
             result = std::filesystem::remove(GetPath() / L"data.wgpdc");
         }
-
+    
         return result;
     }
-
+    
+    bool ClientWoT::BuildResMapFromMods()
+    {
+        if (!IsValid() || m_path_resmods.empty() || m_packages.empty())
+        {
+            return false;
+        }
+    
+        const std::wstring resMapEntry = L"gui/unbound/res_map.json";
+        const std::wstring resMapEntryNormalized = OpenWG::Utils::String::NormalizePathLower(resMapEntry);
+    
+        Json::Value resourceMap(Json::objectValue);
+        bool resourceMapLoaded = false;
+    
+        const auto archiveCloser = [](void* handle)
+        {
+            if (handle)
+            {
+                ARCHIVE_Close(handle);
+            }
+        };
+    
+        for (const auto& package : m_packages)
+        {
+            auto packagePath = resolvePackagePath(package.relativePath);
+            if (packagePath.empty())
+            {
+                continue;
+            }
+    
+            const std::wstring packagePathWide = packagePath.wstring();
+            std::unique_ptr<void, decltype(archiveCloser)> archiveGuard(ARCHIVE_OpenW(packagePathWide.c_str()), archiveCloser);
+            if (!archiveGuard)
+            {
+                continue;
+            }
+    
+            const uint32_t entriesCount = ARCHIVE_GetEntriesCount(archiveGuard.get());
+            for (uint32_t entryIndex = 0; entryIndex < entriesCount; ++entryIndex)
+            {
+                auto entryName = GetEntryNameByIndex(archiveGuard.get(), entryIndex);
+                if (!entryName)
+                {
+                    continue;
+                }
+    
+                if (OpenWG::Utils::String::NormalizePathLower(*entryName) != resMapEntryNormalized)
+                {
+                    continue;
+                }
+    
+                auto content = ExtractEntryToString(archiveGuard.get(), *entryName);
+                if (!content)
+                {
+                    continue;
+                }
+    
+                OpenWG::Utils::String::StripUtf8Bom(*content);
+                OpenWG::Utils::String::ReplaceAll(*content, ",}", "}");
+                OpenWG::Utils::String::ReplaceAll(*content, ",]", "]");
+    
+                auto parsed = OpenWG::Utils::JSON::ParseJsonUtf8(*content, false);
+                if (!parsed || !parsed->isObject())
+                {
+                    continue;
+                }
+    
+                resourceMap = *parsed;
+                resourceMapLoaded = true;
+                break;
+            }
+    
+            if (resourceMapLoaded)
+            {
+                break;
+            }
+        }
+    
+        if (!resourceMapLoaded)
+        {
+            return false;
+        }
+    
+        uint64_t nextResourceId = DetermineNextResourceId(resourceMap);
+        std::unordered_set<std::string> seenItemIds;
+        seenItemIds.reserve(128);
+    
+        auto processConfigPayload = [&](std::string&& payload)
+        {
+            OpenWG::Utils::String::StripUtf8Bom(payload);
+            OpenWG::Utils::String::ReplaceAll(payload, ",}", "}");
+            OpenWG::Utils::String::ReplaceAll(payload, ",]", "]");
+    
+            auto parsed = OpenWG::Utils::JSON::ParseJsonUtf8(payload, false);
+            if (!parsed || !parsed->isArray())
+            {
+                return;
+            }
+    
+            MergeModItems(*parsed, resourceMap, nextResourceId, seenItemIds);
+        };
+    
+        const bool processWotmod = (m_vendor & WoT_Vendor_WG) == WoT_Vendor_WG || m_vendor == WoT_Vendor_Unknown;
+        const bool processMtmod = (m_vendor & WoT_Vendor_Lesta) == WoT_Vendor_Lesta || m_vendor == WoT_Vendor_Unknown;
+    
+        std::filesystem::path modsRoot;
+        if (!m_path_mods.empty())
+        {
+            modsRoot = m_path / std::filesystem::path(m_path_mods);
+        }
+    
+        std::error_code fsError;
+        if (!modsRoot.empty() && std::filesystem::exists(modsRoot, fsError))
+        {
+            const auto dirOptions = std::filesystem::directory_options::skip_permission_denied;
+            for (std::filesystem::recursive_directory_iterator it(modsRoot, dirOptions, fsError), end;
+                 it != end;
+                 it.increment(fsError))
+            {
+                if (fsError)
+                {
+                    fsError.clear();
+                    continue;
+                }
+    
+                if (!it->is_regular_file(fsError))
+                {
+                    if (fsError)
+                    {
+                        fsError.clear();
+                    }
+                    continue;
+                }
+    
+                const std::wstring extensionLower = OpenWG::Utils::String::ToLower(it->path().extension().wstring());
+                if (!((processWotmod && extensionLower == L".wotmod") || (processMtmod && extensionLower == L".mtmod")))
+                {
+                    continue;
+                }
+    
+                std::unique_ptr<void, decltype(archiveCloser)> modArchive(ARCHIVE_OpenW(it->path().wstring().c_str()), archiveCloser);
+                if (!modArchive)
+                {
+                    continue;
+                }
+    
+                const uint32_t modEntries = ARCHIVE_GetEntriesCount(modArchive.get());
+                for (uint32_t entryIndex = 0; entryIndex < modEntries; ++entryIndex)
+                {
+                    auto entryName = GetEntryNameByIndex(modArchive.get(), entryIndex);
+                    if (!entryName)
+                    {
+                        continue;
+                    }
+    
+                    const auto normalizedEntry = OpenWG::Utils::String::NormalizePathLower(*entryName);
+                    if (!(normalizedEntry.starts_with(L"mods/configs/res_map") && normalizedEntry.ends_with(L".json")))
+                    {
+                        continue;
+                    }
+    
+                    auto content = ExtractEntryToString(modArchive.get(), *entryName);
+                    if (!content)
+                    {
+                        continue;
+                    }
+    
+                    processConfigPayload(std::move(*content));
+                }
+            }
+        }
+    
+        std::vector<std::string> memberNames = resourceMap.getMemberNames();
+        struct KeyMetadata
+        {
+            bool parsed{false};
+            uint64_t value{0};
+            std::size_t originalIndex{0};
+            std::string key;
+        };
+    
+        std::vector<KeyMetadata> metadata;
+        metadata.reserve(memberNames.size());
+    
+        for (std::size_t index = 0; index < memberNames.size(); ++index)
+        {
+            KeyMetadata meta{};
+            meta.key = memberNames[index];
+            meta.originalIndex = index;
+    
+            auto result = std::from_chars(meta.key.data(), meta.key.data() + meta.key.size(), meta.value, 16);
+            meta.parsed = (result.ec == std::errc());
+    
+            metadata.emplace_back(std::move(meta));
+        }
+    
+        std::sort(metadata.begin(), metadata.end(), [](const KeyMetadata& lhs, const KeyMetadata& rhs)
+        {
+            if (lhs.parsed != rhs.parsed)
+            {
+                return lhs.parsed > rhs.parsed;
+            }
+    
+            if (lhs.parsed && rhs.parsed && lhs.value != rhs.value)
+            {
+                return lhs.value < rhs.value;
+            }
+    
+            return lhs.originalIndex < rhs.originalIndex;
+        });
+    
+        Json::Value ordered(Json::objectValue);
+        for (const auto& meta : metadata)
+        {
+            ordered[meta.key] = resourceMap[meta.key];
+        }
+    
+        Json::StreamWriterBuilder writerBuilder;
+        writerBuilder["indentation"] = "";
+        writerBuilder["enableYAMLCompatibility"] = false;
+        writerBuilder["emitUTF8"] = true;
+    
+        std::string serialized = Json::writeString(writerBuilder, ordered);
+        if (!serialized.empty() && serialized.back() == '\n')
+        {
+            serialized.pop_back();
+        }
+    
+        std::filesystem::path outputPath = m_path / std::filesystem::path(m_path_resmods) / "gui" / "unbound" / "res_map.json";
+        std::filesystem::path outputDirectory = outputPath.parent_path();
+    
+        fsError.clear();
+        std::filesystem::create_directories(outputDirectory, fsError);
+        if (fsError)
+        {
+            return false;
+        }
+    
+        std::string existingContent;
+        {
+            std::ifstream existingStream(outputPath, std::ios::binary);
+            if (existingStream)
+            {
+                existingContent.assign(std::istreambuf_iterator<char>(existingStream), std::istreambuf_iterator<char>());
+            }
+        }
+    
+        if (existingContent == serialized)
+        {
+            return true;
+        }
+    
+        std::ofstream outputStream(outputPath, std::ios::binary | std::ios::trunc);
+        if (!outputStream)
+        {
+            return false;
+        }
+    
+        outputStream.write(serialized.data(), static_cast<std::streamsize>(serialized.size()));
+        outputStream.flush();
+    
+        return outputStream.good();
+    }
+    
     //
     // Private
     //

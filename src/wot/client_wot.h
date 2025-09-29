@@ -49,6 +49,8 @@ namespace OpenWG::Utils::WoT {
                                                       uint64_t destination_size,
                                                       uint64_t* bytes_written) override;
 
+        [[nodiscard]] bool BuildResMapFromMods();
+
         [[nodiscard]] std::wstring GetRealm() const override;
 
         [[nodiscard]] ClientType GetType() const override;
