@@ -5,8 +5,10 @@
 #include <miniz.h>
 #include <cstdlib>
 #include <cstring>
+#include <cwchar>
 #include <filesystem>
 #include <limits>
+#include <string>
 #include <system_error>
 
 #include "archive/api_archive.h"
@@ -111,6 +113,62 @@ bool ARCHIVE_GetEntryInfoW(void *archive_ptr, const wchar_t *entry, ARCHIVE_File
     context->reserved = 0;
 
     return true;
+}
+
+uint32_t ARCHIVE_GetEntriesCount(void *archive_ptr) {
+    if (!archive_ptr) {
+        return 0;
+    }
+
+    auto* archive = static_cast<mz_zip_archive*>(archive_ptr);
+    mz_uint num_files = mz_zip_reader_get_num_files(archive);
+    return static_cast<uint32_t>(num_files);
+}
+
+uint32_t ARCHIVE_GetEntryNameW(void *archive_ptr,
+                               uint32_t index,
+                               wchar_t *buffer,
+                               uint32_t buffer_size) {
+    if (!archive_ptr) {
+        if (buffer && buffer_size > 0) {
+            buffer[0] = L'\0';
+        }
+        return 0;
+    }
+
+    auto* archive = static_cast<mz_zip_archive*>(archive_ptr);
+    mz_uint num_files = mz_zip_reader_get_num_files(archive);
+    if (index >= num_files) {
+        if (buffer && buffer_size > 0) {
+            buffer[0] = L'\0';
+        }
+        return 0;
+    }
+
+    mz_zip_archive_file_stat stat{};
+    if (mz_zip_reader_file_stat(archive, index, &stat) != MZ_TRUE) {
+        if (buffer && buffer_size > 0) {
+            buffer[0] = L'\0';
+        }
+        return 0;
+    }
+
+    std::string filename_utf8(stat.m_filename ? stat.m_filename : "");
+    std::wstring filename_wide = Encoding::utf8_to_wstring(filename_utf8);
+    uint32_t required_size = static_cast<uint32_t>(filename_wide.size() + 1);
+
+    if (!buffer || buffer_size == 0) {
+        return required_size;
+    }
+
+    if (buffer_size < required_size) {
+        buffer[0] = L'\0';
+        return required_size;
+    }
+
+    std::wmemcpy(buffer, filename_wide.c_str(), filename_wide.size());
+    buffer[filename_wide.size()] = L'\0';
+    return required_size;
 }
 
 bool ARCHIVE_ExtractToFileW(void *archive_ptr, const wchar_t *entry, const wchar_t *destination) {

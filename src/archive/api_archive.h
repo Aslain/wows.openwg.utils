@@ -40,6 +40,8 @@ typedef struct ARCHIVE_FileContext {
 XVMEXT_API_CALL void* ARCHIVE_OpenW(const wchar_t* filepath);
 XVMEXT_API_CALL bool  ARCHIVE_EntryExistsW(void* archive, const wchar_t* entry);
 XVMEXT_API_CALL bool  ARCHIVE_GetEntryInfoW(void* archive, const wchar_t* entry, ARCHIVE_FileContext* context);
+XVMEXT_API_CALL uint32_t ARCHIVE_GetEntriesCount(void* archive);
+XVMEXT_API_CALL uint32_t ARCHIVE_GetEntryNameW(void* archive, uint32_t index, wchar_t* buffer, uint32_t buffer_size);
 XVMEXT_API_CALL bool  ARCHIVE_ExtractToFileW(void* archive, const wchar_t* entry, const wchar_t* destination);
 XVMEXT_API_CALL bool  ARCHIVE_ExtractToMemory(void* archive, const wchar_t* entry, void* destination, uint64_t destination_size, uint64_t* bytes_written);
 XVMEXT_API_CALL bool  ARCHIVE_Close(void* archive);

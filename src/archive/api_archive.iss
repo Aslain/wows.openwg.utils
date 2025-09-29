@@ -76,6 +76,34 @@ begin
         Result := ARCHIVE_GetEntryInfoW_I(Handle, Entry, Context);
 end;
 
+function ARCHIVE_GetEntriesCount_I(Handle: Integer): Cardinal;
+external 'ARCHIVE_GetEntriesCount@files:openwg.utils.dll cdecl setuponly';
+
+function ARCHIVE_GetEntriesCount_U(Handle: Integer): Cardinal;
+external 'ARCHIVE_GetEntriesCount@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function ARCHIVE_GetEntriesCount(Handle: Integer): Cardinal;
+begin
+    if IsUninstaller() then
+        Result := ARCHIVE_GetEntriesCount_U(Handle)
+    else
+        Result := ARCHIVE_GetEntriesCount_I(Handle);
+end;
+
+function ARCHIVE_GetEntryNameW_I(Handle: Integer; Index: Cardinal; Buffer: String; BufferSize: Cardinal): Cardinal;
+external 'ARCHIVE_GetEntryNameW@files:openwg.utils.dll cdecl setuponly';
+
+function ARCHIVE_GetEntryNameW_U(Handle: Integer; Index: Cardinal; Buffer: String; BufferSize: Cardinal): Cardinal;
+external 'ARCHIVE_GetEntryNameW@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function ARCHIVE_GetEntryNameW(Handle: Integer; Index: Cardinal; Buffer: String; BufferSize: Cardinal): Cardinal;
+begin
+    if IsUninstaller() then
+        Result := ARCHIVE_GetEntryNameW_U(Handle, Index, Buffer, BufferSize)
+    else
+        Result := ARCHIVE_GetEntryNameW_I(Handle, Index, Buffer, BufferSize);
+end;
+
 function ARCHIVE_ExtractToFileW_I(Handle: Integer; Entry: String; Destination: String): Boolean;
 external 'ARCHIVE_ExtractToFileW@files:openwg.utils.dll cdecl setuponly';
 
