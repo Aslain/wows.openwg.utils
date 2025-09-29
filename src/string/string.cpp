@@ -12,6 +12,7 @@
 #include <locale>
 #include <regex>
 #include <string>
+#include <string_view>
 #include <sstream>
 
 // openwg.utils
@@ -229,6 +230,42 @@ namespace OpenWG::Utils {
             auto result{str};
             transform(result.begin(), result.end(), result.begin(), ::towlower);
             return result;
+        }
+
+        size_t StripUtf8Bom(std::string& data)
+        {
+            if (data.size() >= 3 &&
+                static_cast<unsigned char>(data[0]) == 0xEF &&
+                static_cast<unsigned char>(data[1]) == 0xBB &&
+                static_cast<unsigned char>(data[2]) == 0xBF)
+            {
+                data.erase(0, 3);
+                return 3;
+            }
+
+            return 0;
+        }
+
+        void ReplaceAll(std::string& source, std::string_view from, std::string_view to)
+        {
+            if (from.empty())
+            {
+                return;
+            }
+
+            size_t position = 0;
+            while ((position = source.find(from, position)) != std::string::npos)
+            {
+                source.replace(position, from.size(), to);
+                position += to.size();
+            }
+        }
+
+        std::wstring NormalizePathLower(const std::wstring& value)
+        {
+            std::wstring normalized = value;
+            std::replace(normalized.begin(), normalized.end(), L'\\', L'/');
+            return ToLower(normalized);
         }
     }
 }

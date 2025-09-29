@@ -10,6 +10,7 @@
 // stdlib
 #include <cstdint>
 #include <string>
+#include <string_view>
 #include <vector>
 
 
@@ -52,6 +53,12 @@ namespace OpenWG::Utils {
         std::wstring VecToWstring(const std::vector<uint8_t> &vec);
 
         std::wstring ToLower(const std::wstring& str);
+
+        size_t StripUtf8Bom(std::string& data);
+
+        void ReplaceAll(std::string& source, std::string_view from, std::string_view to);
+
+        std::wstring NormalizePathLower(const std::wstring& value);
 
     }
 }
