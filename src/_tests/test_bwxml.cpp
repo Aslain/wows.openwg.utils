@@ -26,3 +26,11 @@ TEST_CASE( "bwxml_unpack", "[bwxml]" ) {
         REQUIRE(BWXML_UnpackW((std::filesystem::path(ASSETS_FOLDER) / "engine_config.xml").wstring().c_str(), L"engine_config.xml") == 0);
     }
 }
+
+
+TEST_CASE( "bwxml_unpack_environment", "[bwxml]" ) {
+    auto path_in = std::filesystem::path(ASSETS_FOLDER) / "environment.xml";
+    auto path_out = L"environment_processed.xml";
+    auto resp = BWXML_UnpackW(path_in.c_str(), path_out);
+    REQUIRE(resp == 0);
+}

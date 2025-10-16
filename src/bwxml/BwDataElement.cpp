@@ -56,7 +56,29 @@ void BwDataElement::SaveXml(pugi::xml_node& node, BwStringTable& stringTable)
         }
 
         case BwDataType::TYPE_FLOAT: {
-            assert(false);
+            auto count = _data.size() / sizeof(float);
+            if (count > 4) {
+                for (size_t i = 0; i < count; i+=3) {
+                    std::wstring str;
+                    for (size_t j = 0; j < 3; j++) {
+                        float val{};
+                        std::memcpy(&val, &_data[i+j], sizeof(val));
+                        str += std::to_wstring(val) + L" ";
+                    }
+
+                    auto child_node = node.append_child(std::wstring(L"row")+std::to_wstring(i/3));
+                    child_node.append_child(pugi::node_pcdata).set_value(str.c_str());
+                }
+            }
+            else {
+                std::wstring str;
+                for (size_t i = 0; i < _data.size(); i+=4) {
+                    float val{};
+                    std::memcpy(&val, &_data[i], sizeof(val));
+                    str += std::to_wstring(val) + L" ";
+                }
+                node.append_child(pugi::node_pcdata).set_value(str.c_str());
+            }
             break;
         }
 
