@@ -33,6 +33,7 @@ using namespace OpenWG::Utils::WoT;
 
 int32_t g_vendor_default = ClientVendor::WoT_Vendor_WG;
 int32_t g_vendor_filter = ClientVendor::WoT_Vendor_WG | ClientVendor::WoT_Vendor_Lesta;
+int32_t g_branch_filter = ClientBranch::WoT_Branch_All;
 
 std::vector<std::shared_ptr<LauncherInterface>> g_launchers{};
 std::vector<std::shared_ptr<ClientInterface>> g_clients{};
@@ -60,8 +61,13 @@ void clients_rescan() {
                 continue;
             }
 
-            // check for filter
+            // check for vendor filter
             if ((client->GetVendor() & g_vendor_filter) == 0) {
+                continue;
+            }
+
+            // check for branch filter
+            if ((client->GetBranch() & g_branch_filter) == 0) {
                 continue;
             }
 
@@ -157,7 +163,6 @@ int32_t WOT_LauncherSetDefault(int32_t vendor_filter, int32_t vendor_default) {
 
     return WOT_LauncherRescan();
 }
-
 
 int32_t WOT_ClientFind(const wchar_t *path) {
     int32_t result{-1};
@@ -540,4 +545,13 @@ int32_t WOT_ClientGetPackagePathW(int32_t index,
 
     wcscpy_s(buffer, buffer_size, package_path.c_str());
     return 1;
+}
+
+//
+// Functions/Discovery
+//
+
+int32_t WOT_Discovery_SetBranchFilter(int32_t branch_filter) {
+    g_branch_filter = branch_filter;
+    return WOT_LauncherRescan();
 }

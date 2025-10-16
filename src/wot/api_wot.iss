@@ -484,6 +484,23 @@ begin
         Result := WOT_ClearClientCache_I(ClientIndex, CacheType)
 end;
 
+// WOT/Discovery/SetBranchFilter
+function WOT_Discovery_SetBranchFilter_I(BranchFilter: Integer): Integer;
+external 'WOT_Discovery_SetBranchFilter@files:openwg.utils.dll cdecl setuponly';
+
+function WOT_Discovery_SetBranchFilter_U(BranchFilter: Integer): Integer;
+external 'WOT_Discovery_SetBranchFilter@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+// filter, bitmask: 1 - release, 2 - ct, 4 - st, 8 - sb, 16 - closed_test
+function WOT_Discovery_SetBranchFilter(BranchFilter: Integer): Integer;
+begin
+    if IsUninstaller() then
+        Result := WOT_Discovery_SetBranchFilter_U(BranchFilter)
+    else
+        Result := WOT_Discovery_SetBranchFilter_I(BranchFilter)
+end;
+
+
 //
 // Record
 //
@@ -534,9 +551,9 @@ begin
           end;
         end;
      2: Result := Result + ExpandConstant('/{cm:openwg_branch_ct}');
-     3: Result := Result + ExpandConstant('/{cm:openwg_branch_st}');
-     4: Result := Result + ExpandConstant('/{cm:openwg_branch_sb}');
-     5: Result := Result + ExpandConstant('/{cm:openwg_branch_closed}');
+     4: Result := Result + ExpandConstant('/{cm:openwg_branch_st}');
+     8: Result := Result + ExpandConstant('/{cm:openwg_branch_sb}');
+     16: Result := Result + ExpandConstant('/{cm:openwg_branch_closed}');
   end;
 
   Result := Result + '] - ' + Client.Path;

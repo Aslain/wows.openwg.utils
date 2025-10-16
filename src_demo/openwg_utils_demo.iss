@@ -146,8 +146,11 @@ begin
   ExtractTemporaryFile('splashscreen.png');
   SplashHandle := SPLASHSCREEN_Show(ExpandConstant('{tmp}\splashscreen.png'));
 
-  // set filter
-  WOT_LauncherSetDefault(1, 1);
+  // set vendor filter and priority (1 - WG, 2 - Lesta, 3 - WG+Lesta)
+  WOT_LauncherSetDefault(3, 1);
+
+  // set branch filter (1 - Release, 2 - Common Test, 4 - Super Test, 8 - Sandbox, 16 - Closed Test)
+  WOT_Discovery_SetBranchFilter(1);
 
   // hide splash screen after 3000ms
   SPLASHSCREEN_CloseAfter(SplashHandle, 3000);

@@ -14,12 +14,14 @@ extern "C" {
 //
 
 enum ClientBranch {
-    WoT_Branch_Unknown = 0,
-    WoT_Branch_Release = 1,
-    WoT_Branch_CommonTest = 2,
-    WoT_Branch_SuperTest = 3,
-    WoT_Branch_Sandbox = 4,
-    WoT_Branch_ClosedTest = 5,
+    WoT_Branch_Unknown     = 0,
+    WoT_Branch_Release     = 1 << 0,
+    WoT_Branch_CommonTest  = 1 << 1,
+    WoT_Branch_SuperTest   = 1 << 2,
+    WoT_Branch_Sandbox     = 1 << 3,
+    WoT_Branch_ClosedTest  = 1 << 4,
+
+    WoT_Branch_All = WoT_Branch_Release | WoT_Branch_CommonTest | WoT_Branch_SuperTest | WoT_Branch_Sandbox | WoT_Branch_ClosedTest,
 };
 
 enum ClientType {
@@ -58,6 +60,19 @@ inline ClientCache operator|(ClientCache a, ClientCache b)
 #endif
 
 //
+// Functions/Discovery
+//
+
+/**
+ * Set client branch filter
+ * @param branch_filter   bitmask of allowed branches
+ * @note it deletes all manually added clients and may change clients order
+ * @return number of found clients
+ */
+XVMEXT_API_CALL int32_t WOT_Discovery_SetBranchFilter(int32_t branch_filter);
+
+
+//
 // Functions
 //
 
@@ -90,6 +105,7 @@ XVMEXT_API_CALL int32_t WOT_LauncherRescan();
  * @return number of found clients
  */
 XVMEXT_API_CALL int32_t WOT_LauncherSetDefault(int32_t vendor_filter, int32_t vendor_default);
+
 
 /**
  * Find client by its path
