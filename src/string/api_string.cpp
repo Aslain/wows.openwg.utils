@@ -3,11 +3,11 @@
 //
 
 // stdlib
+#include <climits>
 #include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <iterator>
-#include <vector>
 
 // windows
 #if defined(_WIN32)
@@ -42,8 +42,8 @@ using namespace OpenWG::Utils;
 //
 // @param buffer A pointer to the buffer containing the null-terminated UTF-8 string.
 //               The buffer must be large enough to hold the resulting UTF-16LE string.
-//               A safe buffer size is at least (strlen(utf8_string) * 2) + 2 bytes.
-// @return The length of the resulting UTF-16LE string in bytes (excluding the null terminator) on success.
+//               A safe buffer size is at least (strlen(utf8_string) * 2) bytes.
+// @return The length of the resulting UTF-16LE string in bytes on success.
 //         Returns -1 if an invalid UTF-8 sequence is encountered.
 //
 int utf8_to_utf16le_in_place(char* buffer) {
@@ -59,13 +59,10 @@ int utf8_to_utf16le_in_place(char* buffer) {
     const char* utf8_start = buffer;
 
     // 2. Setup write pointer at a safe position at the end of the buffer.
-    // The buffer must be large enough. A capacity of at least (utf8_len * 2) + 2 is required.
+    // The buffer must be large enough. A capacity of at least (utf8_len * 2) is required.
     const ptrdiff_t utf8_len = utf8_end - utf8_start;
-    char* write_ptr_end = buffer + utf8_len * 2 + 2;
+    char* write_ptr_end = buffer + utf8_len * 2;
     unsigned short* utf16_write = (unsigned short*)(write_ptr_end);
-
-    // Write a temporary null terminator. It will be moved to the correct final position later.
-    *(--utf16_write) = 0;
 
     // 3. Process the string from end to start.
     const unsigned char* read_ptr = (const unsigned char*)utf8_end;
@@ -76,6 +73,11 @@ int utf8_to_utf16le_in_place(char* buffer) {
         const unsigned char* seq_start = read_ptr - 1;
         while (seq_start >= (const unsigned char*)utf8_start && (*seq_start & 0xC0) == 0x80) {
             seq_start--;
+        }
+
+        // Sequence start moved before buffer start => invalid UTF-8.
+        if (seq_start < (const unsigned char*)utf8_start) {
+            return -1;
         }
 
         // Safety check: a UTF-8 sequence must not be longer than 4 bytes.
@@ -138,16 +140,12 @@ int utf8_to_utf16le_in_place(char* buffer) {
 
     // 4. Move the converted string from the end of the buffer to the beginning.
     char* result_start = (char*)utf16_write;
-    const int new_len_bytes = (char*)write_ptr_end - result_start - 2; // -2 for the temp null terminator
+    const int new_len_bytes = static_cast<int>((char*)write_ptr_end - result_start);
 
     if (result_start != buffer) {
         memmove(buffer, result_start, new_len_bytes);
     }
     
-    // 5. Place the final null terminator at the end of the newly converted string.
-    buffer[new_len_bytes] = '\0';
-    buffer[new_len_bytes + 1] = '\0';
-
     return new_len_bytes;
 }
 
@@ -157,7 +155,9 @@ int32_t STRING_LoadFromFile(_In_ const wchar_t* filepath, _Out_ wchar_t* output,
     {
         return INT_MIN;
     }
-    output[0] = L'\0';
+    if (output_len >= sizeof(wchar_t)) {
+        output[0] = L'\0';
+    }
 
     // file does not exists
     if (!FS_FileExistsW(filepath)) {
@@ -167,9 +167,19 @@ int32_t STRING_LoadFromFile(_In_ const wchar_t* filepath, _Out_ wchar_t* output,
     // get file size
     int32_t filesize = FS_FileSizeW(filepath);
 
-    // we require x2 size of file in case we are performing utf8->utf16 conversion
-    if (output_len < filesize*2) {
-        return -filesize*2;
+    // output_len is in bytes.
+    const uint64_t output_capacity = static_cast<uint64_t>(output_len);
+    if (output_capacity > static_cast<uint64_t>(INT_MAX)) {
+        return INT_MIN;
+    }
+
+    // We must at least fit the raw file bytes before any encoding detection/conversion.
+    if (output_capacity < static_cast<uint64_t>(filesize)) {
+        const uint64_t required_capacity = static_cast<uint64_t>(filesize) * 2ULL;
+        if (required_capacity > static_cast<uint64_t>(INT_MAX)) {
+            return INT_MIN;
+        }
+        return -static_cast<int32_t>(required_capacity);
     }
 
     // exit early in case of zero byte
@@ -177,8 +187,7 @@ int32_t STRING_LoadFromFile(_In_ const wchar_t* filepath, _Out_ wchar_t* output,
         return 0;
     }
 
-    // allocate buf
-    std::vector<char> buffer(filesize);
+    char* output_bytes = reinterpret_cast<char*>(output);
 
     // read file
     {
@@ -186,7 +195,7 @@ int32_t STRING_LoadFromFile(_In_ const wchar_t* filepath, _Out_ wchar_t* output,
         if (!file.is_open()) {
             return INT_MIN;
         }
-        if (!file.read(reinterpret_cast<char*>(output), filesize)) {
+        if (!file.read(output_bytes, filesize)) {
             return INT_MIN;
         }
     }
@@ -196,7 +205,11 @@ int32_t STRING_LoadFromFile(_In_ const wchar_t* filepath, _Out_ wchar_t* output,
     // case 1: utf16 -- do nothing
     {
         const unsigned char bom_utf16_le[] = { 0xFF, 0xFE };
-        if (output_len >= 2 && memcmp(output, bom_utf16_le, sizeof(bom_utf16_le)) == 0) {
+        if (filesize >= 2 && memcmp(output_bytes, bom_utf16_le, sizeof(bom_utf16_le)) == 0) {
+            if (output_capacity >= static_cast<uint64_t>(filesize) + sizeof(wchar_t)) {
+                output_bytes[filesize] = '\0';
+                output_bytes[filesize + 1] = '\0';
+            }
             return filesize;
         }
     }
@@ -204,32 +217,49 @@ int32_t STRING_LoadFromFile(_In_ const wchar_t* filepath, _Out_ wchar_t* output,
     // case 2: utf8-bom -- remove bom
     {
         const unsigned char bom_utf8[] = { 0xEF, 0xBB, 0xBF };
-        if (output_len >= 3 && memcmp(output, bom_utf8, 3) == 0) {
+        if (filesize >= 3 && memcmp(output_bytes, bom_utf8, 3) == 0) {
             filesize -= 3;
-            char* reinter = reinterpret_cast<char*>(output);
-            memmove(&reinter[0], &reinter[3], filesize);
+            memmove(&output_bytes[0], &output_bytes[3], filesize);
         }
     }
 
     // case 3: utf8 -> utf16 conversion
     {
-    	// The buffer (`output`) now contains the UTF-8 string (without BOM).
-    	// We will treat it as a byte buffer for the conversion.
-    	// First, ensure it's null-terminated for the conversion function.
-    	// `filesize` is the length of the UTF-8 string in bytes.
-    	char* char_buffer = reinterpret_cast<char*>(output);
-    	char_buffer[filesize] = '\0';
+	    // Required bytes for converted UTF-16 payload.
+	    const uint64_t required_capacity = static_cast<uint64_t>(filesize) * 2ULL;
+	    if (required_capacity > static_cast<uint64_t>(INT_MAX)) {
+	        return INT_MIN;
+	    }
+	    if (output_capacity < required_capacity) {
+	        return -static_cast<int32_t>(required_capacity);
+	    }
+
+	    // The buffer (`output`) now contains the UTF-8 string (without BOM).
+	    // We will treat it as a byte buffer for the conversion.
+	    // First, ensure it's null-terminated for the conversion function.
+	    // `filesize` is the length of the UTF-8 string in bytes.
+	    output_bytes[filesize] = '\0';
+	    if (static_cast<uint64_t>(filesize) + 1 < output_capacity) {
+	        output_bytes[filesize + 1] = '\0';
+	    }
    
-    	// Perform the in-place conversion.
-    	// The function `utf8_to_utf16le_in_place` expects the buffer to have enough capacity.
-    	// The check `output_len < filesize * 2` at the beginning of this function helps ensure this.
-    	int32_t new_len_bytes = utf8_to_utf16le_in_place(char_buffer);
+	    // Perform the in-place conversion.
+	    // The function `utf8_to_utf16le_in_place` expects the buffer to have enough capacity.
+	    // The check against `required_capacity` above helps ensure this.
+	    int32_t new_len_bytes = utf8_to_utf16le_in_place(output_bytes);
    
-    	if (new_len_bytes < 0) {
-    		// An error occurred during conversion (invalid UTF-8 sequence).
-    		output[0] = L'\0'; // Ensure output is a valid empty string on error
-    		return INT_MIN;
-    	}
+	    if (new_len_bytes < 0) {
+	    	// An error occurred during conversion (invalid UTF-8 sequence).
+	    	if (output_len >= sizeof(wchar_t)) {
+	    		output[0] = L'\0'; // Ensure output is a valid empty string on error
+	    	}
+	    	return INT_MIN;
+	    }
+
+	    if (output_capacity >= static_cast<uint64_t>(new_len_bytes) + sizeof(wchar_t)) {
+	        output_bytes[new_len_bytes] = '\0';
+	        output_bytes[new_len_bytes + 1] = '\0';
+	    }
    
     	// Return the new length of the string in bytes.
     	return new_len_bytes;
@@ -262,22 +292,32 @@ int32_t STRING_ReplaceRegex(_In_ const wchar_t* input, _In_ const wchar_t* patte
 
 int32_t STRING_ReplaceRegexEx(_In_ const wchar_t* input, _In_ const wchar_t* pattern_search, _In_ const wchar_t* pattern_replace, _Out_ wchar_t* output, _In_ int32_t output_len, _In_ bool first_only) {
     // check ptrs
-    if (!input || !pattern_search || !pattern_replace || !output) {
+    if (!input || !pattern_search || !pattern_replace) {
         return 0;
     }
-
-    // clear input string
-    output[0] = L'\0';
 
     std::wstring result_w{};
     int32_t size_bytes{};
     try {
         result_w = String::ReplaceRegex(input, pattern_search, pattern_replace, first_only);
         size_bytes = (result_w.size()+1)*sizeof(wchar_t);
-        if (output_len >= size_bytes) {
-            wcscpy_s(output, output_len/sizeof(wchar_t), result_w.c_str());
-            return size_bytes;
+
+        // Buffer-probe mode or not enough space.
+        // Do not write to output if there is no room for at least a UTF-16 null terminator.
+        if (output_len < size_bytes) {
+            if (output && output_len >= static_cast<int32_t>(sizeof(wchar_t))) {
+                output[0] = L'\0';
+            }
+            return -size_bytes;
         }
+
+        if (!output) {
+            return 0;
+        }
+
+        output[0] = L'\0';
+        wcscpy_s(output, output_len/sizeof(wchar_t), result_w.c_str());
+        return size_bytes;
     }
     catch (std::exception& e) {
 #if defined(_WIN32)
@@ -285,7 +325,5 @@ int32_t STRING_ReplaceRegexEx(_In_ const wchar_t* input, _In_ const wchar_t* pat
 #endif
         return 0;
     }
-
-    return -static_cast<int>(size_bytes);
 }
 

@@ -228,7 +228,8 @@ TEST_CASE("string_replace_regex_1", "[string]") {
     REQUIRE(FS_FileSizeW(filename.wstring().c_str()) == 80);
 
     std::wstring str_before;
-    str_before.resize(80);
+    // 80 UTF-16 chars payload + null terminator
+    str_before.resize(81);
     REQUIRE(STRING_LoadFromFile(filename.wstring().c_str(), str_before.data(), str_before.size()*sizeof(wchar_t)) == 160);
 
     std::wstring str_after;
