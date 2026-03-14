@@ -42,6 +42,8 @@ namespace OpenWG::Utils {
 
         bool MatchRegex(const std::wstring& where, const std::wstring& from);
 
+        bool SelectRegex(const std::wstring& where, const std::wstring& from, int32_t subgroup_idx, std::wstring& output);
+
         std::wstring Replace(const std::wstring &where, const std::wstring &from, const std::wstring &to);
 
         std::wstring ReplaceRegex(const std::wstring &where, const std::wstring &from, const std::wstring &to, bool first_only = false);

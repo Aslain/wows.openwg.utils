@@ -81,6 +81,59 @@ begin
 end;
 
 
+// STRING/SelectRegex
+function STRING_SelectRegex_I(Input: String; Search: String; SubgroupIndex: Integer; Output: String; BufferSize: Integer): Integer;
+external 'STRING_SelectRegex@files:openwg.utils.dll cdecl setuponly';
+
+function STRING_SelectRegex_U(Input: String; Search: String; SubgroupIndex: Integer; Output: String; BufferSize: Integer): Integer;
+external 'STRING_SelectRegex@{app}\{#OPENWGUTILS_DIR_UNINST}\openwg.utils.dll cdecl uninstallonly';
+
+function STRING_SelectRegex(Input: String; Search: String; SubgroupIndex: Integer): String;
+var
+    BufferChars: Integer;
+    BufferBytes: Integer;
+    ErrorCode: Integer;
+begin
+    BufferChars := Length(Input) + 1;
+    if (BufferChars < 1) then
+        BufferChars := 1;
+
+    SetLength(Result, BufferChars);
+    BufferBytes := BufferChars * 2;
+
+    if IsUninstaller() then
+        ErrorCode := STRING_SelectRegex_U(Input, Search, SubgroupIndex, Result, BufferBytes)
+    else
+        ErrorCode := STRING_SelectRegex_I(Input, Search, SubgroupIndex, Result, BufferBytes);
+
+    // not enough space
+    if (ErrorCode < 0) then
+    begin
+        BufferBytes := -ErrorCode;
+        BufferChars := (BufferBytes + 1) div 2;
+        SetLength(Result, BufferChars);
+
+        if IsUninstaller() then
+            ErrorCode := STRING_SelectRegex_U(Input, Search, SubgroupIndex, Result, BufferChars * 2)
+        else
+            ErrorCode := STRING_SelectRegex_I(Input, Search, SubgroupIndex, Result, BufferChars * 2);
+    end;
+
+    // general error or no match
+    if (ErrorCode = 0) then
+    begin
+        Result := '';
+        Exit;
+    end;
+
+    // ErrorCode = output length in bytes including UTF-16 null terminator
+    if (ErrorCode >= 2) then
+        SetLength(Result, (ErrorCode div 2) - 1)
+    else
+        Result := '';
+end;
+
+
 // STRING/ReplaceRegexEx
 function STRING_ReplaceRegexEx_I(Input: String; Search: String; Replace: String; Output: String; BufferSize: Integer; FirstOnly: Boolean): Integer;
 external 'STRING_ReplaceRegexEx@files:openwg.utils.dll cdecl setuponly';

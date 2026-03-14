@@ -121,6 +121,29 @@ namespace OpenWG::Utils {
             return std::regex_search(where, regex);
         }
 
+        bool SelectRegex(const std::wstring& where, const std::wstring& from, int32_t subgroup_idx, std::wstring& output) {
+            output.clear();
+            if (subgroup_idx < 0) {
+                return false;
+            }
+
+            auto from_modified = Replace(from, L"{",L"\\{");
+            from_modified = Replace(from_modified, L"}",L"\\}");
+
+            std::wregex regex(from_modified);
+            std::wsmatch result;
+            if (!std::regex_search(where, result, regex)) {
+                return false;
+            }
+
+            if (static_cast<size_t>(subgroup_idx) >= result.size()) {
+                return false;
+            }
+
+            output = result[static_cast<size_t>(subgroup_idx)].str();
+            return true;
+        }
+
         std::wstring Replace(const std::wstring &where, const std::wstring &from, const std::wstring &to) {
             if (where.empty() || from.empty()) {
                 return {where};

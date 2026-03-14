@@ -28,6 +28,20 @@ XVMEXT_API_CALL bool STRING_MatchRegex(_In_ const wchar_t* input, _In_ const wch
 
 
 /**
+ * Match pattern in a string using regexpr
+ * @param input input string
+ * @param pattern_search search pattern
+ * @param subgroup_index regex subgroup index to select
+ * @param output output buffer
+ * @param output_len output length in bytes
+ * @return
+ *   * 1   -- martch
+ *   * 0   -- error or no matchinvalid pointer
+ *   * -X  -- output buffer is too small, X wchar_t units are required
+ */
+XVMEXT_API_CALL int32_t STRING_SelectRegex(_In_ const wchar_t* input, _In_ const wchar_t* pattern_search, _In_ int32_t subgroup_idx, _Out_ wchar_t* output, _In_ int32_t output_len);
+
+/**
  * Replace pattern in a string using regexpr
  * @param input input string
  * @param pattern_search search pattern

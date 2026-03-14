@@ -59,6 +59,95 @@ end;
 
 
 //
+// TEST/STRING/SelectRegex
+//
+
+function TEST_STRING_SelectRegex_1(): Boolean;
+var
+    Text: String;
+begin
+    Result := False;
+
+    Text := STRING_SelectRegex('meow moo gaw', '((meow).*?(gaw))', 3);
+    if CompareText(Text, 'gaw') <> 0 then
+        Exit;
+
+    Result := True;
+end;
+
+
+function TEST_STRING_SelectRegex_2(): Boolean;
+var
+    Text: String;
+begin
+    Result := False;
+
+    Text := STRING_SelectRegex('meow moo gaw', 'woof', 0);
+    if Length(Text) <> 0 then
+        Exit;
+
+    Result := True;
+end;
+
+
+function TEST_STRING_SelectRegex_3(): Boolean;
+var
+    Text: String;
+begin
+    Result := False;
+
+    Text := STRING_SelectRegex('', '(meow)', 1);
+    if Length(Text) <> 0 then
+        Exit;
+
+    Result := True;
+end;
+
+
+function TEST_STRING_SelectRegex_4(): Boolean;
+var
+    Text: String;
+begin
+    Result := False;
+
+    Text := STRING_SelectRegex('abc', '', 0);
+    if Length(Text) <> 0 then
+        Exit;
+
+    Result := True;
+end;
+
+
+function TEST_STRING_SelectRegex_5(): Boolean;
+var
+    Text: String;
+begin
+    Result := False;
+
+    Text := STRING_SelectRegex('abc', '(', 0);
+    if Length(Text) <> 0 then
+        Exit;
+
+    Result := True;
+end;
+
+
+function TEST_STRING_SelectRegex_6(): Boolean;
+var
+    Text: String;
+begin
+    Result := False;
+
+    Text := STRING_SelectRegex('abc123', '([a-z]+)([0-9]+)', 3);
+    if Length(Text) <> 0 then
+        Exit;
+
+    Result := True;
+end;
+
+
+
+//
 // TEST/STRING/ReplaceRegex/1
 //
 
@@ -139,9 +228,9 @@ begin
     ExtractTemporaryFile('string_replace_regex_3_after.json');
     TextAfterExpected := STRING_LoadFromFile(ExpandConstant('{tmp}/string_replace_regex_3_after.json'));
 
-    TextAfter := STRING_ReplaceRegex(TextAfter, '(module[.\s]*"enable"\s*:\s*)(true|false)', '$1true');
+    TextAfter := STRING_ReplaceRegex(TextBefore, '(module[.\s]*"enable"\s*:\s*)(true|false)', '$1true');
     TextAfter := STRING_ReplaceRegex(TextAfter, '("resultInformer"\s*:\s*{((.|\s)*?)"enable"\s*:\s*)(true|false)', '$1true');
-    SaveStringToFile('meow.txt', TextAfter, False);
+
     if CompareText(TextAfter, TextAfterExpected) <> 0 then
         Exit;
 
@@ -159,9 +248,16 @@ begin
     TEST_SetResult('/string/load_from_file/1/utf8bom', TEST_STRING_LoadFromFile_1_utf8bom());
     TEST_SetResult('/string/load_from_file/1/utf16le', TEST_STRING_LoadFromFile_1_utf16le());
 
+    TEST_SetResult('/string/select_regex/match', TEST_STRING_SelectRegex_1());
+    TEST_SetResult('/string/select_regex/no_match', TEST_STRING_SelectRegex_2());
+    TEST_SetResult('/string/select_regex/empty_input', TEST_STRING_SelectRegex_3());
+    TEST_SetResult('/string/select_regex/empty_pattern', TEST_STRING_SelectRegex_4());
+    TEST_SetResult('/string/select_regex/invalid_pattern', TEST_STRING_SelectRegex_5());
+    TEST_SetResult('/string/select_regex/out_of_range', TEST_STRING_SelectRegex_6());
+
     TEST_SetResult('/string/replace_regex/1', TEST_STRING_ReplaceRegex_1());
 
     TEST_SetResult('/string/replace_regex/2', TEST_STRING_ReplaceRegex_2());
     
-    TEST_SetResult('/string/replace_regex/3', TEST_STRING_ReplaceRegex_2());
+    TEST_SetResult('/string/replace_regex/3', TEST_STRING_ReplaceRegex_3());
 end;

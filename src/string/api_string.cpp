@@ -327,3 +327,47 @@ int32_t STRING_ReplaceRegexEx(_In_ const wchar_t* input, _In_ const wchar_t* pat
     }
 }
 
+
+XVMEXT_API_CALL int32_t STRING_SelectRegex(_In_ const wchar_t* input, _In_ const wchar_t* pattern_search, _In_ int32_t subgroup_idx, _Out_ wchar_t* output, _In_ int32_t output_len){
+    // check ptrs
+    if (!input || !pattern_search) {
+        return 0;
+    }
+
+    if (output && output_len >= static_cast<int32_t>(sizeof(wchar_t))) {
+        output[0] = L'\0';
+    }
+
+    std::wstring result_w{};
+    int32_t size_bytes{};
+    try {
+        if (!String::SelectRegex(input, pattern_search, subgroup_idx, result_w)) {
+            return 0;
+        }
+
+        size_bytes = (result_w.size()+1)*sizeof(wchar_t);
+
+        // Buffer-probe mode or not enough space.
+        // Do not write to output if there is no room for at least a UTF-16 null terminator.
+        if (output_len < size_bytes) {
+            if (output && output_len >= static_cast<int32_t>(sizeof(wchar_t))) {
+                output[0] = L'\0';
+            }
+            return -size_bytes;
+        }
+
+        if (!output) {
+            return 0;
+        }
+
+        output[0] = L'\0';
+        wcscpy_s(output, output_len/sizeof(wchar_t), result_w.c_str());
+        return size_bytes;
+    }
+    catch (std::exception& e) {
+#if defined(_WIN32)
+        OutputDebugStringA(e.what());
+#endif
+        return 0;
+    }
+}
