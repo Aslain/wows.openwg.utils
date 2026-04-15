@@ -80,7 +80,7 @@ int main() {
 
     wchar_t buffer[1024]{};
 
-    std::wcout << L"WoT clients count                : " << WOT_GetClientsCount() << std::endl;
+    std::wcout << L"WoWs clients count                : " << WOT_GetClientsCount() << std::endl;
 
     for (int i = 0; i < WOT_GetClientsCount(); i++) {
 

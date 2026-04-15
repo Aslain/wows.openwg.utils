@@ -11,7 +11,7 @@ en.openwg_browse=Browse...
 en.openwg_client_not_found=The game client was not detected in the specified folder.
 en.openwg_unknown=Unknown
 en.openwg_branch_release=Release
-en.openwg_branch_ct=Common Test
+en.openwg_branch_ct=Public Test
 en.openwg_branch_st=Super Test
 en.openwg_branch_sb=Sandbox
 en.openwg_branch_closed=Closed Test
@@ -22,7 +22,7 @@ ru.openwg_browse=Обзор...
 ru.openwg_client_not_found=В указанной папке клиент игры не был обнаружен.
 ru.openwg_unknown=Неизвестно
 ru.openwg_branch_release=Релиз
-ru.openwg_branch_ct=Общий тест
+ru.openwg_branch_ct=Публичный тест
 ru.openwg_branch_st=Супертест
 ru.openwg_branch_sb=Песочница
 ru.openwg_branch_closed=Закрытый тест
@@ -540,8 +540,8 @@ function CLIENT_FormatString(Client: ClientRecord): String;
 begin
     case Client.Vendor of
         0: Result := 'Unknown Game';
-        1: Result := 'WoT';
-        2: Result := 'MT';
+        1: Result := 'WoWs';
+        2: Result := 'MK';
     end;
 
   Result := Result + ' ' + Client.Version;

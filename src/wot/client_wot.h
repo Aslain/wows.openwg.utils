@@ -81,6 +81,8 @@ namespace OpenWG::Utils::WoT {
         void rescan();
 
         void rescanAppType();
+		
+		void rescanBinPath();
 
         void rescanExe();
 
@@ -106,6 +108,7 @@ namespace OpenWG::Utils::WoT {
         ClientVersion m_versionClient{};
         std::wstring m_versionExe{};
         bool m_valid{ false };
+		std::filesystem::path m_binPath{};
 
         [[nodiscard]] std::filesystem::path resolvePackagePath(const std::wstring& package_relative_path) const;
 

@@ -24,6 +24,9 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+$env:Path += ";c:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin"
+$env:Path += ";C:\Program Files (x86)\Inno Setup 6"
+
 Push-Location $PSScriptRoot
 $root = (Get-Location).Path -replace "\\","/"
 

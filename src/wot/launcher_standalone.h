@@ -24,7 +24,7 @@ namespace OpenWG::Utils::WoT {
 
         // LauncherStandalone
         bool AddClient(const std::shared_ptr<ClientWoT>& client);
-
+        bool AddClient(const std::filesystem::path &path, LauncherFlavour flavour);
 
     private:
         std::vector<std::shared_ptr<ClientInterface>> m_clients{};

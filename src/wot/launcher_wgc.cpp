@@ -58,7 +58,7 @@ namespace OpenWG::Utils::WoT {
                 if (doc.load_file(preferencesPath.wstring().c_str())) {
 
                     //selected wot game
-                    auto wot = doc.select_node(L"/protocol/application/games_manager/selectedGames/WOT");
+                    auto wot = doc.select_node(L"/protocol/application/games_manager/selectedGames/WOWS");
                     if (wot) {
                         std::filesystem::path path = wot.node().first_child().value();
                         if (!Common::Vector::Contains(result, path)) {
@@ -89,7 +89,7 @@ namespace OpenWG::Utils::WoT {
         // ProgramData
         try {
             for (auto &appinfo_folder: std::filesystem::directory_iterator(m_path_programdata / L"apps")) {
-                if (appinfo_folder.path().filename().string().find("wot.") != 0) {
+                if (appinfo_folder.path().filename().string().find("wows.") != 0) {
                     continue;
                 }
 
@@ -117,7 +117,7 @@ namespace OpenWG::Utils::WoT {
             return {};
         }
 
-        auto wot = doc.select_node(L"/protocol/application/games_manager/selectedGames/WOT");
+        auto wot = doc.select_node(L"/protocol/application/games_manager/selectedGames/WOWS");
         if (!wot) {
             return {};
         }

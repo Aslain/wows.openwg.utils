@@ -388,46 +388,22 @@ namespace OpenWG::Utils::WoT {
     // Public/Cache
     //
 
-    ClientCache ClientWoT::GetCacheSupported() const
-    {
-        ClientCache cache{};
+	ClientCache ClientWoT::GetCacheSupported() const
+	{
+		ClientCache cache{};
+		return cache;
+	}
 
-        if (GetVendor() == WoT_Vendor_WG) {
-            if (m_versionClient >= ClientVersion(L"1.27.1") || std::filesystem::exists(GetPath() / L"data.wgpdc"))
-            {
-                cache = cache | WoT_Cache_PDC;
-            }
-        }
+	ClientCache ClientWoT::GetCachePresent() const
+	{
+		ClientCache result{};
+		return result;
+	}
 
-        return cache;
-    }
-
-    ClientCache ClientWoT::GetCachePresent() const
-    {
-        ClientCache result{};
-
-        if ((GetCacheSupported() & WoT_Cache_PDC) == WoT_Cache_PDC)
-        {
-            if (std::filesystem::exists(GetPath() / L"data.wgpdc"))
-            {
-                result = result | WoT_Cache_PDC;
-            }
-        }
-
-        return result;
-    }
-
-    bool ClientWoT::ClearCache(ClientCache cache_type)
-    {
-        bool result{};
-    
-        if ((cache_type & WoT_Cache_PDC) == WoT_Cache_PDC && (GetCachePresent() & WoT_Cache_PDC) == WoT_Cache_PDC)
-        {
-            result = std::filesystem::remove(GetPath() / L"data.wgpdc");
-        }
-    
-        return result;
-    }
+	bool ClientWoT::ClearCache(ClientCache cache_type)
+	{
+		return false;
+	}
     
     bool ClientWoT::BuildResMapFromMods()
     {
@@ -696,25 +672,49 @@ namespace OpenWG::Utils::WoT {
     // Private
     //
 
-    bool ClientWoT::isValid(bool skip_exe)
-    {
-        bool valid = Filesystem::Exists(m_path) &&
-            Filesystem::Exists(m_path / "app_type.xml") &&
-            Filesystem::Exists(m_path / "game_info.xml") &&
-            Filesystem::Exists(m_path / "paths.xml") &&
-            Filesystem::Exists(m_path / "version.xml");
-        
-        if (!skip_exe) {
-            if (m_exe_name.empty()) {
-                valid = false;
-            }
-            else {
-                valid = Filesystem::Exists(m_path / m_exe_name);
-            }
-        }
-        
-        return valid;
-    }
+	bool ClientWoT::isValid(bool skip_exe)
+	{
+		bool has_game_info = Filesystem::Exists(m_path / "game_info.xml");
+		bool has_preferences = Filesystem::Exists(m_path / "preferences.xml");
+		bool has_paths_xml_in_bin = false;
+		
+		std::filesystem::path bin_folder = m_path / "bin";
+		if (std::filesystem::exists(bin_folder)) {
+			for (const auto& bin_entry : std::filesystem::directory_iterator(bin_folder)) {
+				if (!bin_entry.is_directory()) continue;
+				if (Filesystem::Exists(bin_entry.path() / "bin64" / "paths.xml")) {
+					has_paths_xml_in_bin = true;
+					break;
+				}
+			}
+		}
+		
+		bool valid = Filesystem::Exists(m_path) && (has_game_info || (has_preferences && has_paths_xml_in_bin));
+		
+		if (!skip_exe) {
+			if (m_exe_name.empty()) {
+				valid = false;
+			}
+			else {
+				bool exe_found = false;
+				if (std::filesystem::exists(bin_folder)) {
+					for (const auto& bin_entry : std::filesystem::directory_iterator(bin_folder)) {
+						if (!bin_entry.is_directory()) continue;
+						if (Filesystem::Exists(bin_entry.path() / "bin64" / m_exe_name)) {
+							exe_found = true;
+							break;
+						}
+					}
+				}
+				if (!exe_found) {
+					exe_found = Filesystem::Exists(m_path / m_exe_name);
+				}
+				valid = valid && exe_found;
+			}
+		}
+		
+		return valid;
+	}
 
     void ClientWoT::rescan() {
         m_valid = false;
@@ -725,6 +725,7 @@ namespace OpenWG::Utils::WoT {
 
         rescanAppType();
         rescanVersion();
+        rescanBinPath();
         rescanExe();
 
         if (!isValid(false)) {
@@ -750,191 +751,309 @@ namespace OpenWG::Utils::WoT {
             auto apptype = doc.select_node(L"/protocol/app_type");
             if (apptype) {
                 std::wstring value = apptype.node().first_child().value();
-                if (value == L"sd") {
+                if (value == L"low") {
                     m_type = WoT_Type_SD;
-                } else if (value == L"hd") {
+                } else if (value == L"high") {
                     m_type = WoT_Type_HD;
                 }
             }
         }
     }
+	
+	void ClientWoT::rescanBinPath() {
+		m_binPath.clear();
+		
+		std::wstring target_version;
+		auto gameinfoxml = m_path / L"game_info.xml";
+		if (Filesystem::Exists(gameinfoxml)) {
+			pugi::xml_document doc;
+			if (doc.load_file(gameinfoxml.wstring().c_str())) {
+				auto version_node = doc.select_node(L"/protocol/game/part_versions/version[@name='client']");
+				if (version_node) {
+					std::wstring installed = version_node.node().attribute(L"installed").value();
+					auto parts = String::Split(installed, L'.');
+					if (parts.size() >= 5) {
+						target_version = parts[4];
+					}
+				}
+			}
+		}
+		
+		if (target_version.empty()) {
+			auto prefxml = m_path / L"preferences.xml";
+			if (Filesystem::Exists(prefxml)) {
+				std::ifstream ifs(prefxml, std::ios::binary);
+				if (ifs) {
+					std::string content((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+					size_t start = content.find("<last_server_version>");
+					if (start != std::string::npos) {
+						start += 21;
+						size_t end = content.find("</last_server_version>", start);
+						if (end != std::string::npos) {
+							std::string version_str = content.substr(start, end - start);
+							version_str.erase(std::remove_if(version_str.begin(), version_str.end(), ::isspace), version_str.end());
+							size_t last_comma = version_str.find_last_of(',');
+							if (last_comma != std::string::npos) {
+								std::string bin_num = version_str.substr(last_comma + 1);
+								target_version = std::wstring(bin_num.begin(), bin_num.end());
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		if (target_version.empty()) {
+			std::filesystem::path bin_folder = m_path / "bin";
+			if (std::filesystem::exists(bin_folder)) {
+				uint64_t latest_version = 0;
+				for (const auto& bin_entry : std::filesystem::directory_iterator(bin_folder)) {
+					if (!bin_entry.is_directory()) continue;
+					std::wstring folder_name = bin_entry.path().filename().wstring();
+					try {
+						uint64_t version_num = std::stoull(folder_name);
+						if (version_num > latest_version) {
+							latest_version = version_num;
+							target_version = folder_name;
+						}
+					} catch (...) {}
+				}
+			}
+		}
+		
+		if (!target_version.empty()) {
+			std::filesystem::path bin_folder = m_path / "bin" / target_version;
+			if (std::filesystem::exists(bin_folder) &&
+				(Filesystem::Exists(bin_folder / "bin64" / L"WorldOfWarships64.exe") ||
+				 Filesystem::Exists(bin_folder / "bin64" / L"Korabli64.exe"))) {
+				m_binPath = bin_folder;
+			}
+		}
+	}
 
-    void ClientWoT::rescanExe() {
-        m_versionExe.clear();
-        m_exe_name.clear();
+	void ClientWoT::rescanExe() {
+		m_versionExe.clear();
+		m_exe_name.clear();
 
-        if (m_vendor == WoT_Vendor_Lesta && m_versionClient >= ClientVersion(L"1.32.0.0")) {
-            m_exe_name = L"Tanki.exe";
-        }
-        else {
-            m_exe_name = L"WorldOfTanks.exe";
-        }
+		if (m_vendor == WoT_Vendor_Lesta) {
+			m_exe_name = L"Korabli64.exe";
+		}
+		else {
+			m_exe_name = L"WorldOfWarships64.exe";
+		}
 
-        auto path = m_path / "win64" / m_exe_name;
-        if (Filesystem::Exists(path)) {
-            m_versionExe = Filesystem::GetExeVersion(path.wstring());
-            return;
-        }
+		if (!m_binPath.empty()) {
+			auto path = m_binPath / "bin64" / m_exe_name;
+			if (Filesystem::Exists(path)) {
+				m_versionExe = Filesystem::GetExeVersion(path.wstring());
+				return;
+			}
+		}
 
-        path = m_path / "win32" / m_exe_name;
-        if (Filesystem::Exists(path)) {
-            m_versionExe = Filesystem::GetExeVersion(path.wstring());
-            return;
-        }
+		auto path = m_path / m_exe_name;
+		if (Filesystem::Exists(path)) {
+			m_versionExe = Filesystem::GetExeVersion(path.wstring());
+						return;
+		}
+	}
 
-        path = m_path / m_exe_name;
-        if (Filesystem::Exists(path)) {
-            m_versionExe = Filesystem::GetExeVersion(path.wstring());
-            return;
-        }
-    }
+	void ClientWoT::rescanGameInfo() {
+		m_locale.clear();
+		auto gameinfoxml = m_path / L"game_info.xml";
+		if (Filesystem::Exists(gameinfoxml)) {
 
-    void ClientWoT::rescanGameInfo() {
-        m_locale.clear();
-        auto gameinfoxml = m_path / L"game_info.xml";
-        if (Filesystem::Exists(gameinfoxml)) {
+			pugi::xml_document doc;
+			if (doc.load_file(gameinfoxml.wstring().c_str())) {
+				// id
+				auto id = doc.select_node(L"/protocol/game/id");
+				if (id) {
+					std::wstring id_str = id.node().first_child().value();
+					if (id_str.contains(L".PT.")) {
+						m_branch = ClientBranch::WoT_Branch_CommonTest;
+					}
+				}
 
-            pugi::xml_document doc;
-            if (doc.load_file(gameinfoxml.wstring().c_str())) {
-                // id
-                auto id = doc.select_node(L"/protocol/game/id");
-                if (id) {
-                    std::wstring id_str = id.node().first_child().value();
-                    if (id_str.contains(L".RPT.")) {
-                        m_branch = ClientBranch::WoT_Branch_CommonTest;
-                    }
-                }
+				// localization
+				auto localization = doc.select_node(L"/protocol/game/localization");
+				if (localization) {
+					m_locale = localization.node().first_child().value();
+				}
+			}
+		}
+		
+		if (m_locale.empty()) {
+			auto prefxml = m_path / L"preferences.xml";
+			if (Filesystem::Exists(prefxml)) {
+				std::ifstream ifs(prefxml, std::ios::binary);
+				if (ifs) {
+					std::string content((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+					size_t start = content.find("<locale>");
+					if (start != std::string::npos) {
+						start += 8;
+						size_t end = content.find("</locale>", start);
+						if (end != std::string::npos) {
+							std::string locale_str = content.substr(start, end - start);
+							locale_str.erase(std::remove_if(locale_str.begin(), locale_str.end(), ::isspace), locale_str.end());
+							m_locale = std::wstring(locale_str.begin(), locale_str.end());
+							std::transform(m_locale.begin(), m_locale.end(), m_locale.begin(), ::toupper);
+						}
+					}
+				}
+			}
+		}
+	}
 
-                // localization
-                auto localization = doc.select_node(L"/protocol/game/localization");
-                if (localization) {
-                    m_locale = localization.node().first_child().value();
-                }
-            }
-        }
-    }
+	void ClientWoT::rescanPaths() {
+		m_path_mods.clear();
+		m_path_resmods.clear();
+		m_packages.clear();
 
-    void ClientWoT::rescanPaths() {
-        m_path_mods.clear();
-        m_path_resmods.clear();
-        m_packages.clear();
+		auto normalizeRelativePath = [](std::wstring value) {
+			value = String::Trim(value);
+			value = String::Replace(value, L"\\", L"/");
+			while (value.starts_with(L"./")) {
+				value = value.substr(2);
+			}
+			return value;
+		};
 
-        auto normalizeRelativePath = [](std::wstring value) {
-            value = String::Trim(value);
-            value = String::Replace(value, L"\\", L"/");
-            while (value.starts_with(L"./")) {
-                value = value.substr(2);
-            }
-            return value;
-        };
+		auto pathsxml = m_binPath.empty() ? m_path / L"paths.xml" : m_binPath / L"bin64" / L"paths.xml";
+		if (Filesystem::Exists(pathsxml)) {
+			pugi::xml_document doc;
+			if (doc.load_file(pathsxml.wstring().c_str())) {
+				auto pathNodes = doc.select_nodes(L"/root/Paths/Path");
+				for (const auto& pathNode : pathNodes) {
+					const auto& xmlNode = pathNode.node();
+					std::wstring relativePath = normalizeRelativePath(std::wstring(xmlNode.text().as_string()));
+					if (relativePath.empty()) {
+						continue;
+					}
 
-        auto pathsxml = m_path / L"paths.xml";
-        if (Filesystem::Exists(pathsxml)) {
-            pugi::xml_document doc;
-            if (doc.load_file(pathsxml.wstring().c_str())) {
-                auto pathNodes = doc.select_nodes(L"/root/Paths/Path");
-                for (const auto& pathNode : pathNodes) {
-                    const auto& xmlNode = pathNode.node();
-                    std::wstring relativePath = normalizeRelativePath(std::wstring(xmlNode.text().as_string()));
-                    if (relativePath.empty()) {
-                        continue;
-                    }
+					if (m_path_resmods.empty() && relativePath.find(L"res_mods") != std::wstring::npos) {
+						std::filesystem::path fullPath = pathsxml.parent_path() / relativePath;
+						fullPath = fullPath.lexically_normal();
+						std::wstring fullPathStr = fullPath.wstring();
+						std::wstring rootPathStr = m_path.wstring();
+						if (fullPathStr.find(rootPathStr) == 0) {
+							m_path_resmods = fullPathStr.substr(rootPathStr.length() + 1);
+						} else {
+							m_path_resmods = relativePath;
+						}
+					} else if (m_path_mods.empty() && relativePath.find(L"mods") != std::wstring::npos) {
+						std::filesystem::path fullPath = m_path / relativePath;
+						fullPath = fullPath.lexically_normal();
+						std::wstring fullPathStr = fullPath.wstring();
+						std::wstring rootPathStr = m_path.wstring();
+						if (fullPathStr.find(rootPathStr) == 0) {
+							m_path_mods = fullPathStr.substr(rootPathStr.length() + 1);
+						} else {
+							m_path_mods = relativePath;
+						}
+					}
+				}
 
-                    if (m_path_resmods.empty() && relativePath.starts_with(L"res_mods/")) {
-                        m_path_resmods = relativePath;
-                    } else if (m_path_mods.empty() && relativePath.starts_with(L"mods/")) {
-                        m_path_mods = relativePath;
-                    }
-                }
+				auto packageNodes = doc.select_nodes(L"/root/Paths/Packages/Package");
+				for (const auto& packageNode : packageNodes) {
+					const auto& xmlNode = packageNode.node();
+					std::wstring relativePath = normalizeRelativePath(std::wstring(xmlNode.text().as_string()));
+					if (relativePath.empty()) {
+						continue;
+					}
 
-                auto packageNodes = doc.select_nodes(L"/root/Paths/Packages/Package");
-                for (const auto& packageNode : packageNodes) {
-                    const auto& xmlNode = packageNode.node();
-                    std::wstring relativePath = normalizeRelativePath(std::wstring(xmlNode.text().as_string()));
-                    if (relativePath.empty()) {
-                        continue;
-                    }
+					PackageDefinition definition{};
+					definition.relativePath = relativePath;
 
-                    PackageDefinition definition{};
-                    definition.relativePath = relativePath;
+					if (auto attribute = xmlNode.attribute(L"type")) {
+						auto tokens = String::Split(std::wstring(attribute.as_string()), L',');
+						definition.types.reserve(tokens.size());
+						for (auto& token : tokens) {
+							std::wstring trimmed = String::Trim(token);
+							if (!trimmed.empty()) {
+								definition.types.emplace_back(trimmed);
+							}
+						}
+					}
 
-                    if (auto attribute = xmlNode.attribute(L"type")) {
-                        auto tokens = String::Split(std::wstring(attribute.as_string()), L',');
-                        definition.types.reserve(tokens.size());
-                        for (auto& token : tokens) {
-                            std::wstring trimmed = String::Trim(token);
-                            if (!trimmed.empty()) {
-                                definition.types.emplace_back(trimmed);
-                            }
-                        }
-                    }
+					m_packages.emplace_back(definition);
+				}
+			}
+		}
+	}
 
-                    m_packages.emplace_back(definition);
-                }
-            }
-        }
-    }
+	void ClientWoT::rescanVersion() {
+		m_branch = ClientBranch::WoT_Branch_Release;
+		m_realm.clear();
+		m_versionClient.Set(L"0.0.0.0");
 
-    void ClientWoT::rescanVersion() {
-        m_branch = ClientBranch::WoT_Branch_Unknown;
-        m_realm.clear();
+		auto gameinfoxml = m_path / L"game_info.xml";
+		if (Filesystem::Exists(gameinfoxml)) {
+			pugi::xml_document doc;
+			if (doc.load_file(gameinfoxml.wstring().c_str())) {
+				auto id_node = doc.select_node(L"/protocol/game/id");
+				if (id_node) {
+					std::wstring id_str = id_node.node().first_child().value();
+					if (id_str.contains(L".PT.")) {
+						m_branch = ClientBranch::WoT_Branch_CommonTest;
+					}
+				}
 
-        auto versionxml = m_path / L"version.xml";
-        if (Filesystem::Exists(versionxml)) {
-            pugi::xml_document doc;
-            if (doc.load_file(versionxml.wstring().c_str())) {
-                // realm
-                auto realm = doc.select_node(L"/version.xml/meta/realm");
-                if (realm) {
-                    m_realm = String::Trim(realm.node().first_child().value());
-                    m_vendor = (m_realm == L"RU" || m_realm == L"RPT") ? WoT_Vendor_Lesta : WoT_Vendor_WG;
-                }
+				auto version_node = doc.select_node(L"/protocol/game/part_versions/version[@name='client']");
+				if (version_node) {
+					std::wstring version_raw = version_node.node().attribute(L"installed").value();
+					if (!version_raw.empty()) {
+						auto parts = String::Split(version_raw, L'.');
+						std::wstring final_version = version_raw;
+						if (parts.size() >= 5) {
+							final_version = parts[0] + L"." + parts[1] + L"." + parts[2] + L"." + parts[3];
+						}
+						m_versionClient.Set(final_version);
+					}
+				}
+			}
+		}
 
-                // version & branch
-                auto version = doc.select_node(L"/version.xml/version");
-                if (version) {
+		auto prefxml = m_path / L"preferences.xml";
+		if (Filesystem::Exists(prefxml)) {
+			std::ifstream ifs(prefxml, std::ios::binary);
+			if (ifs) {
+				std::string content((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+				
+				size_t start = content.find("<active_server>");
+				if (start != std::string::npos) {
+					start += 15;
+					size_t end = content.find("</active_server>", start);
+					if (end != std::string::npos) {
+						std::string server_str = content.substr(start, end - start);
+						server_str.erase(std::remove_if(server_str.begin(), server_str.end(), [](unsigned char c) { 
+							return std::isspace(c); 
+						}), server_str.end());
+						
+						if (server_str.find("EU") != std::string::npos || server_str.find("eu") != std::string::npos) m_realm = L"EU";
+						else if (server_str.find("NA") != std::string::npos || server_str.find("na") != std::string::npos) m_realm = L"NA";
+						else if (server_str.find("ASIA") != std::string::npos || server_str.find("asia") != std::string::npos) m_realm = L"ASIA";
+						else if (server_str.find("RU") != std::string::npos || server_str.find("ru") != std::string::npos) m_realm = L"RU";
+						else if (server_str.find("360") != std::string::npos || server_str.find("CHINA") != std::string::npos || server_str.find("china") != std::string::npos) m_realm = L"CN";
+					}
+				}
+				
+				if (m_versionClient.Get() == L"0.0.0.0") {
+					start = content.find("<clientVersion>");
+					if (start != std::string::npos) {
+						start += 15;
+						size_t end = content.find("</clientVersion>", start);
+						if (end != std::string::npos) {
+							std::string version_str = content.substr(start, end - start);
+							version_str.erase(std::remove_if(version_str.begin(), version_str.end(), ::isspace), version_str.end());
+							std::replace(version_str.begin(), version_str.end(), ',', '.');
+							m_versionClient.Set(std::wstring(version_str.begin(), version_str.end()));
+						}
+					}
+				}
+			}
+		}
 
-                    //get client raw version
-                    std::wstring version_raw = version.node().first_child().value();
-                    version_raw = String::Trim(version_raw);
-                    version_raw = String::Replace(version_raw, L"v.", L"");
-                    if (version_raw.find(L'#') != std::wstring::npos) {
-                        version_raw = String::Substring(version_raw, 0, version_raw.find(L'#'));
-                    }
-                    version_raw = String::Trim(version_raw);
-
-                    //tokenize
-                    auto version_tokens = String::Split(version_raw, L' ', 2);
-
-                    //version client
-                    m_versionClient = String::Trim(version_tokens[0]);
-
-                    //branch
-                    std::wstring type{};
-                    if (version_tokens.size() == 2) {
-                        type = String::Trim(version_tokens[1]);
-                    }
-                    if (type.empty()) {
-                        m_branch = WoT_Branch_Release;
-                    } else if (type == L"Common Test") {
-                        m_branch = WoT_Branch_CommonTest;
-                    } else if (type == L"ST") {
-                        m_branch = WoT_Branch_SuperTest;
-                    } else if (type == L"SB") {
-                        m_branch = WoT_Branch_Sandbox;
-                    }
-                    else if (type == L"Test") {
-                        if (version_tokens[0] == L"Closed") {
-                            m_branch = WoT_Branch_ClosedTest;
-                        }
-                    }
-                    if(m_realm == L"RPT"){
-                        m_branch  = WoT_Branch_CommonTest;
-                    }
-                }
-            }
-        }
-    }
+		m_vendor = (m_realm == L"RU") ? WoT_Vendor_Lesta : WoT_Vendor_WG;
+	}
 
     std::filesystem::path ClientWoT::resolvePackagePath(const std::wstring& package_relative_path) const {
         if (package_relative_path.empty()) {

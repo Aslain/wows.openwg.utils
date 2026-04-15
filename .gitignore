@@ -17,3 +17,7 @@ src_csharp/packages/
 *.nupkg
 *.user
 nuget.exe
+src/CMakeLists.txt
+src/CMakeSettings.json
+*.bak
+build.ps1-ok na VS26
