@@ -16,7 +16,7 @@ std::wstring describe_client_branch(int32_t branch){
         case ClientBranch::WoT_Branch_Release:
             return L"release";
         case ClientBranch::WoT_Branch_CommonTest:
-            return L"common test";
+            return L"public test";
         case ClientBranch::WoT_Branch_SuperTest:
             return L"super test";
         case ClientBranch::WoT_Branch_Sandbox:

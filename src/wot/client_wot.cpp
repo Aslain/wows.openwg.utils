@@ -978,6 +978,17 @@ namespace OpenWG::Utils::WoT {
 				}
 			}
 		}
+
+		if (m_path_resmods.empty() && !m_binPath.empty()) {
+			std::filesystem::path resmods_path = m_binPath / L"res_mods";
+			if (std::filesystem::exists(resmods_path)) {
+				std::wstring fullPathStr = resmods_path.wstring();
+				std::wstring rootPathStr = m_path.wstring();
+				if (fullPathStr.find(rootPathStr) == 0) {
+					m_path_resmods = fullPathStr.substr(rootPathStr.length() + 1);
+				}
+			}
+		}
 	}
 
 	void ClientWoT::rescanVersion() {
@@ -1033,6 +1044,7 @@ namespace OpenWG::Utils::WoT {
 						else if (server_str.find("ASIA") != std::string::npos || server_str.find("asia") != std::string::npos) m_realm = L"ASIA";
 						else if (server_str.find("RU") != std::string::npos || server_str.find("ru") != std::string::npos) m_realm = L"RU";
 						else if (server_str.find("360") != std::string::npos || server_str.find("CHINA") != std::string::npos || server_str.find("china") != std::string::npos) m_realm = L"CN";
+						else if (server_str.find("Publictest") != std::string::npos || server_str.find("publictest") != std::string::npos) m_branch = WoT_Branch_CommonTest;
 					}
 				}
 				
