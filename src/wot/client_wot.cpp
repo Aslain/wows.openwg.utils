@@ -939,6 +939,7 @@ namespace OpenWG::Utils::WoT {
 						} else {
 							m_path_resmods = relativePath;
 						}
+						std::replace(m_path_resmods.begin(), m_path_resmods.end(), L'\\', L'/');
 					} else if (m_path_mods.empty() && relativePath.find(L"mods") != std::wstring::npos) {
 						std::filesystem::path fullPath = m_path / relativePath;
 						fullPath = fullPath.lexically_normal();
@@ -949,6 +950,7 @@ namespace OpenWG::Utils::WoT {
 						} else {
 							m_path_mods = relativePath;
 						}
+						std::replace(m_path_mods.begin(), m_path_mods.end(), L'\\', L'/');
 					}
 				}
 
@@ -986,6 +988,7 @@ namespace OpenWG::Utils::WoT {
 				std::wstring rootPathStr = m_path.wstring();
 				if (fullPathStr.find(rootPathStr) == 0) {
 					m_path_resmods = fullPathStr.substr(rootPathStr.length() + 1);
+					std::replace(m_path_resmods.begin(), m_path_resmods.end(), L'\\', L'/');
 				}
 			}
 		}
