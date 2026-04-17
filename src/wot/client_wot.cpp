@@ -871,6 +871,9 @@ namespace OpenWG::Utils::WoT {
 					if (id_str.contains(L".PT.")) {
 						m_branch = ClientBranch::WoT_Branch_CommonTest;
 					}
+					if (id_str.find(L"MK.") == 0) {
+						m_vendor = WoT_Vendor_Lesta;
+					}
 				}
 
 				// localization
@@ -1009,6 +1012,9 @@ namespace OpenWG::Utils::WoT {
 					if (id_str.contains(L".PT.")) {
 						m_branch = ClientBranch::WoT_Branch_CommonTest;
 					}
+					if (id_str.find(L"MK.") == 0) {
+						m_vendor = WoT_Vendor_Lesta;
+					}
 				}
 
 				auto version_node = doc.select_node(L"/protocol/game/part_versions/version[@name='client']");
@@ -1067,7 +1073,9 @@ namespace OpenWG::Utils::WoT {
 			}
 		}
 
-		m_vendor = (m_realm == L"RU") ? WoT_Vendor_Lesta : WoT_Vendor_WG;
+		if (m_vendor == WoT_Vendor_Unknown) {
+			m_vendor = (m_realm == L"RU") ? WoT_Vendor_Lesta : WoT_Vendor_WG;
+		}
 	}
 
     std::filesystem::path ClientWoT::resolvePackagePath(const std::wstring& package_relative_path) const {

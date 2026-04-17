@@ -65,6 +65,15 @@ namespace OpenWG::Utils::WoT {
                             result.emplace_back(path);
                         }
                     }
+					
+					//selected MK game (Lesta)
+					auto mk = doc.select_node(L"/protocol/application/games_manager/selectedGames/MK");
+					if (mk) {
+						std::filesystem::path path = mk.node().first_child().value();
+						if (!Common::Vector::Contains(result, path)) {
+							result.emplace_back(path);
+						}
+					}
 
                     //process
                     auto games = doc.select_node(L"/protocol/application/games_manager/games");
@@ -89,9 +98,10 @@ namespace OpenWG::Utils::WoT {
         // ProgramData
         try {
             for (auto &appinfo_folder: std::filesystem::directory_iterator(m_path_programdata / L"apps")) {
-                if (appinfo_folder.path().filename().string().find("wows.") != 0) {
-                    continue;
-                }
+				std::string folder_name = appinfo_folder.path().filename().string();
+				if (folder_name.find("wows.") != 0 && folder_name.find("mk.") != 0 && folder_name.find("mir_korabli.") != 0) {
+					continue;
+				}
 
                 for (auto &appinfo_file: std::filesystem::directory_iterator(appinfo_folder)) {
                     std::filesystem::path path = Filesystem::GetFileContent(appinfo_file.path().wstring());
